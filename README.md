@@ -1,5 +1,7 @@
 # Glastonbury Registration Quick Copy
 
+[![Tests](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml/badge.svg)](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml) [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
+
 **Use it now → https://glastoquickcopy.netlify.app/** · [See the demo](https://glastoquickcopy.netlify.app/demo.html)
 
 A tiny web page for Glastonbury ticket day. Put your group's registration numbers and postcodes on one page, then tap each one to copy it straight into the ticket site. No more scrolling back through the group chat while the clock runs.
