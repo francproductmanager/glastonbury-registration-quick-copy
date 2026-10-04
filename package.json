@@ -1,0 +1,14 @@
+{
+  "name": "glastonbury-registration-quick-copy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tap-to-copy page for your group's Glastonbury registration numbers and postcodes. Everything stays on your device.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
