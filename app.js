@@ -1,4 +1,4 @@
-// Glastonbury Registration Quick Copy — everything runs in the browser.
+// Glasto Quick Copy: everything runs in the browser.
 // Pages are stored in this browser's localStorage only; nothing is ever sent anywhere
 // (the Content-Security-Policy blocks all network requests). All user data is rendered
 // with textContent, never innerHTML.
@@ -20,9 +20,7 @@
         { name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" },
         { name: "Sam Patel", reg: "5647382910", postcode: "BS1 4DJ" },
         { name: "Jo Clarke", reg: "3141592653", postcode: "M4 1HN" },
-        { name: "Chris Evans", reg: "2718281828", postcode: "CF10 1EP" },
         { name: "Priya Shah", reg: "1618033988", postcode: "SE1 7PB" },
-        { name: "Tom Hughes", reg: "1414213562", postcode: "LS1 5DL" },
       ],
     },
   });
@@ -62,7 +60,7 @@
   function saveAll(all) {
     if (DEMO) { demoStore = all; return true; }
     try { localStorage.setItem(KEY, JSON.stringify(all)); return true; }
-    catch { toast("Couldn't save — is private browsing on?", true); return false; }
+    catch { toast("Couldn't save. Is private browsing on?", true); return false; }
   }
   function newId() {
     const bytes = crypto.getRandomValues(new Uint8Array(8));
@@ -76,7 +74,7 @@
   //     1 byte name length + UTF-8 first name (surname initial added only to tell duplicates apart)
   //     1 byte: high nibble = reg number digit count, low nibble = postcode character count
   //     5 bytes: reg number as an integer, little-endian (digit count restores leading zeros)
-  //     postcode: 0–9, A–Z, space, "-" at 6 bits per character, padded to whole bytes;
+  //     postcode: 0 to 9, A to Z, space, "-" at 6 bits per character, padded to whole bytes;
   //       anything else (e.g. accented letters) is stored as raw UTF-8 instead (nibble = 15)
   // No page title, no surnames, never anything else. This is encoding, not encryption.
   // Links made before v1 (base64 JSON, start with "eyJ") still decode.
@@ -104,7 +102,7 @@
       return dup && words[i].length > 1 ? `${f} ${words[i][words[i].length - 1][0]}.` : f;
     });
   }
-  // Page title is always "Glasto group, <first names>" — never user-typed.
+  // Page title is always "Glasto group, <first names>", never user-typed.
   function pageTitle(people) {
     return ["Glasto group", ...shareNames(people).filter(Boolean)].join(", ");
   }
@@ -251,317 +249,429 @@
   };
   const digits = (s) => s.replace(/\D/g, "");
 
-  function copyButton(label, display, value, opts = {}) {
-    const valEl = h("span", { class: "value" }, display);
-    const b = h("button", { type: "button", class: "copy" + (opts.wide ? " wide" : ""), "aria-label": `Copy ${label}` },
-      h("span", { class: "label" }, label), valEl);
-    b.addEventListener("click", async () => {
-      const ok = await copyText(value);
-      if (!ok) { toast("Couldn't copy — long-press to select", true); return; }
-      if (navigator.vibrate) navigator.vibrate(30);
-      b.classList.add("used", "flash");
-      setTimeout(() => b.classList.remove("flash"), 400);
-      toast(`Copied ${display}`);
-    });
-    return b;
-  }
-
-  function demoBanner() {
-    return DEMO ? h("div", { class: "banner" }, "DEMO — example data only. Nothing here is real and nothing is saved.") : null;
-  }
+  // ---------- links and footer ----------
   // The deployed commit is stamped into <meta name="source-commit"> by Netlify (see netlify.toml),
   // so anyone can see exactly which version of the public source code is running.
   const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
+  // Optional link to the guides site (set it once that site has its own domain).
+  const GUIDES_URL = "";
   function deployedCommit() {
     const meta = document.querySelector('meta[name="source-commit"]');
     const sha = meta ? meta.content : "";
     return /^[0-9a-f]{7,40}$/.test(sha) ? sha : "";
   }
-  // Simple line icons (24×24, stroke = currentColor) drawn inline, so no images are loaded
-  const ICONS = {
-    device: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
-    code: "M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14",
-    cloudOff: "M3 3l18 18M8 7.5A5 5 0 0 1 17 9a4 4 0 0 1 3 6.5M17 18H7a4 4 0 0 1-1.5-7.7",
-    check: "M5 12l4 4 10-10",
-    scale: "M12 3v18M7 21h10M5 7h14M5 7l-3 6a3 3 0 0 0 6 0L5 7zM19 7l-3 6a3 3 0 0 0 6 0l-3-6z",
-  };
-  function icon(name) {
-    const NS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(NS, "svg");
-    svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("class", "icon");
-    const path = document.createElementNS(NS, "path");
-    path.setAttribute("d", ICONS[name]);
-    svg.append(path);
-    return svg;
-  }
-  function sourceLine() {
+  const ext = (href, text, cls) => h("a", { href, rel: "noopener", class: cls || null }, text);
+
+  function footer() {
     const sha = deployedCommit();
-    const stamped = !!sha;
-    return h("p", null,
-      "Open source: ", h("a", { href: SOURCE_REPO, rel: "noopener" }, "view the code on GitHub"),
-      stamped ? [" · running version ", h("a", { href: `${SOURCE_REPO}/commit/${sha}`, rel: "noopener", class: "mono" }, sha.slice(0, 7))] : null);
-  }
-  function footer(extra, { home = false } = {}) {
     return h("footer", null,
-      home ? null : h("p", null, "Your data stays in this browser. No accounts, no server."),
-      sourceLine(),
-      h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."),
-      extra || null);
+      h("p", null, "No account needed. ", h("a", { href: "#/data" }, "How your data is handled")),
+      sha
+        ? h("p", null, h("span", { class: "dot", "aria-hidden": "true" }), "Open source. Running version ",
+            ext(`${SOURCE_REPO}/commit/${sha}`, sha.slice(0, 7), "mono"), ", ", ext(`${SOURCE_REPO}/actions/workflows/verify-live.yml`, "checked every 6 hours"), ".")
+        : h("p", null, "Open source. ", ext(SOURCE_REPO, "View the code"), "."),
+      GUIDES_URL ? h("p", null, ext(GUIDES_URL, "Ticket day guides and FAQ")) : null,
+      h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."));
+  }
+  const back = (href, text) => h("a", { class: "back", href }, "‹ " + text);
+
+  // ---------- copy boxes ----------
+  // A copy box has four states: idle, up next, copied and failed. Callers decide the state;
+  // this only draws it and reports taps.
+  function copyBox(kind, value, onTap, extraClass) {
+    const lbl = h("span", { class: "lbl" });
+    const b = h("button", { type: "button", class: "copy" + (extraClass ? " " + extraClass : "") },
+      lbl, h("span", { class: "val" }, value));
+    b.setState = (state) => {
+      b.classList.toggle("is-next", state === "next");
+      b.classList.toggle("is-used", state === "used");
+      b.classList.toggle("is-fail", state === "fail");
+      const hint = { next: "up next", used: "copied ✓", fail: "hold to select" }[state] || "tap to copy";
+      lbl.textContent = `${kind}, ${hint}`;
+      b.setAttribute("aria-label", `Copy ${kind.toLowerCase()} ${value}${state === "used" ? ", copied" : ""}`);
+    };
+    b.setState("idle");
+    b.addEventListener("click", () => onTap(b));
+    return b;
+  }
+  async function copyValue(value) {
+    const ok = await copyText(value);
+    if (ok) {
+      if (navigator.vibrate) { try { navigator.vibrate(30); } catch {} }
+      toast(`Copied ${value}`);
+    } else {
+      toast("Couldn't copy. Long-press to select it.", true);
+    }
+    return ok;
   }
 
-  // ---------- views ----------
-  // ---------- animated "how it works" on the home page ----------
-  // Shows: tap a number here -> it's copied -> tap the field on the ticket site -> it's pasted.
-  // Uses made-up demo data and a generic form (no festival branding). Purely decorative:
-  // hidden from screen readers (the caption says the same thing) and static if the
-  // visitor prefers reduced motion.
-  let howtoTimers = [];
-  function stopHowto() { howtoTimers.forEach(clearTimeout); howtoTimers = []; }
-
-  function howtoDemo() {
-    const P = { name: "Alex", reg: "1029384756", postcode: "BS1 4DJ" };
-    const btn = (label, value) => h("div", { class: "copy hd-copy" }, h("span", { class: "label" }, label), h("span", { class: "value" }, value));
-    const field = (label) => h("div", { class: "hd-field" }, h("span", { class: "hd-label" }, label), h("span", { class: "hd-input" }));
-    const regBtn = btn("Reg number", P.reg), pcBtn = btn("Postcode", P.postcode);
-    const regField = field("Registration Number:"), pcField = field("Postcode:");
-    const toast = h("span", { class: "hd-toast" });
-    const done = h("span", { class: "hd-done" }, "✓ Pasted in 4 taps");
-
-    const root = h("figure", { class: "howto" },
-      h("div", { class: "hd-stage", "aria-hidden": "true" },
-        h("div", { class: "hd-panel" },
-          h("div", { class: "hd-panel-title" }, "This site"),
-          h("div", { class: "hd-person" }, h("span", { class: "num" }, "1"), P.name),
-          h("div", { class: "row" }, regBtn, pcBtn),
-          toast),
-        h("div", { class: "hd-arrow" }, "↓"),
-        h("div", { class: "hd-panel hd-ticket" },
-          h("div", { class: "hd-panel-title" }, "Ticket site"),
-          h("div", { class: "hd-section" }, "Your details"),
-          regField, pcField, done)),
-      h("figcaption", { class: "muted small" }, "Tap a number to copy it, then paste it into the ticket site. Example data."));
-
-    const reset = () => {
-      [regBtn, pcBtn].forEach(b => b.classList.remove("used", "hd-tap"));
-      [regField, pcField].forEach(f => { f.classList.remove("hd-focus", "hd-tap"); f.lastChild.textContent = ""; });
-      toast.classList.remove("show"); done.classList.remove("show");
+  // ---------- home: try it ----------
+  // A hands-on demo with made-up data: tap a box to copy, then tap the matching field to paste.
+  function tryIt() {
+    const P = { reg: "1029384756", postcode: "BS1 4DJ" };
+    let step = 0; // 0 copy reg, 1 paste reg, 2 copy postcode, 3 paste postcode, 4 done
+    const msg = h("p", { class: "try-msg", role: "status", "aria-live": "polite" });
+    const field = (label) => {
+      const b = h("button", { type: "button", class: "mock-field" });
+      b.label = label;
+      return b;
     };
-    const tap = (el) => { el.classList.remove("hd-tap"); void el.offsetWidth; el.classList.add("hd-tap"); };
-    const copy = (b, value) => { tap(b); b.classList.add("used"); toast.textContent = `Copied ${value}`; toast.classList.add("show"); };
-    const paste = (f, value) => { tap(f); toast.classList.remove("show"); [regField, pcField].forEach(x => x.classList.remove("hd-focus")); f.classList.add("hd-focus"); f.lastChild.textContent = value; };
-    const finalState = () => {
-      reset(); regBtn.classList.add("used"); pcBtn.classList.add("used");
-      regField.lastChild.textContent = P.reg; pcField.lastChild.textContent = P.postcode; done.classList.add("show");
-    };
+    const regField = field("Registration no."), pcField = field("Postcode");
+    const regBox = copyBox("Reg number", P.reg, () => tapBox("reg"), "hero");
+    const pcBox = copyBox("Postcode", P.postcode, () => tapBox("pc"), "hero");
+    const done = h("div", { class: "try-done" });
 
-    let reduced = false;
-    try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch {}
-    if (reduced) { finalState(); return root; }
-
-    const steps = [
-      [700, () => copy(regBtn, P.reg)],
-      [1700, () => paste(regField, P.reg)],
-      [2900, () => copy(pcBtn, P.postcode)],
-      [3900, () => paste(pcField, P.postcode)],
-      [4700, () => { pcField.classList.remove("hd-focus"); done.classList.add("show"); }],
-      [7600, () => run()],
-    ];
-    const run = () => {
-      stopHowto(); reset();
-      howtoTimers = steps.map(([t, fn]) => setTimeout(fn, t));
-    };
-    setTimeout(run, 0);
-    return root;
+    const setMsg = (text, good) => { msg.textContent = text; msg.classList.toggle("good", !!good); };
+    function draw() {
+      regBox.setState(step >= 1 ? "used" : step === 0 ? "next" : "idle");
+      pcBox.setState(step >= 3 ? "used" : step === 2 ? "next" : "idle");
+      for (const [f, filledAt, targetAt, value] of [[regField, 2, 1, P.reg], [pcField, 4, 3, P.postcode]]) {
+        f.classList.toggle("is-filled", step >= filledAt);
+        f.classList.toggle("is-target", step === targetAt);
+        f.replaceChildren(step >= filledAt ? value : h("span", { class: "ph" }, step === targetAt ? "Tap to paste" : ""));
+        f.setAttribute("aria-label", step >= filledAt ? `${f.label}: ${value}` : `Paste into ${f.label}`);
+      }
+      done.replaceChildren(...(step === 4 ? [
+        h("p", { class: "try-msg good" }, "Done. That's the whole trick, and it works the same for everyone in your group."),
+        h("a", { class: "btn btn-primary btn-sm", href: "#/new" }, "Start the tool for real"),
+      ] : []));
+      msg.hidden = step === 4;
+    }
+    async function tapBox(which) {
+      if (which === "reg" && step === 0) {
+        await copyText(P.reg);
+        step = 1;
+        setMsg("Great, you just copied the whole number in an instant. Now tap the Registration no. box below to paste it.", true);
+      } else if (which === "pc" && step === 2) {
+        await copyText(P.postcode);
+        step = 3;
+        setMsg("Copied the postcode in an instant too. Tap the Postcode box below to paste it.", true);
+      } else if (step === 1 || step === 3) {
+        setMsg("Now tap the highlighted box below to paste it.");
+      } else if (step === 2) {
+        setMsg("Next, tap the postcode to copy it.");
+      }
+      draw();
+    }
+    function tapField(which) {
+      if (which === "reg" && step === 1) { step = 2; setMsg("Pasted. Now tap the postcode above to copy it."); }
+      else if (which === "pc" && step === 3) { step = 4; }
+      else if (step === 0 || step === 2) setMsg("Copy it first: tap the highlighted box above.");
+      draw();
+    }
+    regField.addEventListener("click", () => tapField("reg"));
+    pcField.addEventListener("click", () => tapField("pc"));
+    const reset = h("button", { type: "button", class: "textbtn", onclick: () => { step = 0; setMsg("Tap the reg number to copy it. Example data."); draw(); } }, "Reset");
+    setMsg("Tap the reg number to copy it. Example data.");
+    draw();
+    return h("section", { class: "card", "aria-label": "Try it" },
+      h("div", { class: "card-head" }, h("span", { class: "card-title" }, "Try it"), reset),
+      h("div", { class: "copy-grid" }, regBox, pcBox),
+      h("div", { class: "mock" },
+        h("div", { class: "mock-cap" }, "Ticket site form"),
+        h("div", { class: "mock-row" }, h("span", null, "Registration no."), regField),
+        h("div", { class: "mock-row" }, h("span", null, "Postcode"), pcField)),
+      msg, done);
   }
 
+  // ---------- home ----------
+  const FAQ = [
+    ["Does it get me tickets faster?", "It saves you the scramble for numbers once you're through. The queue is still the queue."],
+    ["Where are our numbers kept?", "In this browser, on this phone. There's no account and no server copy, so clearing your browser clears them."],
+    ["Is this the official site?", "No. It's a free helper. You still buy tickets on the official ticket site."],
+    ["Who made this?", "A product manager who got fed up scrolling the group chat for six numbers every ticket day."],
+  ];
+  function faqList(items) {
+    return h("div", { class: "faq-list" }, items.map(([q, a]) =>
+      h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
+  }
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
-    const sha = deployedCommit();
-    const point = (ic, title, text, extra) => h("li", { class: "trust-point" },
-      h("span", { class: "trust-icon" }, icon(ic)),
-      h("div", null, h("strong", null, title), h("p", { class: "muted small" }, text, extra || null)));
-    const badge = (ic, label, href) => href
-      ? h("a", { class: "badge", href, rel: "noopener" }, icon(ic), label)
-      : h("span", { class: "badge" }, icon(ic), label);
-    return [
-      demoBanner(),
-      h("h1", null, "Glastonbury Registration Quick Copy"),
-      h("p", { class: "muted" }, "Your group's registration numbers and postcodes on one page. On ticket day, tap to copy each one straight into the ticket site."),
-      h("div", { class: "actions" },
-        h("a", { class: "btn primary block", href: "#/new" }, "Start")),
-      howtoDemo(),
-      h("p", { class: "small demo-link" }, h("a", { href: "demo.html" }, "Try the full demo")),
-      ids.length ? h("section", { class: "card" },
-        h("h2", null, "Your groups on this device"),
-        ids.map(id => h("a", { class: "saved-item", href: "#/p/" + id },
-          h("div", null,
-            h("strong", null, pageTitle(all[id].people)),
-            h("span", { class: "muted small" }, `${all[id].people.length} ${all[id].people.length === 1 ? "person" : "people"}`)),
-          h("span", { class: "btn sm" }, "Open")))) : null,
-      h("section", { class: "card trust" },
-        h("h2", null, "Private by design"),
-        h("ul", { class: "trust-points" },
-          point("device", "Stays on your device",
-            "Your group is saved in this browser only. No sign-up, no cloud storage, no database, and the site is blocked from connecting to any other server."),
-          point("code", "Open source and checked",
-            "Anyone can read the code. The live site is automatically compared with the published code, so what you see is what's on GitHub. ",
-            h("a", { href: SOURCE_REPO, rel: "noopener" }, "View the code"))),
-        h("div", { class: "badges", "aria-label": "Project facts" },
-          badge("scale", "MIT licence", `${SOURCE_REPO}/blob/main/LICENSE`),
-          badge("check", sha ? `Checked build · ${sha.slice(0, 7)}` : "Checked build", `${SOURCE_REPO}/actions/workflows/verify-live.yml`),
-          badge("cloudOff", "No cloud storage"))),
-      footer(!DEMO && ids.length ? h("p", null, h("button", { type: "button", onclick: wipeAll }, "Delete everything on this device")) : null, { home: true }),
-    ];
+    return h("div", { class: "view v-home" },
+      h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
+      h("h1", { class: "display" }, "Through the Glasto queue? Fill in your whole group in seconds."),
+      h("p", { class: "lead" }, "When you reach the booking page, the clock is running and you need up to six registration numbers and postcodes. Get them all on one page before ticket day, then tap to copy and paste each one. No hunting through the group chat."),
+      tryIt(),
+      h("a", { class: "btn btn-primary", href: "#/new" }, "Make your group's page"),
+      h("p", { class: "cta-note" }, "Takes a minute. No sign-up."),
+      ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
+        h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
+        h("span", { class: "open" }, "Open ›")))) : null,
+      h("section", { class: "section" },
+        h("h2", null, "How it works"),
+        h("ol", { class: "steps" },
+          [["Paste your group chat.", " Names, numbers and postcodes get sorted for you."],
+           ["Send everyone the link.", " It opens the same page on their phones."],
+           ["Tap, paste, next.", " Each box goes blue once it's used, so you know who's done."]]
+            .map(([b, rest], i) => h("li", null, h("span", { class: "num" }, String(i + 1)), h("span", null, h("strong", null, b), rest))))),
+      h("section", { class: "section" }, h("h2", null, "Questions"), faqList(FAQ)),
+      footer());
+  }
+  const firstNames = (people) => shareNames(people).filter(Boolean).join(", ");
+
+  // ---------- import parser ----------
+  // Runs locally on what's pasted; the raw text is never stored.
+  const STOPWORDS = new Set(["reg", "registration", "here", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey"]);
+  function parseImport(text) {
+    const people = [];
+    for (const rawLine of String(text).split(/\r?\n/)) {
+      if (people.length >= MAX_PEOPLE) break;
+      const line = rawLine.slice(0, 300);
+      const m = line.match(/\d[\d\s-]{6,20}\d/);
+      if (!m) continue;
+      const reg = digits(m[0]);
+      if (reg.length < 8 || reg.length > MAX_REG_DIGITS) continue;
+      let rest = line.slice(0, m.index) + " " + line.slice(m.index + m[0].length);
+      const pm = rest.match(/\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b/i);
+      const postcode = pm ? normPostcode(pm[1] + pm[2]) : "";
+      if (pm) rest = rest.slice(0, pm.index) + " " + rest.slice(pm.index + pm[0].length);
+      const word = (rest.match(/[\p{L}][\p{L}'’-]*/gu) || []).find(w => !STOPWORDS.has(w.toLowerCase()));
+      const name = word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : `Person ${people.length + 1}`;
+      people.push({ name: name.slice(0, 60), reg, postcode });
+    }
+    return people;
   }
 
-  function wipeAll() {
-    if (!confirm("Delete all your groups from this device?")) return;
-    try { localStorage.removeItem(KEY); } catch {}
-    toast("Everything deleted");
-    render();
+  // ---------- create (paste from chat) ----------
+  let pendingRows = null; // hand-off from the import screen to the manual form (memory only)
+  function viewCreate() {
+    let found = [];
+    const results = h("div", { class: "results", "aria-live": "polite" });
+    const submit = h("button", { type: "button", class: "btn btn-primary" });
+    const ta = h("textarea", { class: "import", rows: "6", placeholder: "e.g. Alex 1029384756 BS1 4DJ", spellcheck: "false", autocomplete: "off", maxlength: "6000" });
+    function draw() {
+      const head = found.length ? `Found ${found.length} ${found.length === 1 ? "person" : "people"}` : "No reg numbers found yet";
+      results.replaceChildren(...[
+        h("div", { class: "res-head" }, h("span", null, head), h("span", { class: "max" }, `${MAX_PEOPLE} max`)),
+        found.map(p => h("div", { class: "res-row" },
+          h("span", { class: "avatar", "aria-hidden": "true" }, p.name.charAt(0).toUpperCase()),
+          h("span", null, h("div", { class: "res-name" }, p.name),
+            h("div", { class: "res-sub" }, h("span", null, p.reg), h("span", null, p.postcode || "no postcode"))),
+          h("span", { class: "status " + (p.postcode ? "ready" : "missing") }, p.postcode ? "Ready" : "Add postcode"))),
+        h("button", { type: "button", class: "res-foot", onclick: () => { pendingRows = { rows: found.map(p => ({ ...p })), showErrors: false }; go("add"); } }, "+ Add someone by hand")].flat());
+      submit.textContent = found.length ? `Create group (${found.length} ${found.length === 1 ? "person" : "people"})` : "Create group";
+      submit.disabled = !found.length;
+    }
+    ta.addEventListener("input", () => { found = parseImport(ta.value); draw(); });
+    submit.addEventListener("click", () => {
+      if (!found.length) return;
+      if (found.some(p => !p.postcode)) {
+        pendingRows = { rows: found.map(p => ({ ...p })), showErrors: true };
+        go("add");
+        return;
+      }
+      const pid = savePage(null, found);
+      if (pid) { toast("Saved on this phone"); go("p/" + pid); }
+    });
+    draw();
+    return h("div", { class: "view v-create" },
+      back("#/", "Back"),
+      h("h1", null, "Who's in your group?"),
+      h("label", { class: "import-label" }, "Paste the messages from your group chat", ta),
+      h("p", { class: "help" }, "We pick out names, reg numbers and postcodes as you paste."),
+      results,
+      submit,
+      h("p", { class: "cta-note" }, "Saves on this phone. You can edit anything after."));
   }
 
-  function viewEditor(id, prefill) {
+  function savePage(id, people) {
+    const all = loadAll();
+    if (id && !all[id]) { toast("This group was deleted in another tab", true); go(""); return null; }
+    const pid = id || newId();
+    all[pid] = { created: id ? all[id].created : Date.now(), people: people.map(p => ({ name: p.name, reg: p.reg, postcode: p.postcode })) };
+    return saveAll(all) ? pid : null;
+  }
+
+  // ---------- edit / add by hand ----------
+  function viewEditor(id) {
     const all = loadAll();
     const existing = id ? all[id] : null;
     if (id && !existing) return viewMissing();
-    const src = existing || prefill || { people: [{ name: "", reg: "", postcode: "" }] };
-
-    const peopleWrap = h("div");
+    const handoff = !id && pendingRows ? pendingRows : null;
+    pendingRows = null;
+    const src = existing ? existing.people : handoff ? handoff.rows : [];
     const rows = [];
-    const addBtn = h("button", { type: "button", class: "btn block", onclick: () => { addRow({}); } }, "+ Add person");
+    const wrap = h("div", { class: "view v-edit" });
+    const list = h("div", { class: "section" });
+    const banner = h("div", { class: "banner-ok", role: "status", hidden: true });
+    const addBtn = h("button", { type: "button", class: "add-person", onclick: () => addRow({}) });
 
     function renumber() {
-      rows.forEach((r, i) => { r.numEl.textContent = `Person ${i + 1}`; });
+      rows.forEach((r, i) => { r.title.textContent = `Person ${i + 1}`; });
       addBtn.disabled = rows.length >= MAX_PEOPLE;
-      addBtn.textContent = rows.length >= MAX_PEOPLE ? "6 people max per booking" : "+ Add person";
+      addBtn.textContent = rows.length >= MAX_PEOPLE ? `${MAX_PEOPLE} people max per booking` : "+ Add person";
     }
     function addRow(p) {
       if (rows.length >= MAX_PEOPLE) return;
       const r = {
-        name: h("input", { type: "text", maxlength: "60", placeholder: "Name", value: p.name || "", autocomplete: "off" }),
-        reg: h("input", { type: "text", class: "mono", inputmode: "numeric", maxlength: "16", placeholder: "Registration no.", value: p.reg || "", autocomplete: "off" }),
-        postcode: h("input", { type: "text", class: "mono", maxlength: "12", placeholder: "Postcode", autocapitalize: "characters", value: p.postcode || "", autocomplete: "off" }),
-        numEl: h("span"),
-        errEl: h("div", { class: "err" }),
+        title: h("span"),
+        name: h("input", { class: "input", type: "text", maxlength: "60", placeholder: "First name is enough", value: p.name || "", autocomplete: "off" }),
+        reg: h("input", { class: "input mono", type: "text", inputmode: "numeric", maxlength: "16", placeholder: "Digits only", value: p.reg || "", autocomplete: "off" }),
+        postcode: h("input", { class: "input mono", type: "text", maxlength: "12", placeholder: "e.g. BS1 4DJ", autocapitalize: "characters", value: p.postcode || "", autocomplete: "off" }),
+        err: h("p", { class: "err", role: "alert" }),
       };
-      r.el = h("div", { class: "card" },
-        h("div", { class: "person-edit-head" }, r.numEl,
-          h("button", { type: "button", class: "linkish", onclick: () => {
-            rows.splice(rows.indexOf(r), 1); r.el.remove(); renumber();
-          } }, "Remove")),
-        h("div", { class: "person-edit" },
-          h("label", { class: "field full" }, h("span", null, "Name"), r.name),
-          h("label", { class: "field" }, h("span", null, "Registration number"), r.reg),
-          h("label", { class: "field" }, h("span", null, "Postcode"), r.postcode)),
-        r.errEl);
+      r.card = h("div", { class: "card ecard" },
+        h("div", { class: "ehead" }, r.title, h("button", { type: "button", class: "textbtn", onclick: () => { rows.splice(rows.indexOf(r), 1); r.card.remove(); renumber(); } }, "Remove")),
+        h("label", { class: "field" }, "Name", r.name),
+        h("div", { class: "egrid" }, h("label", { class: "field" }, "Reg number", r.reg), h("label", { class: "field" }, "Postcode", r.postcode)),
+        r.err);
       rows.push(r);
-      peopleWrap.append(r.el);
+      list.append(r.card);
       renumber();
     }
-    (src.people.length ? src.people : [{}]).forEach(addRow);
-
-    const formErr = h("div", { class: "err" });
-
-    function save() {
-      let ok = true;
-      formErr.textContent = "";
-      const people = [];
-      rows.forEach(r => {
-        r.errEl.textContent = "";
-        const name = r.name.value.trim(), reg = digits(r.reg.value), postcode = normPostcode(r.postcode.value);
-        if (!name && !reg && !postcode) return;
-        if (!reg) { r.errEl.textContent = "Add a registration number (digits only)."; ok = false; }
-        else if (reg.length > MAX_REG_DIGITS) { r.errEl.textContent = `Registration numbers are at most ${MAX_REG_DIGITS} digits.`; ok = false; }
-        if (!postcode) { r.errEl.textContent += " Add a postcode."; ok = false; }
-        people.push({ name: name || "Unnamed", reg, postcode });
-      });
-      if (!people.length) { formErr.textContent = "Add at least one person."; ok = false; }
-
-      if (!ok) { toast("Check the highlighted fields", true); return; }
-
-      const all2 = loadAll();
-      if (id && !all2[id]) {
-        // Deleted in another tab while this editor was open: don't bring it back
-        toast("This page was deleted in another tab", true);
-        go("");
-        return;
+    function validate(r) {
+      const name = r.name.value.trim(), reg = digits(r.reg.value), postcode = normPostcode(r.postcode.value);
+      const blank = !name && !reg && !postcode;
+      const msgs = [];
+      let regBad = false, pcBad = false;
+      if (!blank) {
+        if (!reg) { msgs.push("Add a reg number (digits only)."); regBad = true; }
+        else if (reg.length > MAX_REG_DIGITS) { msgs.push(`Reg numbers are at most ${MAX_REG_DIGITS} digits.`); regBad = true; }
+        if (!postcode) { msgs.push("Add a postcode."); pcBad = true; }
       }
-      const pid = id || newId();
-      all2[pid] = { created: existing ? existing.created : Date.now(), people };
-      if (!saveAll(all2)) return;
-      toast("Saved on this device");
-      go("p/" + pid);
+      r.err.textContent = msgs.join(" ");
+      r.reg.classList.toggle("bad", regBad);
+      r.postcode.classList.toggle("bad", pcBad);
+      r.card.classList.toggle("has-error", msgs.length > 0);
+      return { blank, ok: !msgs.length, person: { name: name || "Unnamed", reg, postcode } };
     }
+    (src.length ? src : [{}]).forEach(addRow);
+    if (handoff && handoff.showErrors) rows.forEach(validate);
 
-    return [
-      demoBanner(),
-      h("div", { class: "topbar" },
-        h("div", null, h("a", { class: "home-link", href: id ? "#/p/" + id : "#/" }, "‹ Back"), h("h1", null, id ? "Edit group" : "Create your group"))),
-      h("h2", { class: "people-heading" }, "People"),
-      peopleWrap,
-      addBtn,
-      formErr,
-      h("div", { class: "actions" }, h("button", { type: "button", class: "btn primary block", onclick: save }, id ? "Save changes" : "Create my group")),
-      footer(),
-    ];
+    const save = h("button", { type: "button", class: "btn btn-primary" }, id ? "Save changes" : "Create group");
+    save.addEventListener("click", () => {
+      const results = rows.map(validate);
+      const people = results.filter(x => !x.blank).map(x => x.person);
+      if (results.some(x => !x.ok)) { toast("Check the highlighted boxes", true); return; }
+      if (!people.length) { toast("Add at least one person", true); return; }
+      const pid = savePage(id, people);
+      if (!pid) return;
+      banner.textContent = "Saved on this phone ✓";
+      banner.hidden = false;
+      toast("Saved on this phone");
+      go("p/" + pid);
+    });
+    wrap.append(
+      back(id ? "#/p/" + id : "#/new", "Back"),
+      h("h1", null, id ? "Edit group" : "Add people"),
+      list, addBtn, banner, save);
+    return wrap;
+  }
+
+  // ---------- ticket day ----------
+  const usedKey = (id) => "tdqc:used:" + id;
+  function loadUsed(id) {
+    if (DEMO) return new Set();
+    try { const a = JSON.parse(sessionStorage.getItem(usedKey(id))); return new Set(Array.isArray(a) ? a.filter(x => /^[rp][0-5]$/.test(x)) : []); } catch { return new Set(); }
+  }
+  function saveUsed(id, set) {
+    if (DEMO) return;
+    try { sessionStorage.setItem(usedKey(id), JSON.stringify([...set])); } catch {}
+  }
+
+  // Keep-screen-on. The browser drops the lock when the tab is hidden, so re-request on return.
+  let wake = { on: false, sentinel: null, onVis: null };
+  async function wakeRequest() {
+    try { wake.sentinel = await navigator.wakeLock.request("screen"); return true; } catch { return false; }
+  }
+  function wakeStop() {
+    wake.on = false;
+    if (wake.sentinel) { try { wake.sentinel.release(); } catch {} wake.sentinel = null; }
+    if (wake.onVis) { document.removeEventListener("visibilitychange", wake.onVis); wake.onVis = null; }
   }
 
   function viewPage(id) {
     const all = loadAll();
     const page = all[id];
     if (!page) return viewMissing();
-    return renderCopyPage(page, {
-      id,
-      share: shareSection(page),
-      actions: [
-        h("a", { class: "btn sm", href: "#/edit/" + id }, "Edit"),
-        h("button", { type: "button", class: "btn sm danger", onclick: () => {
-          if (!confirm(`Delete "${pageTitle(page.people)}" from this device?`)) return;
-          const a = loadAll(); delete a[id]; saveAll(a); toast("Page deleted"); go("");
-        } }, "Delete"),
-      ],
-    });
-  }
+    const people = page.people;
+    const total = people.length * 2;
+    const used = loadUsed(id);
+    const failed = new Set();
+    const order = people.flatMap((_, i) => ["r" + i, "p" + i]);
+    const boxes = new Map();
+    const pstatus = [];
+    const names = page.people.map(p => p.name.trim() || "Unnamed");
 
-  // Opening a share link saves the page straight away (reusing an identical saved copy)
-  // and swaps the URL for the saved page, so the share code doesn't linger in history.
-  function viewShared(enc) {
-    const page = decodeShare(enc);
-    if (!page) return viewMissing("This share link looks broken. Ask whoever sent it for a new one.");
-    const all = loadAll();
-    const key = JSON.stringify(page.people);
-    let pid = Object.keys(all).find(id => JSON.stringify(all[id].people) === key);
-    if (!pid) {
-      pid = newId();
-      all[pid] = { created: Date.now(), people: page.people };
-      if (!saveAll(all)) return renderCopyPage(page, { actions: [] });
-      toast("Saved on this device");
+    const progressV = h("span", { class: "v" });
+    const fill = h("div", { class: "bar-fill" });
+    const progress = h("div", { class: "stat", role: "status", "aria-live": "polite" }, h("span", { class: "lbl" }, "Progress"), progressV, h("div", { class: "bar" }, fill));
+    const finish = h("div", { class: "card finish", hidden: true },
+      h("p", null, "That's ticket day: every box copied in a few taps. Ready to set up your own group?"),
+      h("a", { class: "btn btn-primary btn-sm", href: "./#/new" }, "Start the tool for real"));
+
+    function update() {
+      const next = order.find(k => !used.has(k));
+      for (const [k, b] of boxes) b.setState(used.has(k) ? "used" : failed.has(k) ? "fail" : k === next ? "next" : "idle");
+      people.forEach((_, i) => {
+        const n = (used.has("r" + i) ? 1 : 0) + (used.has("p" + i) ? 1 : 0);
+        pstatus[i].textContent = n === 2 ? "Done ✓" : n === 1 ? "1 of 2" : "";
+      });
+      const count = order.filter(k => used.has(k)).length;
+      progressV.textContent = count === total ? "All done ✓" : `${count} of ${total} copied`;
+      fill.style.width = `${Math.round((count / total) * 100)}%`;
+      finish.hidden = !(DEMO && count === total);
     }
-    location.replace("#/p/" + pid);
-    return [];
-  }
+    async function tap(k, value) {
+      const ok = await copyValue(value);
+      if (ok) { used.add(k); failed.delete(k); saveUsed(id, used); }
+      else failed.add(k);
+      update();
+    }
 
-  function renderCopyPage(page, opts) {
-    const list = page.people.map((p, i) => h("section", { class: "card person" },
-      h("div", { class: "name" }, h("span", { class: "num" }, String(i + 1)), h("span", null, p.name)),
-      h("div", { class: "row" },
-        copyButton("Reg number", p.reg, p.reg),
-        copyButton("Postcode", p.postcode, p.postcode))));
+    const cards = people.map((p, i) => {
+      const r = copyBox("Reg number", p.reg, () => tap("r" + i, p.reg));
+      const c = copyBox("Postcode", p.postcode, () => tap("p" + i, p.postcode));
+      boxes.set("r" + i, r); boxes.set("p" + i, c);
+      pstatus[i] = h("span", { class: "pstatus" });
+      return h("section", { class: "card person", "aria-label": names[i] },
+        h("div", { class: "person-head" }, h("span", { class: "name" }, names[i]), pstatus[i]),
+        h("div", { class: "copy-grid" }, r, c));
+    });
 
-    return [
-      demoBanner(),
-      h("div", { class: "topbar" },
-        h("div", null,
-          h("a", { class: "home-link", href: DEMO ? "./" : "#/" }, DEMO ? "‹ Make your own" : "‹ All groups"),
-          h("h1", null, pageTitle(page.people)),
-          h("p", { class: "muted small tap-hint" }, "Tap any box to copy it"))),
-      list,
-      opts.share || null,
-      h("div", { class: "actions" }, opts.actions),
-      footer(),
-    ];
+    // Keep screen on (hidden when the browser doesn't support it)
+    let wakeCard = null;
+    if ("wakeLock" in navigator) {
+      const v = h("span", { class: "v" }, "Off");
+      wakeCard = h("button", { type: "button", class: "stat", role: "switch", "aria-checked": "false" },
+        h("span", { class: "lbl" }, "Keep screen on"),
+        h("span", { class: "switch-row" }, v, h("span", { class: "switch", "aria-hidden": "true" }, h("span", { class: "knob" }))));
+      const set = (on) => { wake.on = on; wakeCard.setAttribute("aria-checked", String(on)); v.textContent = on ? "On" : "Off"; };
+      wakeCard.addEventListener("click", async () => {
+        if (wake.on) { wakeStop(); set(false); return; }
+        if (await wakeRequest()) {
+          set(true);
+          wake.onVis = async () => { if (wake.on && document.visibilityState === "visible" && !(wake.sentinel && !wake.sentinel.released)) await wakeRequest(); };
+          document.addEventListener("visibilitychange", wake.onVis);
+        } else {
+          set(false);
+          toast("Couldn't keep the screen on in this browser", true);
+        }
+      });
+    }
+
+    const clear = h("button", { type: "button", class: "linkbtn clear-ticks", onclick: () => { used.clear(); failed.clear(); saveUsed(id, used); update(); } }, "Clear ticks");
+    update();
+    return h("div", { class: "view v-day" },
+      DEMO ? h("div", { class: "demo-banner" }, "Demo with made-up people. Nothing is saved.") : null,
+      back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
+      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a box, then paste it into the ticket site.")),
+      h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
+      cards,
+      finish,
+      clear,
+      shareCard(page),
+      DEMO ? null : h("div", { class: "bottom-row" },
+        h("span", null, "Saved on this phone"),
+        h("span", { class: "acts" },
+          h("a", { class: "linkbtn", href: "#/edit/" + id }, "Edit"),
+          h("button", { type: "button", class: "linkbtn danger", onclick: () => {
+            if (!confirm(`Delete ${firstNames(people)} from this phone?`)) return;
+            const a = loadAll(); delete a[id]; saveAll(a);
+            try { sessionStorage.removeItem(usedKey(id)); } catch {}
+            toast("Group deleted"); go("");
+          } }, "Delete"))));
   }
 
   function shareUrl(page) {
@@ -569,53 +679,123 @@
     const path = location.pathname.replace(/demo\.html$/, "");
     return `${location.origin}${path}#/s/${encodeShare(page)}`;
   }
-
-  function shareSection(page) {
+  function shareCard(page) {
     const url = shareUrl(page);
-    const copyBtn = h("button", { type: "button", class: "btn primary block" }, "Copy link");
-    copyBtn.addEventListener("click", async () => {
+    const canShare = typeof navigator.share === "function";
+    const label = canShare ? "Share link" : "Copy link";
+    const btn = h("button", { type: "button", class: "btn btn-primary" }, label);
+    btn.addEventListener("click", async () => {
+      if (canShare) {
+        try { await navigator.share({ title: "Glasto Quick Copy", text: `Our group: ${firstNames(page.people)}`, url }); return; }
+        catch (e) { if (e && e.name === "AbortError") return; }
+      }
       if (await copyText(url)) {
-        copyBtn.textContent = "Copied ✓";
-        toast("Link copied");
-        setTimeout(() => { copyBtn.textContent = "Copy link"; }, 1500);
-      } else toast("Couldn't copy. Press and hold the link to select it", true);
+        btn.textContent = "Link copied ✓";
+        setTimeout(() => { btn.textContent = label; }, 1500);
+      } else toast("Couldn't copy the link", true);
     });
+    const decoded = decodeShare(encodeShare(page));
+    const rows = decoded ? decoded.people : [];
     return h("section", { class: "card share" },
-      h("h2", null, "Share this group with your friends"),
-      h("p", { class: "muted small" }, "Send this link to your friends. It opens this group on their phone, ready to use. Anyone with the link can see these first names, numbers and postcodes."),
-      h("div", { class: "share-url mono" }, url),
-      copyBtn);
+      h("h2", null, "Send to your group"),
+      h("p", null, "Opens this same page on their phones, ready to tap."),
+      btn,
+      h("details", { class: "inlink" },
+        h("summary", null, "What's in the link?"),
+        h("div", { class: "link-box" },
+          rows.map(p => h("div", { class: "lrow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
+          h("p", { class: "link-foot" }, "Just these. First names only. Anyone with the link can read them, so keep it to the group."))));
   }
 
-  function viewMissing(msg) {
-    return [
-      demoBanner(),
-      h("h1", null, "Page not found"),
-      h("p", { class: "muted" }, msg || "This page isn't saved in this browser. Pages only live on the device that made them, so open it there, or ask for a share link."),
-      h("div", { class: "actions" }, h("a", { class: "btn primary", href: "#/" }, "Go home")),
-    ];
+  // ---------- share link opened ----------
+  function viewShared(enc) {
+    const page = decodeShare(enc);
+    if (!page) return viewBroken();
+    const all = loadAll();
+    const key = JSON.stringify(page.people);
+    const existing = Object.keys(all).find(id => JSON.stringify(all[id].people) === key);
+    if (existing) { location.replace("#/p/" + existing); return null; }
+    const save = h("button", { type: "button", class: "btn btn-primary" }, "Save to this phone");
+    save.addEventListener("click", () => {
+      const a = loadAll();
+      const again = Object.keys(a).find(id => JSON.stringify(a[id].people) === key);
+      const pid = again || newId();
+      if (!again) { a[pid] = { created: Date.now(), people: page.people }; if (!saveAll(a)) return; }
+      toast("Saved on this phone");
+      location.replace("#/p/" + pid);
+    });
+    const notNow = h("button", { type: "button", class: "btn btn-secondary", onclick: () => location.replace("#/") }, "Not now");
+    return h("div", { class: "view v-inter" },
+      h("h1", null, "Your group's ready"),
+      h("p", { class: "lead" }, "Check everyone's here, then save it for ticket day."),
+      h("div", { class: "card ilist" },
+        page.people.map(p => h("div", { class: "irow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
+        h("p", { class: "note" }, "From the link you were sent")),
+      h("div", { class: "btn-row" }, save, notNow));
+  }
+
+  function viewMissing() {
+    return h("div", { class: "view v-inter" },
+      h("h1", { class: "small" }, "This group isn't on this phone"),
+      h("p", { class: "lead" }, "Groups are saved on the phone that made them. Open it there, or ask whoever made it to send you the link."),
+      h("a", { class: "btn btn-secondary", href: "#/" }, "Back to home"));
+  }
+  function viewBroken() {
+    return h("div", { class: "view v-inter" },
+      h("h1", { class: "small" }, "This link doesn't open"),
+      h("p", { class: "lead" }, "It may have been cut off when it was copied. Ask whoever sent it for a fresh one."),
+      h("a", { class: "btn btn-secondary", href: "#/" }, "Back to home"));
+  }
+
+  // ---------- how your data is handled ----------
+  function viewData() {
+    const sha = deployedCommit();
+    const hasData = !DEMO && Object.keys(loadAll()).length > 0;
+    const block = (title, ...body) => h("section", { class: "dblock" }, h("h2", { class: "plain" }, title), h("p", null, ...body));
+    return h("div", { class: "view v-data" },
+      back("#/", "Home"),
+      h("h1", null, "How your data is handled"),
+      block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
+      block("What the site can connect to", "Nothing. The page's security policy blocks every network request (", h("code", null, "connect-src 'none'"), ")."),
+      block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out. It's encoded, not encrypted, so anyone with the link can read it."),
+      block("Your clipboard", "Some keyboards, like Gboard, keep a clipboard history. You can clear it from the keyboard's clipboard menu after ticket day."),
+      h("section", { class: "card check" },
+        h("h2", { class: "plain" }, "Check it yourself"),
+        h("p", null, "The code is public. Every 6 hours a public check compares the live site with it, file by file."),
+        sha ? h("p", null, h("span", { class: "dot big", "aria-hidden": "true" }), "Running version ", ext(`${SOURCE_REPO}/commit/${sha}`, sha.slice(0, 7), "mono")) : null,
+        h("div", { class: "links" }, ext(SOURCE_REPO, "View the code"), ext(`${SOURCE_REPO}/actions/workflows/verify-live.yml`, "See every check"))),
+      hasData ? h("button", { type: "button", class: "btn btn-danger", onclick: () => {
+        if (!confirm("Delete all your groups from this phone?")) return;
+        try { localStorage.removeItem(KEY); } catch {}
+        toast("Everything deleted");
+        render();
+      } }, "Delete everything on this phone") : null);
   }
 
   // ---------- router ----------
   function render() {
-    stopHowto();
+    wakeStop();
     let route = location.hash.replace(/^#\/?/, "");
     if (DEMO && !route) route = "p/demo";
     const [view, ...rest] = route.split("/");
     const arg = rest.join("/");
-    let nodes;
-    if (view === "new") nodes = viewEditor(null);
-    else if (view === "edit") nodes = viewEditor(arg);
-    else if (view === "p") nodes = viewPage(arg);
-    else if (view === "s") nodes = viewShared(arg);
-    else nodes = viewHome();
-    app.replaceChildren(...[nodes].flat(Infinity).filter(Boolean));
+    let node;
+    if (view === "new") node = viewCreate();
+    else if (view === "add") node = viewEditor(null);
+    else if (view === "edit") node = viewEditor(arg);
+    else if (view === "p") node = viewPage(arg);
+    else if (view === "s") node = viewShared(arg);
+    else if (view === "data") node = viewData();
+    else node = viewHome();
+    if (!node) return; // the view redirected
+    app.replaceChildren(node);
+    document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : "Glasto Quick Copy";
     window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", render);
-  // Keep other open tabs in sync, but never wipe an editor someone is typing in
+  // Keep other open tabs in sync, but never wipe a form someone is typing in
   window.addEventListener("storage", (e) => {
-    if (e.key === KEY && !/^#\/(new|edit\/)/.test(location.hash)) render();
+    if (e.key === KEY && !/^#\/(new|add|edit\/)/.test(location.hash)) render();
   });
   render();
 })();
