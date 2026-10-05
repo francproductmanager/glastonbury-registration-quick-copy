@@ -1,5 +1,8 @@
 [build]
   publish = "."
+  # Stamp the deployed commit into the pages so the footer can show it.
+  # This is the only change made at deploy time; everything else is served exactly as in the repo.
+  command = "sed -i \"s/__COMMIT_REF__/${COMMIT_REF:-unknown}/\" index.html demo.html"
 
 [[headers]]
   for = "/*"
