@@ -71,23 +71,23 @@ ol.steps li { margin-bottom: 6px; }
 }
 .row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; }
 .row .wide { grid-column: 1 / -1; }
-button.copy {
+.copy {
   text-align: left; cursor: pointer; font: inherit; color: var(--ink);
   background: var(--accent-soft); border: 2px solid transparent; border-radius: 12px;
   padding: 10px 12px; min-height: 64px; transition: transform .08s, background .15s, border-color .15s;
 }
-button.copy:active { transform: scale(0.97); }
-button.copy .label {
+.copy:active { transform: scale(0.97); }
+.copy .label {
   display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
   text-transform: uppercase; color: var(--muted);
 }
-button.copy .value {
+.copy .value {
   display: block; font: 700 19px/1.25 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   letter-spacing: .02em; word-break: break-all;
 }
-button.copy.used { background: var(--ok-soft); }
-button.copy.used .label::after { content: " ✓"; color: var(--ok); }
-button.copy.flash { border-color: var(--ok); }
+.copy.used { background: var(--ok-soft); }
+.copy.used .label::after { content: " ✓"; color: var(--ok); }
+.copy.flash { border-color: var(--ok); }
 .section-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 2px 8px; }
 .section-head .name { margin: 0; }
 .linkish { background: none; border: 0; color: var(--accent); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px; }
@@ -139,5 +139,40 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 }
 .badge .icon { width: 15px; height: 15px; color: var(--ok); }
 a.badge:hover { border-color: var(--accent); }
+/* home: animated how-it-works */
+.howto { margin: 4px 0 4px; }
+.howto figcaption { text-align: center; margin-top: 8px; }
+.hd-stage { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+.hd-panel { position: relative; border-radius: 12px; padding: 10px; background: var(--bg); }
+.hd-panel-title { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.hd-person { display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 6px; }
+.hd-copy { min-height: 54px; padding: 8px 10px; cursor: default; position: relative; }
+.hd-copy .value { font-size: 16px; }
+.hd-arrow { text-align: center; color: var(--muted); font-size: 18px; line-height: 1; margin: 6px 0; }
+.hd-ticket { background: #fff; color: #333; border: 1px solid #ddd; }
+.hd-ticket .hd-panel-title { color: #777; }
+.hd-section { font-size: 12px; text-transform: uppercase; color: #444; border-bottom: 2px solid #b8325a; padding-bottom: 4px; margin-bottom: 8px; }
+.hd-field { position: relative; display: grid; grid-template-columns: 9.5em 1fr; align-items: center; gap: 8px; margin-bottom: 8px; }
+.hd-label { font-size: 11.5px; font-weight: 700; color: #333; }
+.hd-input {
+  height: 32px; border: 1px solid #ccc; border-radius: 3px; background: #f6f6f6; padding: 0 8px;
+  display: flex; align-items: center; font: 600 14px ui-monospace, Menlo, Consolas, monospace; color: #222; transition: border-color .15s, box-shadow .15s;
+}
+.hd-focus .hd-input { border-color: #1b9e9a; box-shadow: 0 0 0 3px rgba(27,158,154,.2); background: #fff; }
+.hd-toast {
+  position: absolute; left: 50%; bottom: -12px; transform: translate(-50%, 4px); opacity: 0; white-space: nowrap;
+  background: var(--ok); color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; transition: opacity .2s, transform .2s; z-index: 2;
+}
+.hd-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.hd-done { display: block; text-align: center; font-size: 12.5px; font-weight: 700; color: #1f9d55; opacity: 0; transition: opacity .3s; }
+.hd-done.show { opacity: 1; }
+/* tap ripple */
+.hd-tap::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+  background: rgba(123, 63, 228, .35); pointer-events: none; animation: hd-ripple .6s ease-out forwards;
+}
+.hd-field.hd-tap::after { left: auto; right: 20%; }
+@keyframes hd-ripple { from { transform: scale(.4); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hd-tap::after { animation: none; } .hd-toast, .hd-done, .hd-input { transition: none; } }
 footer { color: var(--muted); font-size: 12.5px; text-align: center; margin-top: 18px; }
 footer button { background: none; border: 0; color: var(--danger); font: inherit; text-decoration: underline; cursor: pointer; }
