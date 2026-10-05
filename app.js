@@ -282,7 +282,6 @@
     device: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
     code: "M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14",
     cloudOff: "M3 3l18 18M8 7.5A5 5 0 0 1 17 9a4 4 0 0 1 3 6.5M17 18H7a4 4 0 0 1-1.5-7.7",
-    eyeOff: "M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4 9.5 6a12 12 0 0 1-2.4 3.3M6.5 7.6C4.5 9 3.1 10.8 2.5 12c1 2 4.5 6 9.5 6 1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2",
     check: "M5 12l4 4 10-10",
     scale: "M12 3v18M7 21h10M5 7h14M5 7l-3 6a3 3 0 0 0 6 0L5 7zM19 7l-3 6a3 3 0 0 0 6 0l-3-6z",
   };
@@ -304,7 +303,7 @@
   }
   function footer(extra, { home = false } = {}) {
     return h("footer", null,
-      home ? null : h("p", null, "Your data stays in this browser. No accounts, no server, no tracking."),
+      home ? null : h("p", null, "Your data stays in this browser. No accounts, no server."),
       sourceLine(),
       h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."),
       extra || null);
@@ -404,15 +403,14 @@
         h("h2", null, "Private by design"),
         h("ul", { class: "trust-points" },
           point("device", "Stays on your device",
-            "Your group is saved in this browser only. No sign-up, no cloud storage, no database, and the site is blocked from connecting to any other server. No analytics, ads or trackers."),
+            "Your group is saved in this browser only. No sign-up, no cloud storage, no database, and the site is blocked from connecting to any other server."),
           point("code", "Open source and checked",
             "Anyone can read the code. The live site is automatically compared with the published code, so what you see is what's on GitHub. ",
             h("a", { href: SOURCE_REPO, rel: "noopener" }, "View the code"))),
         h("div", { class: "badges", "aria-label": "Project facts" },
           badge("scale", "MIT licence", `${SOURCE_REPO}/blob/main/LICENSE`),
           badge("check", sha ? `Checked build · ${sha.slice(0, 7)}` : "Checked build", `${SOURCE_REPO}/actions/workflows/verify-live.yml`),
-          badge("cloudOff", "No cloud storage"),
-          badge("eyeOff", "No tracking or cookies"))),
+          badge("cloudOff", "No cloud storage"))),
       footer(!DEMO && ids.length ? h("p", null, h("button", { type: "button", onclick: wipeAll }, "Delete everything on this device")) : null, { home: true }),
     ];
   }
