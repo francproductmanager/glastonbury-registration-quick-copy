@@ -70,6 +70,7 @@ await test("CSP blocks network requests and remote scripts (header and <meta>)",
     assert(/connect-src 'none'/.test(src), "connect-src must be 'none'");
     assert(/script-src 'self'[;"]/.test(src), "script-src must be exactly 'self'");
     assert(/default-src 'none'/.test(src), "default-src must be 'none'");
+    assert(/style-src 'self'[;"]/.test(src), "style-src must be exactly 'self' (no inline styles)");
   }
   assert(/frame-ancestors 'none'/.test(toml), "frame-ancestors must be 'none'");
 });
@@ -243,6 +244,24 @@ await test("The deploy-time stamp only touches the commit placeholder", () => {
   const cmd = toml.match(/command = "(.*)"/)[1];
   assert(/^sed -i \\"s\/__COMMIT_REF__\//.test(cmd), `unexpected build command: ${cmd}`);
   for (const h of html) assert(h.split("__COMMIT_REF__").length === 2, "each page needs exactly one placeholder");
+});
+
+await test("No Content-Security-Policy violations on any screen", async () => {
+  const ctx = await browser.newContext(CLIP); const p = await page(ctx); const violations = [];
+  p.on("console", m => { if (/Content Security Policy/i.test(m.text())) violations.push(m.text().slice(0, 160)); });
+  await p.goto(B); await p.waitForTimeout(5500);  // home, including a full animation cycle
+  await p.click(".actions a"); await p.fill('input[placeholder="Name"]', "Ann Lee");
+  await p.fill('input[placeholder="Registration no."]', "1234567890"); await p.fill('input[placeholder="Postcode"]', "SW1A 1AA");
+  await p.click("text=+ Add person"); await p.locator('input[placeholder="Name"]').nth(1).fill("Bob");  // name but no number
+  await p.click('button:has-text("Create my group")'); await p.waitForSelector(".err:not(:empty)");          // validation error shown
+  await p.locator("text=Remove").nth(1).click(); await p.click('button:has-text("Create my group")'); await p.waitForSelector("text=Tap any box");
+  await p.locator("button.copy").first().click(); await p.click("text=Copy link"); const link = await clip(p);
+  await p.goto(link); await p.waitForTimeout(200);
+  await p.goto(B + "#/s/broken"); await p.waitForTimeout(100);
+  await p.goto(B + "demo.html"); await p.waitForTimeout(300);
+  assert(!violations.length, violations[0]);
+  assert(!p.errors.length, p.errors[0]);
+  await ctx.close();
 });
 
 // ---------- robustness ----------
