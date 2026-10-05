@@ -13,7 +13,7 @@
 ## Checklist
 
 - [ ] `npm test` passes
-- [ ] No new network requests, external scripts, fonts or analytics
+- [ ] Tool: no new network requests, external scripts, fonts, ads or analytics
 - [ ] User data is rendered as text (no `innerHTML`)
 - [ ] Old share links still open (if the link format changed)
 - [ ] No real registration numbers or postcodes anywhere

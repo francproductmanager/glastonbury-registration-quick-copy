@@ -18,6 +18,7 @@ You'll get a reply as soon as possible. This is a volunteer project, so please a
 - Anything that lets data leave the browser (network requests, CSP bypasses)
 - Script injection (XSS), including via crafted share links
 - Ways for one person's saved pages to be read by someone else
+- Any way for ad code from the guides site (`site/`) to run on, or read data from, the tool's address
 
 ## What's out of scope
 

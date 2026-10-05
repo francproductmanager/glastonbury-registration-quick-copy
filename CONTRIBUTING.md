@@ -10,14 +10,19 @@ Thanks for wanting to help! This is a small, volunteer-run project, so please be
 
 ## Ground rules
 
-These keep the site safe for everyone who types their friends' details into it. Pull requests that break them won't be merged:
+These keep the tool safe for everyone who types their friends' details into it. Pull requests that break them won't be merged.
 
-1. **No network requests.** No analytics, trackers, fonts, CDNs, APIs or remote scripts. The Content Security Policy keeps `connect-src 'none'` and `script-src 'self'`.
+**The tool** (repo root: `index.html`, `demo.html`, `app.js`, `style.css`, `fonts/`):
+
+1. **No network requests and no ads.** No analytics, trackers, ad code, CDNs, APIs, remote fonts or remote scripts. The Content Security Policy keeps `connect-src 'none'`, `script-src 'self'` and `style-src 'self'`. Never use inline `style=""` attributes.
 2. **No server-side storage.** Data stays in the browser and in share links only.
 3. **No dependencies at runtime.** Plain HTML, CSS and JavaScript, no build step.
 4. **Render user data as text.** Use `textContent` and the `h()` helper; never `innerHTML`, `eval` or `new Function`.
 5. **Keep old share links working.** If you change the link format, add a new version byte and keep decoding the old ones.
 6. **Never commit real registration numbers or postcodes**, not even in tests. Use made-up data.
+7. **No em dashes, en dashes or middle dots** in anything we write. The tests check this.
+
+**The guides site** (`site-src/`, generated into `site/`) carries Google AdSense on its own address. Edit `site-src/content.mjs`, run `node site-src/build.mjs` and commit both. Keep facts sourced and dated, and never add ad code or links to it from the tool.
 
 The automated tests check several of these.
 
@@ -33,7 +38,7 @@ The automated tests check several of these.
    ```
 4. Open a pull request and fill in the template. Screenshots help for visual changes.
 
-Every pull request gets a Netlify preview link so changes can be tried on a phone before merging.
+Include screenshots for visual changes, since preview deploys are switched off for security.
 
 ## Code of conduct
 
