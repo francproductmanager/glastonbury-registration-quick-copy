@@ -269,9 +269,21 @@
   function demoBanner() {
     return DEMO ? h("div", { class: "banner" }, "DEMO — example data only. Nothing here is real and nothing is saved.") : null;
   }
+  // The deployed commit is stamped into <meta name="source-commit"> by Netlify (see netlify.toml),
+  // so anyone can see exactly which version of the public source code is running.
+  const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
+  function sourceLine() {
+    const meta = document.querySelector('meta[name="source-commit"]');
+    const sha = meta ? meta.content : "";
+    const stamped = /^[0-9a-f]{7,40}$/.test(sha);
+    return h("p", null,
+      "Open source: ", h("a", { href: SOURCE_REPO, rel: "noopener" }, "view the code on GitHub"),
+      stamped ? [" · running version ", h("a", { href: `${SOURCE_REPO}/commit/${sha}`, rel: "noopener", class: "mono" }, sha.slice(0, 7))] : null);
+  }
   function footer(extra) {
     return h("footer", null,
       h("p", null, "Your data stays in this browser. No accounts, no server, no tracking."),
+      sourceLine(),
       h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."),
       extra || null);
   }
