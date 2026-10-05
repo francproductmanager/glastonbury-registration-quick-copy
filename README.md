@@ -1,6 +1,6 @@
 # Glastonbury Registration Quick Copy
 
-[![Tests](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml/badge.svg)](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml) [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
+[![Tests](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml/badge.svg)](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/test.yml) [![Live site matches source](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/verify-live.yml/badge.svg)](https://github.com/francproductmanager/glastonbury-registration-quick-copy/actions/workflows/verify-live.yml) [![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
 
 **Use it now → https://glastoquickcopy.netlify.app/** · [See the demo](https://glastoquickcopy.netlify.app/demo.html)
 
@@ -21,6 +21,26 @@ A tiny web page for Glastonbury ticket day. Put your group's registration number
 - **Share links carry the data themselves.** The group's first names, registration numbers and postcodes are packed into the part of the link after `#`, which browsers never send to the server. Surnames are left out.
 - **Share links are encoded, not encrypted.** Anyone who has a link can read it, so only send it to your group, like you would the numbers themselves.
 
+## Is the live site really running this code?
+
+Yes, and you don't have to take my word for it:
+
+- **Automatic deploys only.** The live site is deployed by Netlify straight from the `main` branch of this repo. Changes reach `main` only through pull requests that pass the tests.
+- **The footer shows the running version.** Every page shows "running version `abc1234`", linking to that exact commit here on GitHub.
+- **A public check runs every 6 hours** and after every change. It downloads the live site and compares each file, byte for byte, with the repo, and checks the security headers. The result is the **"Live site matches source"** badge at the top of this page; click it to see every run.
+- **No build step.** The files in the repo are the files you get. The only thing changed at deploy time is the commit stamp in the footer (see `netlify.toml`).
+
+### Check it yourself
+
+```sh
+git clone https://github.com/francproductmanager/glastonbury-registration-quick-copy
+cd glastonbury-registration-quick-copy
+git checkout <version shown in the site's footer>
+bash scripts/verify-live.sh
+```
+
+Or skip trusting the hosted site entirely and [run your own copy](#running-it-locally). It's just a few static files.
+
 ## Project structure
 
 It's a plain static site: no framework, no build step, no dependencies at runtime.
@@ -33,6 +53,7 @@ It's a plain static site: no framework, no build step, no dependencies at runtim
 | `style.css` | Styles (light and dark mode) |
 | `netlify.toml` | Hosting config and security headers |
 | `tests/` | Automated browser tests |
+| `scripts/verify-live.sh` | Checks the live site matches the repo |
 
 ### Share link format
 
