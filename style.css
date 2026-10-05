@@ -112,6 +112,7 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   background: var(--ok); color: #fff; font-weight: 700; padding: 10px 18px; border-radius: 999px;
   box-shadow: 0 6px 20px rgba(0,0,0,.2); transition: opacity .15s, transform .15s; text-align: center;
 }
+.toast.bad { background: var(--danger); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .share { margin-top: 16px; }
 .share-url {
@@ -174,5 +175,9 @@ a.badge:hover { border-color: var(--accent); }
 .hd-field.hd-tap::after { left: auto; right: 20%; }
 @keyframes hd-ripple { from { transform: scale(.4); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .hd-tap::after { animation: none; } .hd-toast, .hd-done, .hd-input { transition: none; } }
+.demo-link { text-align: center; margin: -2px 0 14px; }
+.people-heading { margin: 4px 2px 8px; }
+.tap-hint { margin: 2px 0 0; }
+.offscreen { position: fixed; opacity: 0; pointer-events: none; }
 footer { color: var(--muted); font-size: 12.5px; text-align: center; margin-top: 18px; }
 footer button { background: none; border: 0; color: var(--danger); font: inherit; text-decoration: underline; cursor: pointer; }
