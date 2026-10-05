@@ -73,9 +73,10 @@ await test("CSP blocks network requests and remote scripts (header and <meta>)",
   }
   assert(/frame-ancestors 'none'/.test(toml), "frame-ancestors must be 'none'");
 });
-await test("No external URLs in the site files", () => {
+const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
+await test("No external URLs in the site files (except the link to this repo)", () => {
   for (const [name, src] of [["app.js", appSrc], ["index.html", html[0]], ["demo.html", html[1]]]) {
-    const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/"));
+    const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO);
     assert(!urls.length, `${name} references ${urls.join(", ")}`);
   }
 });
@@ -196,6 +197,28 @@ await test("Demo page loads example data and nothing is saved", async () => {
   assert((await p.textContent("h1")).startsWith("Glasto group, Alex"), "demo title");
   assert(await p.evaluate(() => localStorage.getItem("tdqc:pages:v1")) === null, "demo wrote to storage");
   await p.context().close();
+});
+
+await test("Footer links to the source code and shows the deployed commit", async () => {
+  // Unstamped (local copy): link to the repo, no version
+  const p = await page(await browser.newContext()); await p.goto(B);
+  const links = await p.locator("footer a").evaluateAll(as => as.map(a => [a.textContent, a.href]));
+  assert(links.some(([t, h]) => t === "view the code on GitHub" && h === SOURCE_REPO), JSON.stringify(links));
+  assert(!(await p.textContent("footer")).includes("running version"), "unstamped page should not show a version");
+  await p.context().close();
+  // Stamped the way Netlify does it at deploy time
+  const sha = "0123456789abcdef0123456789abcdef01234567";
+  const ctx = await browser.newContext();
+  await ctx.route("**/", async route => route.fulfill({ contentType: "text/html", body: readFileSync(join(ROOT, "index.html"), "utf8").replace("__COMMIT_REF__", sha) }));
+  const q = await page(ctx); await q.goto(B);
+  const v = await q.locator("footer a.mono").evaluate(a => [a.textContent, a.href]);
+  assert(v[0] === "0123456" && v[1] === `${SOURCE_REPO}/commit/${sha}`, JSON.stringify(v));
+  await ctx.close();
+});
+await test("The deploy-time stamp only touches the commit placeholder", () => {
+  const cmd = toml.match(/command = "(.*)"/)[1];
+  assert(/^sed -i \\"s\/__COMMIT_REF__\//.test(cmd), `unexpected build command: ${cmd}`);
+  for (const h of html) assert(h.split("__COMMIT_REF__").length === 2, "each page needs exactly one placeholder");
 });
 
 // ---------- robustness ----------
