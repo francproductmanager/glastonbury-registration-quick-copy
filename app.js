@@ -272,17 +272,40 @@
   // The deployed commit is stamped into <meta name="source-commit"> by Netlify (see netlify.toml),
   // so anyone can see exactly which version of the public source code is running.
   const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
-  function sourceLine() {
+  function deployedCommit() {
     const meta = document.querySelector('meta[name="source-commit"]');
     const sha = meta ? meta.content : "";
-    const stamped = /^[0-9a-f]{7,40}$/.test(sha);
+    return /^[0-9a-f]{7,40}$/.test(sha) ? sha : "";
+  }
+  // Simple line icons (24×24, stroke = currentColor) drawn inline, so no images are loaded
+  const ICONS = {
+    device: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
+    shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4",
+    code: "M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14",
+    cloudOff: "M3 3l18 18M8 7.5A5 5 0 0 1 17 9a4 4 0 0 1 3 6.5M17 18H7a4 4 0 0 1-1.5-7.7",
+    eyeOff: "M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4 9.5 6a12 12 0 0 1-2.4 3.3M6.5 7.6C4.5 9 3.1 10.8 2.5 12c1 2 4.5 6 9.5 6 1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2",
+    check: "M5 12l4 4 10-10",
+    scale: "M12 3v18M7 21h10M5 7h14M5 7l-3 6a3 3 0 0 0 6 0L5 7zM19 7l-3 6a3 3 0 0 0 6 0l-3-6z",
+  };
+  function icon(name) {
+    const NS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("class", "icon");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", ICONS[name]);
+    svg.append(path);
+    return svg;
+  }
+  function sourceLine() {
+    const sha = deployedCommit();
+    const stamped = !!sha;
     return h("p", null,
       "Open source: ", h("a", { href: SOURCE_REPO, rel: "noopener" }, "view the code on GitHub"),
       stamped ? [" · running version ", h("a", { href: `${SOURCE_REPO}/commit/${sha}`, rel: "noopener", class: "mono" }, sha.slice(0, 7))] : null);
   }
-  function footer(extra) {
+  function footer(extra, { home = false } = {}) {
     return h("footer", null,
-      h("p", null, "Your data stays in this browser. No accounts, no server, no tracking."),
+      home ? null : h("p", null, "Your data stays in this browser. No accounts, no server, no tracking."),
       sourceLine(),
       h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."),
       extra || null);
@@ -292,39 +315,48 @@
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
+    const sha = deployedCommit();
+    const point = (ic, title, text, extra) => h("li", { class: "trust-point" },
+      h("span", { class: "trust-icon" }, icon(ic)),
+      h("div", null, h("strong", null, title), h("p", { class: "muted small" }, text, extra || null)));
+    const badge = (ic, label, href) => href
+      ? h("a", { class: "badge", href, rel: "noopener" }, icon(ic), label)
+      : h("span", { class: "badge" }, icon(ic), label);
     return [
       demoBanner(),
       h("h1", null, "Glastonbury Registration Quick Copy"),
-      h("p", { class: "muted" }, "Put your whole group's registration numbers and postcodes on one page. On ticket day, tap a number to copy it, paste it into the ticket site, next. No more scrolling the group chat while the clock runs."),
+      h("p", { class: "muted" }, "Your group's registration numbers and postcodes on one page. On ticket day, tap to copy each one straight into the ticket site."),
       h("div", { class: "actions" },
-        h("a", { class: "btn primary block", href: "#/new" }, "Create my page"),
-        h("a", { class: "btn block", href: "demo.html" }, "See a demo")),
+        h("a", { class: "btn primary block", href: "#/new" }, "Create my group"),
+        h("a", { class: "btn block", href: "demo.html" }, "See the demo")),
       ids.length ? h("section", { class: "card" },
-        h("h2", null, "Your pages on this device"),
+        h("h2", null, "Your groups on this device"),
         ids.map(id => h("a", { class: "saved-item", href: "#/p/" + id },
           h("div", null,
             h("strong", null, pageTitle(all[id].people)),
             h("span", { class: "muted small" }, `${all[id].people.length} ${all[id].people.length === 1 ? "person" : "people"}`)),
           h("span", { class: "btn sm" }, "Open")))) : null,
-      h("section", { class: "card" },
-        h("h2", null, "How it works"),
-        h("ol", { class: "steps" },
-          h("li", null, "Add up to 6 people: name, registration number, postcode."),
-          h("li", null, "You get your own private page with one-tap copy buttons for everything."),
-          h("li", null, "Send your friends the share link. It opens the same page on their phone, ready to use."))),
-      h("section", { class: "card" },
+      h("section", { class: "card trust" },
         h("h2", null, "Private by design"),
-        h("ul", { class: "ticks" },
-          h("li", null, "Everything is stored only in this browser, on this device."),
-          h("li", null, "There's no server or database, and no accounts or analytics."),
-          h("li", null, "The site is locked so it can't send data anywhere: its security policy blocks every network request."),
-          h("li", null, "Delete everything any time with one tap."))),
-      footer(!DEMO && ids.length ? h("p", null, h("button", { type: "button", onclick: wipeAll }, "Delete everything on this device")) : null),
+        h("ul", { class: "trust-points" },
+          point("device", "Stays on your device",
+            "Your group is saved in this browser only. There's no sign-up, no cloud storage and no database, so there's nothing of yours on a server to leak."),
+          point("shield", "Can't send your data anywhere",
+            "The site's security policy blocks every connection to other servers. No analytics, ads or trackers."),
+          point("code", "Open source and checked",
+            "Anyone can read the code. The live site is automatically compared with the published code, so what you see is what's on GitHub. ",
+            h("a", { href: SOURCE_REPO, rel: "noopener" }, "View the code"))),
+        h("div", { class: "badges", "aria-label": "Project facts" },
+          badge("scale", "MIT licence", `${SOURCE_REPO}/blob/main/LICENSE`),
+          badge("check", sha ? `Checked build · ${sha.slice(0, 7)}` : "Checked build", `${SOURCE_REPO}/actions/workflows/verify-live.yml`),
+          badge("cloudOff", "No cloud storage"),
+          badge("eyeOff", "No tracking or cookies"))),
+      footer(!DEMO && ids.length ? h("p", null, h("button", { type: "button", onclick: wipeAll }, "Delete everything on this device")) : null, { home: true }),
     ];
   }
 
   function wipeAll() {
-    if (!confirm("Delete all your pages from this device?")) return;
+    if (!confirm("Delete all your groups from this device?")) return;
     try { localStorage.removeItem(KEY); } catch {}
     toast("Everything deleted");
     render();
@@ -406,12 +438,12 @@
     return [
       demoBanner(),
       h("div", { class: "topbar" },
-        h("div", null, h("a", { class: "home-link", href: id ? "#/p/" + id : "#/" }, "‹ Back"), h("h1", null, id ? "Edit page" : "Create your page"))),
+        h("div", null, h("a", { class: "home-link", href: id ? "#/p/" + id : "#/" }, "‹ Back"), h("h1", null, id ? "Edit group" : "Create your group"))),
       h("h2", { style: "margin:4px 2px 8px" }, "People"),
       peopleWrap,
       addBtn,
       formErr,
-      h("div", { class: "actions" }, h("button", { type: "button", class: "btn primary block", onclick: save }, id ? "Save changes" : "Create my page")),
+      h("div", { class: "actions" }, h("button", { type: "button", class: "btn primary block", onclick: save }, id ? "Save changes" : "Create my group")),
       footer(),
     ];
   }
@@ -462,7 +494,7 @@
       demoBanner(),
       h("div", { class: "topbar" },
         h("div", null,
-          h("a", { class: "home-link", href: DEMO ? "./" : "#/" }, DEMO ? "‹ Make your own" : "‹ All pages"),
+          h("a", { class: "home-link", href: DEMO ? "./" : "#/" }, DEMO ? "‹ Make your own" : "‹ All groups"),
           h("h1", null, pageTitle(page.people)),
           h("p", { class: "muted small", style: "margin:2px 0 0" }, "Tap any box to copy it"))),
       list,
@@ -490,7 +522,7 @@
     });
     return h("section", { class: "card share" },
       h("h2", null, "Share this group with your friends"),
-      h("p", { class: "muted small" }, "Send this link to your group. It opens this page on their phone, ready to use. Anyone with the link can see these first names, numbers and postcodes."),
+      h("p", { class: "muted small" }, "Send this link to your friends. It opens this group on their phone, ready to use. Anyone with the link can see these first names, numbers and postcodes."),
       h("div", { class: "share-url mono" }, url),
       copyBtn);
   }
