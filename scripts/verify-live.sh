@@ -7,7 +7,7 @@ set -euo pipefail
 SITE="${SITE:-https://glastoquickcopy.netlify.app}"
 EXPECT="$(git rev-parse HEAD)"
 TRIES="${TRIES:-1}"
-FILES=(index.html demo.html app.js style.css robots.txt)
+FILES=(index.html demo.html app.js style.css robots.txt fonts/newsreader-latin-500-normal.woff2 fonts/instrument-sans-latin-400-normal.woff2 fonts/instrument-sans-latin-500-normal.woff2 fonts/instrument-sans-latin-600-normal.woff2 fonts/ibm-plex-mono-latin-400-normal.woff2 fonts/ibm-plex-mono-latin-500-normal.woff2 fonts/ibm-plex-mono-latin-600-normal.woff2)
 tmp="$(mktemp -d)"
 
 # 1. Which commit is live? (stamped into <meta name="source-commit"> at deploy time)
