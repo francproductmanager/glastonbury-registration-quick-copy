@@ -150,7 +150,7 @@ console.log("\nShare links");
 console.log("\nUser flows");
 await test("Create a page, copy every value, share, open on another device", async () => {
   const ctx = await browser.newContext(CLIP); const p = await page(ctx);
-  await p.goto(B); await p.click("text=Create my group");
+  await p.goto(B); await p.click(".actions a");
   await p.fill('input[placeholder="Name"]', "Ann Lee");
   await p.fill('input[placeholder="Registration no."]', "12345 67890");
   await p.fill('input[placeholder="Postcode"]', "sw1a1aa");
@@ -202,10 +202,10 @@ await test("Demo page loads example data and nothing is saved", async () => {
 await test("Home page: main action, demo link and the privacy section", async () => {
   const p = await page(await browser.newContext()); await p.goto(B);
   const actions = await p.locator(".actions a").allTextContents();
-  assert(JSON.stringify(actions) === '["Create my group"]', JSON.stringify(actions));
+  assert(JSON.stringify(actions) === '["Start"]', JSON.stringify(actions));
   assert(await p.locator('a[href="demo.html"]').count() === 1, "link to the full demo missing");
   const text = await p.textContent(".trust");
-  for (const s of ["Stays on your device", "Can't send your data anywhere", "Open source and checked", "MIT licence", "No cloud storage"]) assert(text.includes(s), `missing "${s}"`);
+  for (const s of ["Stays on your device", "blocked from connecting", "Open source and checked", "MIT licence", "No cloud storage"]) assert(text.includes(s), `missing "${s}"`);
   const hrefs = await p.locator(".trust a").evaluateAll(as => as.map(a => a.href));
   assert(hrefs.every(h => h.startsWith(SOURCE_REPO)), `trust links must point at this repo: ${hrefs}`);
   assert(!p.errors.length, p.errors[0]);
