@@ -20,6 +20,7 @@ A tiny web page for Glastonbury ticket day. Put your group's registration number
 - **The site can't send your data anywhere.** Its Content Security Policy blocks every network request (`connect-src 'none'`).
 - **Share links carry the data themselves.** The group's first names, registration numbers and postcodes are packed into the part of the link after `#`, which browsers never send to the server. Surnames are left out.
 - **Share links are encoded, not encrypted.** Anyone who has a link can read it, so only send it to your group, like you would the numbers themselves.
+- **Your phone's clipboard may remember what you copy.** Some keyboards (for example Gboard on Android) keep a short clipboard history, so copied numbers can stay there for a while. You can clear it from the keyboard's clipboard menu after ticket day.
 
 ## Is the live site really running this code?
 
