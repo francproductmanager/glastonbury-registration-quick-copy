@@ -280,7 +280,6 @@
   // Simple line icons (24×24, stroke = currentColor) drawn inline, so no images are loaded
   const ICONS = {
     device: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
-    shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4",
     code: "M8 8l-4 4 4 4M16 8l4 4-4 4M14 5l-4 14",
     cloudOff: "M3 3l18 18M8 7.5A5 5 0 0 1 17 9a4 4 0 0 1 3 6.5M17 18H7a4 4 0 0 1-1.5-7.7",
     eyeOff: "M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4 9.5 6a12 12 0 0 1-2.4 3.3M6.5 7.6C4.5 9 3.1 10.8 2.5 12c1 2 4.5 6 9.5 6 1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2",
@@ -312,6 +311,70 @@
   }
 
   // ---------- views ----------
+  // ---------- animated "how it works" on the home page ----------
+  // Shows: tap a number here -> it's copied -> tap the field on the ticket site -> it's pasted.
+  // Uses made-up demo data and a generic form (no festival branding). Purely decorative:
+  // hidden from screen readers (the caption says the same thing) and static if the
+  // visitor prefers reduced motion.
+  let howtoTimers = [];
+  function stopHowto() { howtoTimers.forEach(clearTimeout); howtoTimers = []; }
+
+  function howtoDemo() {
+    const P = { name: "Alex", reg: "1029384756", postcode: "BS1 4DJ" };
+    const btn = (label, value) => h("div", { class: "copy hd-copy" }, h("span", { class: "label" }, label), h("span", { class: "value" }, value));
+    const field = (label) => h("div", { class: "hd-field" }, h("span", { class: "hd-label" }, label), h("span", { class: "hd-input" }));
+    const regBtn = btn("Reg number", P.reg), pcBtn = btn("Postcode", P.postcode);
+    const regField = field("Registration Number:"), pcField = field("Postcode:");
+    const toast = h("span", { class: "hd-toast" });
+    const done = h("span", { class: "hd-done" }, "✓ Pasted in 4 taps");
+
+    const root = h("figure", { class: "howto" },
+      h("div", { class: "hd-stage", "aria-hidden": "true" },
+        h("div", { class: "hd-panel" },
+          h("div", { class: "hd-panel-title" }, "This site"),
+          h("div", { class: "hd-person" }, h("span", { class: "num" }, "1"), P.name),
+          h("div", { class: "row" }, regBtn, pcBtn),
+          toast),
+        h("div", { class: "hd-arrow" }, "↓"),
+        h("div", { class: "hd-panel hd-ticket" },
+          h("div", { class: "hd-panel-title" }, "Ticket site"),
+          h("div", { class: "hd-section" }, "Your details"),
+          regField, pcField, done)),
+      h("figcaption", { class: "muted small" }, "Tap a number to copy it, then paste it into the ticket site. Example data."));
+
+    const reset = () => {
+      [regBtn, pcBtn].forEach(b => b.classList.remove("used", "hd-tap"));
+      [regField, pcField].forEach(f => { f.classList.remove("hd-focus", "hd-tap"); f.lastChild.textContent = ""; });
+      toast.classList.remove("show"); done.classList.remove("show");
+    };
+    const tap = (el) => { el.classList.remove("hd-tap"); void el.offsetWidth; el.classList.add("hd-tap"); };
+    const copy = (b, value) => { tap(b); b.classList.add("used"); toast.textContent = `Copied ${value}`; toast.classList.add("show"); };
+    const paste = (f, value) => { tap(f); toast.classList.remove("show"); [regField, pcField].forEach(x => x.classList.remove("hd-focus")); f.classList.add("hd-focus"); f.lastChild.textContent = value; };
+    const finalState = () => {
+      reset(); regBtn.classList.add("used"); pcBtn.classList.add("used");
+      regField.lastChild.textContent = P.reg; pcField.lastChild.textContent = P.postcode; done.classList.add("show");
+    };
+
+    let reduced = false;
+    try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch {}
+    if (reduced) { finalState(); return root; }
+
+    const steps = [
+      [700, () => copy(regBtn, P.reg)],
+      [1700, () => paste(regField, P.reg)],
+      [2900, () => copy(pcBtn, P.postcode)],
+      [3900, () => paste(pcField, P.postcode)],
+      [4700, () => { pcField.classList.remove("hd-focus"); done.classList.add("show"); }],
+      [7600, () => run()],
+    ];
+    const run = () => {
+      stopHowto(); reset();
+      howtoTimers = steps.map(([t, fn]) => setTimeout(fn, t));
+    };
+    setTimeout(run, 0);
+    return root;
+  }
+
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
@@ -327,8 +390,9 @@
       h("h1", null, "Glastonbury Registration Quick Copy"),
       h("p", { class: "muted" }, "Your group's registration numbers and postcodes on one page. On ticket day, tap to copy each one straight into the ticket site."),
       h("div", { class: "actions" },
-        h("a", { class: "btn primary block", href: "#/new" }, "Create my group"),
-        h("a", { class: "btn block", href: "demo.html" }, "See the demo")),
+        h("a", { class: "btn primary block", href: "#/new" }, "Start")),
+      howtoDemo(),
+      h("p", { class: "small", style: "text-align:center;margin:-2px 0 14px" }, h("a", { href: "demo.html" }, "Try the full demo")),
       ids.length ? h("section", { class: "card" },
         h("h2", null, "Your groups on this device"),
         ids.map(id => h("a", { class: "saved-item", href: "#/p/" + id },
@@ -340,9 +404,7 @@
         h("h2", null, "Private by design"),
         h("ul", { class: "trust-points" },
           point("device", "Stays on your device",
-            "Your group is saved in this browser only. There's no sign-up, no cloud storage and no database, so there's nothing of yours on a server to leak."),
-          point("shield", "Can't send your data anywhere",
-            "The site's security policy blocks every connection to other servers. No analytics, ads or trackers."),
+            "Your group is saved in this browser only. No sign-up, no cloud storage, no database, and the site is blocked from connecting to any other server. No analytics, ads or trackers."),
           point("code", "Open source and checked",
             "Anyone can read the code. The live site is automatically compared with the published code, so what you see is what's on GitHub. ",
             h("a", { href: SOURCE_REPO, rel: "noopener" }, "View the code"))),
@@ -538,6 +600,7 @@
 
   // ---------- router ----------
   function render() {
+    stopHowto();
     let route = location.hash.replace(/^#\/?/, "");
     if (DEMO && !route) route = "p/demo";
     const [view, ...rest] = route.split("/");
