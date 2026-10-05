@@ -16,7 +16,7 @@ A tiny web page for Glastonbury ticket day. Put your group's registration number
 
 ## Privacy
 
-- **Nothing is stored on a server.** Pages are saved in your browser's local storage, on your device only. There are no accounts, no database and no analytics.
+- **Nothing is stored on a server.** Pages are saved in your browser's local storage, on your device only. There are no accounts and no database.
 - **The site can't send your data anywhere.** Its Content Security Policy blocks every network request (`connect-src 'none'`).
 - **Share links carry the data themselves.** The group's first names, registration numbers and postcodes are packed into the part of the link after `#`, which browsers never send to the server. Surnames are left out.
 - **Share links are encoded, not encrypted.** Anyone who has a link can read it, so only send it to your group, like you would the numbers themselves.
