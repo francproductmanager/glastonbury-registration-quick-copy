@@ -150,7 +150,7 @@ console.log("\nShare links");
 console.log("\nUser flows");
 await test("Create a page, copy every value, share, open on another device", async () => {
   const ctx = await browser.newContext(CLIP); const p = await page(ctx);
-  await p.goto(B); await p.click("text=Create my group");
+  await p.goto(B); await p.click(".actions a");
   await p.fill('input[placeholder="Name"]', "Ann Lee");
   await p.fill('input[placeholder="Registration no."]', "12345 67890");
   await p.fill('input[placeholder="Postcode"]', "sw1a1aa");
@@ -199,16 +199,29 @@ await test("Demo page loads example data and nothing is saved", async () => {
   await p.context().close();
 });
 
-await test("Home page: two main actions and the privacy section", async () => {
+await test("Home page: main action, demo link and the privacy section", async () => {
   const p = await page(await browser.newContext()); await p.goto(B);
   const actions = await p.locator(".actions a").allTextContents();
-  assert(JSON.stringify(actions) === '["Create my group","See the demo"]', JSON.stringify(actions));
+  assert(JSON.stringify(actions) === '["Start"]', JSON.stringify(actions));
+  assert(await p.locator('a[href="demo.html"]').count() === 1, "link to the full demo missing");
   const text = await p.textContent(".trust");
-  for (const s of ["Stays on your device", "Can't send your data anywhere", "Open source and checked", "MIT licence", "No cloud storage"]) assert(text.includes(s), `missing "${s}"`);
+  for (const s of ["Stays on your device", "blocked from connecting", "Open source and checked", "MIT licence", "No cloud storage"]) assert(text.includes(s), `missing "${s}"`);
   const hrefs = await p.locator(".trust a").evaluateAll(as => as.map(a => a.href));
   assert(hrefs.every(h => h.startsWith(SOURCE_REPO)), `trust links must point at this repo: ${hrefs}`);
   assert(!p.errors.length, p.errors[0]);
   await p.context().close();
+});
+await test("Home animation copies and pastes the example, and stays still with reduced motion", async () => {
+  const p = await page(await browser.newContext()); await p.goto(B);
+  assert(await p.locator(".hd-stage").getAttribute("aria-hidden") === "true", "animation should be hidden from screen readers");
+  await p.waitForFunction(() => document.querySelectorAll(".hd-input")[1]?.textContent === "BS1 4DJ", null, { timeout: 7000 });
+  assert(await p.locator(".hd-input").first().textContent() === "1029384756", "reg number not pasted");
+  await p.goto(B + "#/new"); await p.goto(B + "#/");  // leaving and returning must not break or stack timers
+  assert(!p.errors.length, p.errors[0]);
+  await p.context().close();
+  const q = await page(await browser.newContext({ reducedMotion: "reduce" })); await q.goto(B); await q.waitForTimeout(100);
+  assert(JSON.stringify(await q.locator(".hd-input").allTextContents()) === '["1029384756","BS1 4DJ"]', "reduced motion should show the finished state");
+  await q.context().close();
 });
 await test("Footer links to the source code and shows the deployed commit", async () => {
   // Unstamped (local copy): link to the repo, no version
