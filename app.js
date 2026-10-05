@@ -224,7 +224,7 @@
   let toastTimer;
   function toast(msg, bad) {
     toastEl.textContent = msg;
-    toastEl.style.background = bad ? "var(--danger)" : "";
+    toastEl.classList.toggle("bad", !!bad);
     toastEl.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
@@ -234,7 +234,7 @@
     catch {
       const ta = h("textarea", { readonly: true });
       ta.value = text;
-      ta.style.position = "fixed"; ta.style.opacity = "0";
+      ta.className = "offscreen";
       document.body.append(ta);
       ta.select(); ta.setSelectionRange(0, text.length);
       let ok = false;
@@ -392,7 +392,7 @@
       h("div", { class: "actions" },
         h("a", { class: "btn primary block", href: "#/new" }, "Start")),
       howtoDemo(),
-      h("p", { class: "small", style: "text-align:center;margin:-2px 0 14px" }, h("a", { href: "demo.html" }, "Try the full demo")),
+      h("p", { class: "small demo-link" }, h("a", { href: "demo.html" }, "Try the full demo")),
       ids.length ? h("section", { class: "card" },
         h("h2", null, "Your groups on this device"),
         ids.map(id => h("a", { class: "saved-item", href: "#/p/" + id },
@@ -501,7 +501,7 @@
       demoBanner(),
       h("div", { class: "topbar" },
         h("div", null, h("a", { class: "home-link", href: id ? "#/p/" + id : "#/" }, "‹ Back"), h("h1", null, id ? "Edit group" : "Create your group"))),
-      h("h2", { style: "margin:4px 2px 8px" }, "People"),
+      h("h2", { class: "people-heading" }, "People"),
       peopleWrap,
       addBtn,
       formErr,
@@ -558,7 +558,7 @@
         h("div", null,
           h("a", { class: "home-link", href: DEMO ? "./" : "#/" }, DEMO ? "‹ Make your own" : "‹ All groups"),
           h("h1", null, pageTitle(page.people)),
-          h("p", { class: "muted small", style: "margin:2px 0 0" }, "Tap any box to copy it"))),
+          h("p", { class: "muted small tap-hint" }, "Tap any box to copy it"))),
       list,
       opts.share || null,
       h("div", { class: "actions" }, opts.actions),
