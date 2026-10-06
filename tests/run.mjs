@@ -435,9 +435,22 @@ await test("Try it on a phone: says press and hold, then Paste", async () => {
   const m = await p.textContent(".try-msg"); assert(m.includes("press and hold inside it, then tap Paste"), "touch instructions: " + m);
   await ctx.close();
 });
+await test("Try it: a failed copy says so and doesn't move on", async () => {
+  const p = await page(await context({ perms: [], init: () => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: () => Promise.reject(new Error("no")) } });
+    document.execCommand = () => false;
+  } }));
+  await p.goto(B);
+  await p.locator(".copy.hero").first().click();
+  await waitText(p, ".try-msg", "Couldn't copy. Tap to try again.");
+  assert(!(await p.locator(".copy.hero").first().evaluate(e => e.classList.contains("is-used"))), "not marked copied");
+  assert(!(await p.locator(".mock-field").first().evaluate(e => e.classList.contains("is-target"))), "paste box not highlighted");
+  noErrors(p); await p.context().close();
+});
 await test("Home: one main action, how it works, questions, footer with commit and data link", async () => {
   const p = await page(await context()); await p.goto(stamped.url);
-  eq(await p.locator(".v-home > a.btn-primary").textContent(), "Make your group's page", "CTA");
+  eq(await p.locator(".v-home > a.btn-primary").textContent(), "Set up your group", "CTA");
+  assert(await p.evaluate(() => { const a = document.querySelector(".v-home > a.btn-primary"), t = document.querySelector(".v-home .card[aria-label='Try it']"); return !!(a.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING); }), "main action before the practice demo");
   eq(await p.locator(".steps li").count(), 3, "steps");
   eq(await p.locator(".v-home > .section .faq").count(), 4, "faq");
   await p.locator(".faq summary").first().click(); assert(await p.locator(".faq").first().evaluate(d => d.open), "faq opens");
@@ -762,7 +775,7 @@ await test("Every slot gets a labelled AdSense unit, once, on every screen", asy
     const got = await p.locator(".ad-slot[data-filled]").evaluateAll(els => els.map(e => [e.dataset.slot, e.querySelector(".ad-label")?.textContent, e.querySelector("ins.adsbygoogle")?.dataset.adClient, e.querySelector("ins.adsbygoogle")?.dataset.adSlot, e.querySelectorAll("ins").length]));
     eq(got, names.map(n => [n, "Advertisement", "ca-pub-2229524942259780", "1234567890", 1]), r || "home");
   }
-  await p.goto(B); await p.click("text=Make your group's page"); await p.waitForSelector(".v-create");
+  await p.goto(B); await p.click("text=Set up your group"); await p.waitForSelector(".v-create");
   eq(await p.locator(".ad-slot[data-filled]").count(), 1, "filled after in-app navigation");
   assert(await p.evaluate(() => window.__pushes) >= 1, "AdSense asked to fill");
   await p.goto(B + "faq/"); await p.waitForTimeout(40);

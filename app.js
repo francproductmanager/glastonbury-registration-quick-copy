@@ -337,14 +337,17 @@
       msg.hidden = step === 4;
     }
     async function tapBox(which) {
+      // Only move on when the copy really worked; otherwise say so and stay on this step
       if (which === "reg" && step === 0) {
-        await copyText(P.reg);
-        step = 1;
-        setMsg(`Copied, the whole number in one tap. Now paste it into the Registration no. box below: ${howToPaste}.`, true);
+        if (await copyText(P.reg)) {
+          step = 1;
+          setMsg(`Copied, the whole number in one tap. Now paste it into the Registration no. box below: ${howToPaste}.`, true);
+        } else setMsg("Couldn't copy. Tap to try again.");
       } else if (which === "pc" && step === 2) {
-        await copyText(P.postcode);
-        step = 3;
-        setMsg(`Copied. Now paste it into the Postcode box: ${howToPaste}.`, true);
+        if (await copyText(P.postcode)) {
+          step = 3;
+          setMsg(`Copied. Now paste it into the Postcode box: ${howToPaste}.`, true);
+        } else setMsg("Couldn't copy. Tap to try again.");
       } else if (step === 1 || step === 3) {
         setMsg(`Now paste it into the highlighted box below: ${howToPaste}.`);
       } else if (step === 2) {
@@ -401,13 +404,13 @@
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
     return h("div", { class: "view v-home" },
       h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
-      h("h1", { class: "display" }, "Through the Glasto queue? Fill in your whole group in seconds."),
-      h("p", { class: "lead" }, "When you reach the booking page, the clock is running and you need up to six registration numbers and postcodes. Get them all on one page before ticket day, then tap to copy and paste each one. No hunting through the group chat."),
-      tryIt(),
-      h("a", { class: "btn btn-primary", href: "#/new" }, "Make your group's page"),
+      h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
+      h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."),
+      h("a", { class: "btn btn-primary", href: "#/new" }, "Set up your group"),
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
         h("span", { class: "open" }, "Open ›")))) : null,
+      tryIt(),
       h("section", { class: "section" },
         h("h2", null, "How it works"),
         h("ol", { class: "steps" },
