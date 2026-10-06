@@ -39,7 +39,20 @@
       ins.setAttribute("data-full-width-responsive", "true");
       el.append(label, ins);
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
+      watch(el, ins);
     }
+  }
+  // A slot only shows once Google has really put an ad in it. Until then (and if it never does:
+  // ad blocker, nothing to show, site awaiting approval) it collapses to zero height but keeps
+  // its width, so Google can still measure it and fill it later.
+  function watch(el, ins) {
+    const check = () => {
+      const filled = ins.getAttribute("data-ad-status") === "filled";
+      el.classList.toggle("is-live", filled);
+      el.classList.toggle("is-empty", !filled);
+    };
+    check();
+    if (typeof MutationObserver === "function") new MutationObserver(check).observe(ins, { attributes: true, attributeFilter: ["data-ad-status", "data-adsbygoogle-status"] });
   }
   window.GQCAds = { fill };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => fill());

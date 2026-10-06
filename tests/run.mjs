@@ -733,6 +733,20 @@ await test("An ad that doesn't load leaves no trace (ad blocker, nothing to show
   }
   noErrors(p); await p.context().close();
 });
+await test("An ad box Google sizes but never fills collapses; it shows once filled", async () => {
+  const p = await page(await adsContext()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
+  // what the screenshot showed: Google gives the box a height but no "filled" status
+  await p.evaluate(() => document.querySelectorAll("ins.adsbygoogle").forEach(i => { i.style.height = "400px"; i.setAttribute("data-adsbygoogle-status", "done"); }));
+  await p.waitForTimeout(30);
+  const gaps = await p.evaluate(() => { const c = [...document.querySelectorAll(".v-day > .person")].map(e => e.getBoundingClientRect()); return c.slice(1).map((r, i) => Math.round(r.top - c[i].bottom)); });
+  eq(gaps, [14, 14], "no gap from sized but empty boxes");
+  const w = await p.locator(".v-day > .ad-slot").first().evaluate(e => e.getBoundingClientRect().width);
+  assert(w > 300, "keeps its width so Google can still fill it");
+  await p.evaluate(() => { const i = document.querySelector("ins.adsbygoogle"); i.setAttribute("data-ad-status", "filled"); i.removeAttribute("data-adsbygoogle-status"); });
+  await p.waitForTimeout(30);
+  assert(await p.locator(".v-day > .ad-slot").first().evaluate(e => e.classList.contains("is-live") && e.getBoundingClientRect().height > 300), "appears once filled, in its panel");
+  noErrors(p); await p.context().close();
+});
 await test("Empty ad slots add no extra space between the cards on ticket day", async () => {
   const p = await page(await context()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
   eq(await p.locator(".v-day > .ad-slot[data-filled]").count(), 3, "slots are there, waiting");
