@@ -5,8 +5,8 @@
 //   npm test
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { readFileSync, readdirSync, statSync, existsSync, mkdtempSync, cpSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { readFileSync, readdirSync, statSync, existsSync, mkdtempSync, cpSync, writeFileSync } from "node:fs";
+import { execFile, execFileSync } from "node:child_process";
 import { extname, join, normalize, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -120,6 +120,20 @@ await test("No dangerous APIs in app.js", () => {
 });
 await test("The tool's address never serves the guides site or its sources", () => {
   for (const p of ["/site/*", "/site-src/*"]) assert(new RegExp(`from = "${p.replace(/[*/]/g, "\\$&")}"[\\s\\S]*?status = 404[\\s\\S]*?force = true`).test(toml), `${p} not blocked`);
+});
+await test("scripts/verify-live.sh passes against an honest deploy and catches a tampered one", async () => {
+  const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT }).toString().trim();
+  // Run the script asynchronously: the local servers live in this process and must keep answering
+  const run = (url) => new Promise(r => execFile("bash", ["scripts/verify-live.sh"], { cwd: ROOT, env: { ...process.env, SITE: url.replace(/\/$/, ""), TRIES: "1" }, timeout: 60000 }, (err) => r(err ? (err.code || 1) : 0)));
+  const honest = await serve(ROOT, { csp: CSP, stamp: head });
+  eq(await run(honest.url), 0, "honest deploy should pass");
+  honest.server.close();
+  const tmp = mkdtempSync(join(tmpdir(), "tamper-"));
+  cpSync(ROOT, tmp, { recursive: true, filter: s => !s.includes("node_modules") && !s.includes(".git") });
+  writeFileSync(join(tmp, "fonts", "ibm-plex-mono-latin-600-normal.woff2"), "tampered");
+  const bad = await serve(tmp, { csp: CSP, stamp: head });
+  assert((await run(bad.url)) !== 0, "a tampered font must fail the check");
+  bad.server.close();
 });
 await test("Deploy-time stamp only touches the commit placeholder", () => {
   const cmd = toml.match(/command = "(.*)"/)[1];
