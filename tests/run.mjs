@@ -722,6 +722,10 @@ await test("An ad that doesn't load leaves no trace (ad blocker, nothing to show
     eq(await p.locator(".ad-slot:visible, .ad-label:visible").count(), 0, `${r}: nothing visible`);
     const h = await p.locator(".ad-slot").evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
     assert(h.every(x => x === 0), `${r}: unfilled slots take no space (${h})`);
+    // Google marks an ad it couldn't fill and sometimes gives it a height: it must still vanish
+    await p.evaluate(() => document.querySelectorAll(".ad-slot").forEach(s => { s.setAttribute("data-filled", ""); const i = document.createElement("ins"); i.className = "adsbygoogle"; i.setAttribute("data-ad-status", "unfilled"); i.style.height = "280px"; s.append(i); }));
+    const h2 = await p.locator(".ad-slot").evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
+    assert(h2.every(x => x === 0), `${r}: unfilled ads with a height still take no space (${h2})`);
   }
   noErrors(p); await p.context().close();
 });
