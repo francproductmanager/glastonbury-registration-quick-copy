@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 permissions:
   contents: read
@@ -14,6 +15,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # full history, so the personal data check can read every new commit
+      # No real registration numbers or postcodes in files, new commits, or the PR's title and description
+      - name: Check for personal data
+        env:
+          BASE: ${{ github.base_ref }}
+          PR_TEXT: ${{ github.event.pull_request.title }} ${{ github.event.pull_request.body }}
+        run: |
+          if [ -n "$BASE" ]; then node scripts/check-personal-data.mjs --range "origin/$BASE..HEAD"; else node scripts/check-personal-data.mjs; fi
+          printf '%s' "$PR_TEXT" | node scripts/check-personal-data.mjs --stdin
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
