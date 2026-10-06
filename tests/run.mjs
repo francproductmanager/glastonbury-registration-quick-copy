@@ -726,7 +726,18 @@ await test("An ad that doesn't load leaves no trace (ad blocker, nothing to show
     await p.evaluate(() => document.querySelectorAll(".ad-slot").forEach(s => { s.setAttribute("data-filled", ""); const i = document.createElement("ins"); i.className = "adsbygoogle"; i.setAttribute("data-ad-status", "unfilled"); i.style.height = "280px"; s.append(i); }));
     const h2 = await p.locator(".ad-slot").evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
     assert(h2.every(x => x === 0), `${r}: unfilled ads with a height still take no space (${h2})`);
+    // Google finished without filling and without saying "unfilled" (as before site approval): still hidden
+    await p.evaluate(() => document.querySelectorAll(".ad-slot ins").forEach(i => { i.removeAttribute("data-ad-status"); i.setAttribute("data-adsbygoogle-status", "done"); }));
+    const h3 = await p.locator(".ad-slot").evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
+    assert(h3.every(x => x === 0), `${r}: finished-but-empty ads take no space (${h3})`);
   }
+  noErrors(p); await p.context().close();
+});
+await test("Empty ad slots add no extra space between the cards on ticket day", async () => {
+  const p = await page(await context()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
+  eq(await p.locator(".v-day > .ad-slot[data-filled]").count(), 3, "slots are there, waiting");
+  const gaps = await p.evaluate(() => { const c = [...document.querySelectorAll(".v-day > .person")].map(e => e.getBoundingClientRect()); return c.slice(1).map((r, i) => Math.round(r.top - c[i].bottom)); });
+  eq(gaps, [14, 14], "same 14px gap as with no ad slot at all");
   noErrors(p); await p.context().close();
 });
 await test("Every slot gets a labelled AdSense unit, once, on every screen", async () => {

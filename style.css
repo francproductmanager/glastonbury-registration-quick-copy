@@ -53,11 +53,11 @@ input::placeholder, textarea::placeholder { color: var(--placeholder); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* view rhythm */
-.view { display: flex; flex-direction: column; gap: 20px; }
-.view.v-create { gap: 16px; }
-.view.v-day, .view.v-edit { gap: 14px; }
-.view.v-data { gap: 18px; }
-.view.v-inter { gap: 14px; padding-top: 6px; }
+.view { display: flex; flex-direction: column; --gap: 20px; gap: var(--gap); }
+.view.v-create { --gap: 16px; }
+.view.v-day, .view.v-edit { --gap: 14px; }
+.view.v-data { --gap: 18px; }
+.view.v-inter { --gap: 14px; padding-top: 6px; }
 
 /* type */
 .wordmark { font: 500 17px var(--serif); color: var(--ink); text-decoration: none; }
@@ -169,6 +169,11 @@ footer a { color: var(--muted); }
 /* Google's recommended rule: an ad it couldn't fill (or one waiting for site approval) leaves no gap */
 .ad-slot ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .ad-slot:has(ins[data-ad-status="unfilled"]) { display: none; }
+/* Once Google has finished with a slot, hide it unless it really holds an ad (before the site is
+   approved Google can finish without saying "unfilled") */
+.ad-slot:has(ins[data-adsbygoogle-status="done"]:not([data-ad-status="filled"])) { display: none; }
+/* While waiting, an empty slot cancels the page's spacing so it adds no gap between items */
+.ad-slot:not(:has(ins[data-ad-status="filled"])) { margin-top: calc(-1 * var(--gap, 0px)); }
 .ad-label { display: none; margin: 0 0 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .ad-slot:has(ins[data-ad-status="filled"]) { margin: 26px 0; padding: 10px 12px 12px; background: var(--surface-sunk); border: 1px dashed var(--border-strong); border-radius: 12px; }
 .ad-slot:has(ins[data-ad-status="filled"]) > .ad-label { display: block; }
