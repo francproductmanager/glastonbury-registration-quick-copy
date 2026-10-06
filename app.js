@@ -915,6 +915,9 @@
   // ---------- router ----------
   function render() {
     wakeStop();
+    // Seasonal clearing runs on every screen, including expired and broken link screens that
+    // otherwise never read the saved groups (loadAll does the clearing)
+    loadAll();
     let route = location.hash.replace(/^#\/?/, "");
     if (DEMO && !route) route = "p/demo";
     const [view, ...rest] = route.split("/");
