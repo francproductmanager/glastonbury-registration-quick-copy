@@ -1,4 +1,4 @@
-// Content for the guides site. Plain data: build.mjs turns it into HTML.
+// Content for the guides, FAQ and info pages. Plain data: build.mjs turns it into HTML.
 // Inline markup: **bold** and [text](url). Keep facts sourced and dated.
 // House style: no em dashes, en dashes or middle dots.
 
@@ -6,10 +6,11 @@ export const SITE = {
   name: "Glasto Quick Copy",
   tagline: "Glastonbury ticket day guides and a free group copy tool",
   adsenseClient: "ca-pub-2229524942259780",
+  url: "https://glastobolt.co.uk", // the site's main address: canonical links and the sitemap use it
 };
 
-const UPDATED = "5 October 2026";
-const ISO = "2026-10-05";
+const UPDATED = "6 October 2026";
+const ISO = "2026-10-06";
 
 const OFFICIAL = {
   tickets: ["Glastonbury Festival: ticket information", "https://www.glastonburyfestivals.co.uk/information/tickets/"],
@@ -48,7 +49,7 @@ export const GUIDES = [
       "Use the official **registration lookup** on See Tickets. Enter the email address you registered with and you'll be sent your registration number again, along with the links to manage your details.",
       { h2: "Getting your group's numbers together" },
       "Ask everyone in your group to send you their registration number and registered postcode well before the sale. Check each one against the confirmation email if you can: a single wrong digit means that person won't be added to your booking.",
-      "Once you have them, you can put them all on one page with [Glasto Quick Copy](/start) and tap to copy each one on the day.",
+      "Once you have them, you can put them all on one page with [Glasto Quick Copy](/#/new) and tap to copy each one on the day.",
       { cta: "Put your group on one page" },
     ],
     sources: [OFFICIAL.tickets, OFFICIAL.register, OFFICIAL.lookup],
@@ -138,7 +139,7 @@ export const GUIDES = [
       { h2: "Groups bigger than six" },
       "Split into booking groups of up to six and give each group more than one person who'll try in the queue. Write down who covers whom. When a booking goes through, cross those people off straight away so nobody is booked twice and nobody is forgotten.",
       { h2: "Sharing the numbers safely" },
-      "Registration numbers and postcodes aren't passwords, but they are personal details. Share them only with your group, not in public posts. With [Glasto Quick Copy](/start) the lead booker can put everyone on one page and send the group a link that only contains first names, numbers and postcodes.",
+      "Registration numbers and postcodes aren't passwords, but they are personal details. Share them only with your group, not in public posts. With [Glasto Quick Copy](/#/new) the lead booker can put everyone on one page and send the group a link that only contains first names, numbers and postcodes.",
       { h2: "Paying each other back" },
       "Agree before the day how deposits and balances will be split. A short message in the group chat with the amounts and dates saves awkward conversations later.",
       { cta: "Make your group's page" },
@@ -199,7 +200,7 @@ export const GUIDES = [
       { h2: "3. A typo in a registration number" },
       "Typing ten digits under time pressure is easy to get wrong. Copy and paste instead, and double check the names that appear before paying.",
       { h2: "4. Hunting through the group chat" },
-      "Numbers scattered across weeks of messages are slow to find. Collect them in one place beforehand. [Glasto Quick Copy](/start) is built for exactly this.",
+      "Numbers scattered across weeks of messages are slow to find. Collect them in one place beforehand. [Glasto Quick Copy](/#/new) is built for exactly this.",
       { h2: "5. Two people booking the same friends" },
       "Agree who covers whom, and announce bookings the moment they're confirmed.",
       { h2: "6. Too many tabs" },
@@ -227,7 +228,7 @@ export const GUIDES = [
       { h2: "4. On ticket day" },
       "When you get through the queue, open your group. Tap a box to copy it, paste it into the booking form, and move on. The next box to copy is highlighted, a progress bar counts what's done, and you can turn on **Keep screen on** so your phone doesn't lock.",
       { h2: "Privacy" },
-      "The tool runs entirely in your browser. Your group is saved on your phone only and the tool's security policy stops it connecting to any server. The code is open source, and a public check compares the live tool with the published code every six hours.",
+      "The tool runs in your browser. Your group is saved on your phone only, and the tool's code never sends it anywhere. The site is free because it shows Google ads, so Google's ad code also runs on these pages. The code is open source, and a public check compares the live site with the published code every six hours.",
       { cta: "Open the tool" },
     ],
   },
@@ -237,8 +238,8 @@ const FAQ_ITEMS = [
   ["What is Glasto Quick Copy?", "A free, unofficial helper for Glastonbury ticket day. It puts your group's registration numbers and postcodes on one page so you can copy each one with a tap instead of typing or scrolling through messages."],
   ["Is this the official Glastonbury website?", "No. We're an independent project, not connected to Glastonbury Festival or See Tickets. You still register and buy tickets on the official sites."],
   ["Does it get me tickets faster?", "It can't speed up the queue. It saves time once you're through, when you need to enter up to six registration numbers and postcodes quickly and accurately."],
-  ["Is it free?", "Yes. The tool is free to use. This guides site is supported by ads, which never appear on the tool itself."],
-  ["Where are my group's details stored?", "In your browser's storage on your own device. The tool has no accounts and no database, and its security policy blocks it from connecting to any server."],
+  ["Is it free?", "Yes. The tool and guides are free, paid for by ads from Google."],
+  ["Where are my group's details stored?", "In your browser's storage on your own device. The tool has no accounts and no database, and its code never sends your group's details anywhere. Like any site with ads, Google's ad code runs on these pages. See our [privacy and cookies policy](/privacy/)."],
   ["Can other people see my group's numbers?", "Only people you send the share link to. The link contains first names, registration numbers and postcodes, and anyone with the link can read them, so share it only with your group."],
   ["How many people can I add?", "Up to six, the maximum one lead booker can buy for in a single Glastonbury booking."],
   ["Who needs to register for Glastonbury?", "Everyone who will be 13 or over when the gates open. Children aged 12 and under don't need a ticket or a registration. See [how registration works](/guides/how-glastonbury-registration-works/)."],
@@ -259,26 +260,10 @@ const FAQ_ITEMS = [
 
 export const PAGES = [
   {
-    file: "index.html", path: "/", title: "Glastonbury ticket day guides and a free group copy tool",
-    h1: "Get your group through Glastonbury ticket day",
-    description: "Free guides to Glastonbury registration, the ticket queue, deposits and resale, plus a tool that puts your whole group's registration numbers and postcodes on one page.",
-    lead: "Clear, checked guides to registration, the queue, deposits and resale. And a free tool that puts everyone's registration numbers and postcodes on one page, ready to tap and paste.",
-    body: [
-      { cta: "Open the free tool" },
-      { h2: "Start here" },
-      { cards: GUIDES.slice(0, 4) },
-      { h2: "More guides" },
-      { cards: GUIDES.slice(4) },
-      { h2: "Why we made this" },
-      "Every ticket day, the same thing happens in group chats across the country: someone gets through the queue and then has minutes to find and type up to six ten-digit registration numbers and postcodes. We built a simple tool to fix that, and wrote these guides to answer the questions that come up every year.",
-      "Everything here is free. The guides are supported by ads. The tool itself never shows ads and keeps your group's details on your own phone. [Read about us](/about/) or [see the FAQ](/faq/).",
-    ],
-  },
-  {
     file: "guides/index.html", path: "/guides/", title: "Glastonbury ticket guides",
     description: "Guides to Glastonbury registration, ticket day, the online queue, buying for a group, deposits, balance payments, resale and coach tickets.",
     lead: "Everything you need to know before, during and after the Glastonbury ticket sale. Checked against official sources.",
-    body: [{ cards: GUIDES }],
+    body: [{ cards: GUIDES }, { cta: "Make your group's page" }, { ad: "guides-end" }],
   },
   {
     file: "faq/index.html", path: "/faq/", title: "Frequently asked questions",
@@ -286,7 +271,13 @@ export const PAGES = [
     lead: "Quick answers about Glastonbury tickets and about this site.",
     updated: UPDATED,
     faqSchema: FAQ_ITEMS,
-    body: [{ faq: FAQ_ITEMS }, { cta: "Try the tool" }],
+    body: [
+      { faq: FAQ_ITEMS.slice(0, Math.ceil(FAQ_ITEMS.length / 2)) },
+      { ad: "faq-mid" },
+      { faq: FAQ_ITEMS.slice(Math.ceil(FAQ_ITEMS.length / 2)) },
+      { cta: "Try the tool" },
+      { ad: "faq-end" },
+    ],
   },
   {
     file: "about/index.html", path: "/about/", title: "About Glasto Quick Copy",
@@ -303,9 +294,10 @@ export const PAGES = [
       { h2: "How it's built" },
       "The tool's code is open source on [GitHub](https://github.com/francproductmanager/glastonbury-registration-quick-copy), built with the help of AI coding tools and tested automatically on every change. A public check compares the live tool with the published code every six hours.",
       { h2: "How it's funded" },
-      "This guides site shows ads from Google AdSense, which pays for the domain and keeps everything free. Ads never appear on the tool itself, and the tool's privacy protections are separate from this site. See our [privacy and cookies policy](/privacy/).",
+      "The site shows ads from Google AdSense, which pay for the domain and keep everything free. Ads sit in a few fixed places on each page, never between the copy buttons you use on ticket day. See our [privacy and cookies policy](/privacy/).",
       { h2: "Not affiliated" },
       "We're not affiliated with, endorsed by or connected to Glastonbury Festival or See Tickets. \"Glastonbury\" is used only to describe what the guides and tool are about.",
+      { ad: "about-end" },
     ],
   },
   {
@@ -325,16 +317,17 @@ export const PAGES = [
   },
   {
     file: "privacy/index.html", path: "/privacy/", title: "Privacy and cookies policy",
-    description: "How Glasto Quick Copy handles data on this guides site and in the tool, including Google AdSense cookies and how to opt out.",
+    description: "How Glasto Quick Copy handles your group's details and this site's data, including Google AdSense cookies and how to opt out.",
     updated: UPDATED,
     body: [
-      "This policy explains what happens to your information on this guides site and in the Glasto Quick Copy tool. We've written it to be read, not skimmed past.",
+      "This policy explains what happens to your information on this site, including the Glasto Quick Copy tool. We've written it to be read, not skimmed past.",
       { h2: "Who we are" },
       "Glasto Quick Copy is an independent, free project run by an individual in the United Kingdom. You can reach us through the options on our [contact page](/contact/).",
       { h2: "The tool: your group's details stay on your device" },
-      "The Glasto Quick Copy tool runs on a separate web address from this guides site. The names, registration numbers and postcodes you add are saved only in your browser's storage on your device. The tool has no accounts and no database, shows no ads and sets no cookies. Its security policy blocks it from connecting to any server, so it can't send your group's details anywhere.",
+      "The names, registration numbers and postcodes you add to the tool are saved only in your browser's storage on your device. The tool has no accounts and no database, and its own code never sends your group's details to us or anyone else.",
+      "This site, including the tool's pages, shows Google ads. Google's ad code runs in your browser on these pages, as it does on any site with Google ads. It's Google's standard ad code and nothing else; we don't add other trackers or analytics.",
       "If you create a share link, the first names, registration numbers and postcodes are packed into the part of the link after the # symbol, which browsers don't send to web servers. Anyone you send the link to can read those details.",
-      { h2: "This guides site" },
+      { h2: "The rest of this site" },
       "We don't ask you for any personal information on this site, and there are no accounts or forms.",
       { h3: "Hosting" },
       "This site is hosted by Netlify. Like any web host, Netlify processes technical information such as your IP address and browser details to deliver pages and protect the service. See [Netlify's privacy policy](https://www.netlify.com/privacy/).",
@@ -354,7 +347,7 @@ export const PAGES = [
   },
   {
     file: "terms/index.html", path: "/terms/", title: "Terms of use",
-    description: "The terms for using the Glasto Quick Copy guides site and tool.",
+    description: "The terms for using Glasto Quick Copy: the guides, the FAQ and the group copy tool.",
     updated: UPDATED,
     body: [
       "By using this site or the Glasto Quick Copy tool you agree to these terms. They're short.",
