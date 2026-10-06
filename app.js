@@ -412,24 +412,57 @@
 
   // ---------- import parser ----------
   // Runs locally on what's pasted; the raw text is never stored.
-  const STOPWORDS = new Set(["reg", "registration", "here", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey"]);
+  const STOPWORDS = new Set(["reg", "registration", "here", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey",
+    "name", "post", "code", "ref", "it", "this", "that", "for", "me", "you", "your", "our", "his", "her", "their", "of", "to", "at", "on", "in", "a", "an",
+    "thanks", "thank", "cheers", "ok", "okay", "yes", "yeah", "lol", "great", "sure", "nice", "done", "same", "as", "too", "also", "please", "pls", "booked", "ticket", "tickets"]);
+  const TITLES = new Set(["mr", "mrs", "ms", "miss", "mx", "dr"]);
+  // WhatsApp copy/export prefixes: "[03/10, 18:07] Richard: " (iPhone) and "03/10/2026, 18:07 - Richard: " (Android).
+  // The sender is dropped; the person is whoever the message names.
+  const CHAT_PREFIX = /^\s*(?:\[[^\]]{1,40}\]|\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}[:.]\d{2}(?:[:.]\d{2})?\s*(?:[ap]\.?m\.?)?\s*[-\u2013\u2014])\s*(?:[^:]{1,40}:\s)?/i;
+  const NAME_LABEL = /^\s*(?:full\s+)?names?\s*[:=-]\s*/i;
+  const tidyWord = (w) => (w === w.toLowerCase() || w === w.toUpperCase()) ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w;
+  const nameWords = (s) => (s.match(/[\p{L}][\p{L}'’-]*/gu) || []).filter(w => !TITLES.has(w.toLowerCase().replace(/\.$/, "")));
+  // Finds people in pasted chat text. A person can be on one line ("Alex 1029384756 BS1 4DJ")
+  // or spread over several (name, then reg number, then postcode), as when friends message
+  // their details one per line. Every reg number is one person; names and postcodes attach to
+  // the reg number they sit next to.
   function parseImport(text) {
     const people = [];
+    let cur = {};
+    const push = () => {
+      if (cur.reg && people.length < MAX_PEOPLE) people.push({ name: (cur.name || `Person ${people.length + 1}`).slice(0, 60), reg: cur.reg, postcode: cur.postcode || "" });
+      cur = {};
+    };
     for (const rawLine of String(text).split(/\r?\n/)) {
       if (people.length >= MAX_PEOPLE) break;
-      const line = rawLine.slice(0, 300);
+      let line = rawLine.slice(0, 300).replace(/[\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, "").replace(CHAT_PREFIX, "").replace(NAME_LABEL, "");
+      let reg = "";
       const m = line.match(/\d[\d\s-]{6,20}\d/);
-      if (!m) continue;
-      const reg = digits(m[0]);
-      if (reg.length < 8 || reg.length > MAX_REG_DIGITS) continue;
-      let rest = line.slice(0, m.index) + " " + line.slice(m.index + m[0].length);
-      const pm = rest.match(/\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b/i);
-      const postcode = pm ? normPostcode(pm[1] + pm[2]) : "";
-      if (pm) rest = rest.slice(0, pm.index) + " " + rest.slice(pm.index + pm[0].length);
-      const word = (rest.match(/[\p{L}][\p{L}'’-]*/gu) || []).find(w => !STOPWORDS.has(w.toLowerCase()));
-      const name = word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : `Person ${people.length + 1}`;
-      people.push({ name: name.slice(0, 60), reg, postcode });
+      if (m) {
+        const d = digits(m[0]);
+        if (d.length >= 8 && d.length <= MAX_REG_DIGITS) reg = d;
+        line = line.slice(0, m.index) + " " + line.slice(m.index + m[0].length);
+      }
+      let postcode = "";
+      const pm = line.match(/\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b/i);
+      if (pm) { postcode = normPostcode(pm[1] + pm[2]); line = line.slice(0, pm.index) + " " + line.slice(pm.index + pm[0].length); }
+      let name = "";
+      if (reg) {
+        // name on the same line as the details: the words that aren't filler ("sam here! reg ...")
+        name = nameWords(line).filter(w => !STOPWORDS.has(w.toLowerCase())).slice(0, 3).map(tidyWord).join(" ");
+      } else if (!m && !postcode && line.trim().length <= 40 && !/[?!@#\d]/.test(line)) {
+        // a line on its own counts as a name only if it looks like one: 1 to 4 words, no filler
+        const words = nameWords(line);
+        if (words.length && words.length <= 4 && !words.some(w => STOPWORDS.has(w.toLowerCase()))) name = words.map(tidyWord).join(" ");
+      }
+      if (name) {
+        if (cur.reg) push(); else if (cur.postcode) cur = {};
+        cur.name = name;
+      }
+      if (reg) { if (cur.reg) push(); cur.reg = reg; }
+      if (postcode) { if (cur.postcode && cur.reg) push(); cur.postcode = postcode; }
     }
+    push();
     return people;
   }
 

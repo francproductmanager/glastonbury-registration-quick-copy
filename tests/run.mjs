@@ -254,17 +254,51 @@ console.log("\nImport parser");
     eq(await parse("see you there!\nwho's booking?\n"), [], "chit-chat");
     eq((await parse("Bob 1234567\nCat 1234567890123")).length, 0, "7 and 13 digits ignored");
     eq(await parse("Zoë 0123-456-789 sw1a1aa"), [{ name: "Zoë", reg: "0123456789", postcode: "SW1A 1AA" }], "accent, dashes, zero, postcode");
-    eq((await parse("Dan 2611945718 W1A 1AA\r\nEve 2446487806 LS1 5DL\r\n")).map(x => x.name), ["Dan", "Eve"], "CRLF");
-    eq((await parse("my reg number is 2611945718 and postcode e2 8fp")), [{ name: "Person 1", reg: "2611945718", postcode: "E2 8FP" }], "only stopwords -> Person N");
-    eq((await parse("JORDAN 202208767 SW12 0JD"))[0].name, "Jordan", "title-cased");
+    eq((await parse("Dan 2718281828 W1A 1AA\r\nEve 1414213562 LS1 5DL\r\n")).map(x => x.name), ["Dan", "Eve"], "CRLF");
+    eq((await parse("my reg number is 2718281828 and postcode e2 8fp")), [{ name: "Person 1", reg: "2718281828", postcode: "E2 8FP" }], "only stopwords -> Person N");
+    eq((await parse("JORDAN 173205080 SW1A 2AA"))[0].name, "Jordan", "title-cased");
+  });
+  await test("WhatsApp messages with name, reg number and postcode on separate lines (iPhone copy)", async () => {
+    // Made-up people, in the exact shape of a copied WhatsApp chat
+    const chat = [
+      "[03/10, 18:07] Alex: Alex Morgan ", "1029384756", "BS1 4DJ",
+      "[03/10, 18:07] Alex: Sam Patel ", "5647382910", "BS1 4DJ",
+      "[03/10, 18:09] Jo: Name: Ms Jo Clarke", "Registration Number: 3141592653", "Postcode: M4 1HN",
+      "[03/10, 18:10] Jo: Name: Mr Dev Shah", "Registration Number: 1618033988", "Postcode: m41hn",
+      "[03/10, 19:22] Priya Rao: Priya Rao", "2718281828", "CF10 1AA",
+      "[03/10, 19:22] Priya Rao: Tom O'Neill", "1414213562", "CF10 1AA",
+    ].join("\n");
+    eq(await parse(chat), [
+      { name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" },
+      { name: "Sam Patel", reg: "5647382910", postcode: "BS1 4DJ" },
+      { name: "Jo Clarke", reg: "3141592653", postcode: "M4 1HN" },
+      { name: "Dev Shah", reg: "1618033988", postcode: "M4 1HN" },
+      { name: "Priya Rao", reg: "2718281828", postcode: "CF10 1AA" },
+      { name: "Tom O'Neill", reg: "1414213562", postcode: "CF10 1AA" },
+    ], "six people, every postcode found");
+  });
+  await test("Multi-line: Android export, chit-chat in between, missing postcodes, postcode first, hidden characters", async () => {
+    eq(await parse("03/10/2026, 18:07 - Alex: Alex Morgan\n03/10/2026, 18:07 - Alex: 1029384756\n03/10/2026, 18:08 - Alex: BS1 4DJ"),
+      [{ name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" }], "Android export");
+    eq(await parse("hi all! here are ours\nAlex Morgan\n1029384756\nthanks!\nBS1 4DJ\ncan't wait!!\nSam Patel\n5647382910\nsee you there"),
+      [{ name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" }, { name: "Sam Patel", reg: "5647382910", postcode: "" }], "chit-chat ignored, Sam flagged");
+    eq(await parse("Jo Clarke\nM4 1HN\n3141592653\nDev Shah\nM4 1HN\n1618033988"),
+      [{ name: "Jo Clarke", reg: "3141592653", postcode: "M4 1HN" }, { name: "Dev Shah", reg: "1618033988", postcode: "M4 1HN" }], "postcode before reg");
+    eq(await parse("\u200e[03/10, 18:07] Alex: \u200eALEX MORGAN\n\u200e1029 384 756\nbs14dj"),
+      [{ name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" }], "invisible marks, spaced reg, shouty name");
+    eq(await parse("1029384756\nBS1 4DJ\n5647382910"),
+      [{ name: "Person 1", reg: "1029384756", postcode: "BS1 4DJ" }, { name: "Person 2", reg: "5647382910", postcode: "" }], "numbers only");
+    eq(await parse("Alex Morgan\nSam Patel\nBS1 4DJ\nwho's booking?"), [], "names without reg numbers are not people");
+    eq(await parse("Alex Morgan 1029384756\nSam Patel 5647382910 BS1 4DJ"),
+      [{ name: "Alex Morgan", reg: "1029384756", postcode: "" }, { name: "Sam Patel", reg: "5647382910", postcode: "BS1 4DJ" }], "postcode stays with its own line's person");
   });
   await test("Caps at 6 people and ignores lines after", async () => {
     const text = Array.from({ length: 9 }, (_, i) => `P${i} 10000000${10 + i} BS1 4DJ`).join("\n");
     eq((await parse(text)).length, 6, "cap");
   });
   await test("Hostile input is just text (no HTML parsing, length-limited)", async () => {
-    const r = await parse('<img src=x onerror=alert(1)> 2611945718 SW1A 1AA\n' + "9".repeat(5000));
-    eq(r[0].reg, "2611945718", "reg"); assert(r.length === 1, "giant digit run must not become a person");
+    const r = await parse('<img src=x onerror=alert(1)> 2718281828 SW1A 1AA\n' + "9".repeat(5000));
+    eq(r[0].reg, "2718281828", "reg"); assert(r.length === 1, "giant digit run must not become a person");
   });
   await ctx.close();
 }
@@ -400,9 +434,9 @@ await test("Add by hand keeps parsed people; validation messages; blank rows ign
   eq(await pc(1).evaluate(e => e.classList.contains("bad")), false, "only failing input marked");
   for (const i of [3, 2, 1]) await p.locator(".ecard .textbtn").nth(i).click();
   assert(!(await p.locator(".add-person").isDisabled()), "re-enabled");
-  await reg(1).fill(" 26119 45718 "); await pc(1).fill("sw1a1aa"); await name(1).fill("Bea");
+  await reg(1).fill(" 27182 81828 "); await pc(1).fill("sw1a1aa"); await name(1).fill("Bea");
   await p.click("text=Create group"); await p.waitForSelector(".v-day");
-  eq(Object.values(await pages(p))[0].people.map(x => [x.name, x.reg, x.postcode]), [["Alex", "1029384756", "BS1 4DJ"], ["Bea", "2611945718", "SW1A 1AA"]], "blank rows ignored, normalised");
+  eq(Object.values(await pages(p))[0].people.map(x => [x.name, x.reg, x.postcode]), [["Alex", "1029384756", "BS1 4DJ"], ["Bea", "2718281828", "SW1A 1AA"]], "blank rows ignored, normalised");
   noErrors(p); await p.context().close();
 });
 await test("Edit an existing group and save changes", async () => {
@@ -611,7 +645,7 @@ await test("Malicious share links and pasted chat text never execute", async () 
   const codes = await p.evaluate(pl => pl.map(x => __t.encodeShare({ people: [{ name: x.replace(/ /g, ""), reg: "1", postcode: "LS1 5DL" }] })), PAYLOADS);
   codes.push(Buffer.from(JSON.stringify({ t: PAYLOADS[0], p: [[PAYLOADS[0], "1", PAYLOADS[2]]] })).toString("base64url"));
   for (const code of codes) { await p.goto(B + "#/s/" + code); await p.waitForTimeout(50); assert(!(await p.evaluate(() => window.__pwned)), "link executed"); }
-  await p.goto(B + "#/new"); await p.fill("textarea", PAYLOADS.map(x => `${x} 2611945718 SW1A 1AA`).join("\n"));
+  await p.goto(B + "#/new"); await p.fill("textarea", PAYLOADS.map(x => `${x} 2718281828 SW1A 1AA`).join("\n"));
   await p.waitForTimeout(50); assert(!(await p.evaluate(() => window.__pwned)), "paste executed");
   await ctx.close();
 });
