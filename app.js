@@ -483,7 +483,9 @@
         h("ul", null, GUIDE_LINKS.map(([href, t]) => h("li", null, h("a", { href }, t)))),
         h("p", null, h("a", { href: "/guides/" }, "All guides"), " or ", h("a", { href: "/faq/" }, "read the FAQ"))),
       ad("home-end"),
-      footer());
+      footer(),
+      // filled by counter.js with the site's visit total; stays empty if that can't be fetched
+      h("p", { class: "visit-count" }));
   }
   const firstNames = (people) => shareNames(people).filter(Boolean).join(", ");
 
@@ -894,7 +896,7 @@
       h("h1", null, "How your data is handled"),
       block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
       block("When it's cleared", "Groups and links are cleared on a seasonal schedule: details created from June through October are cleared on 1 December; details created from November through May are cleared on 1 June. Dates are UK dates. Clearing happens the next time you open the tool on this phone."),
-      block("Is it sent anywhere?", "Not by this tool. Its code makes no network requests and there's no server copy of your group."),
+      block("Is it sent anywhere?", "Not by this tool. Its code never sends your group anywhere and there's no server copy of your group. The only request the site makes for itself is the visit counter at the bottom of the home page, which sends nothing about you or your group."),
       block("Ads", "The site is free because it shows Google ads. As on any site with ads, Google's ad code runs on these pages and Google uses cookies to show and measure ads. ", h("a", { href: "/privacy/" }, "Privacy and cookies")),
       block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead (Alex 1, Alex 2). It's encoded, not encrypted, so anyone with the link can read it."),
       block("Your clipboard", "Some keyboards, like Gboard, keep a clipboard history. You can clear it from the keyboard's clipboard menu after ticket day."),
@@ -933,6 +935,7 @@
     if (!node) return; // the view redirected
     app.replaceChildren(node);
     if (window.GQCAds) window.GQCAds.fill(app);
+    if (window.GQCVisits) window.GQCVisits.fill(app);
     document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : "Glasto Quick Copy";
     window.scrollTo(0, 0);
   }
