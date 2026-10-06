@@ -13,7 +13,7 @@
   --border: #e3dfd6; --border-strong: #d6d1c6; --divider: #eeebe4;
   --accent: oklch(0.52 0.12 250); --accent-hover: oklch(0.47 0.12 250); --accent-ink: oklch(0.45 0.12 250);
   --accent-deep: oklch(0.38 0.1 250); --accent-soft: oklch(0.95 0.03 250); --on-accent: #ffffff;
-  --ok-dot: oklch(0.6 0.13 155); --danger: #a3352a;
+  --ok-dot: oklch(0.6 0.13 155); --danger: #a3352a; --danger-soft: #fbeae7;
   --demo-bg: oklch(0.94 0.05 75); --demo-ink: #5b3a0b;
   --mock-field: #ffffff;
   --serif: "Newsreader", Georgia, "Times New Roman", serif;
@@ -28,7 +28,7 @@
     --border: #34312b; --border-strong: #4a463e; --divider: #2c2a25;
     --accent: oklch(0.72 0.11 250); --accent-hover: oklch(0.77 0.1 250); --accent-ink: oklch(0.78 0.1 250);
     --accent-deep: oklch(0.86 0.07 250); --accent-soft: oklch(0.3 0.05 250); --on-accent: #10151d;
-    --ok-dot: oklch(0.7 0.13 155); --danger: #ef8a7d;
+    --ok-dot: oklch(0.7 0.13 155); --danger: #ef8a7d; --danger-soft: #3a211d;
     --demo-bg: oklch(0.32 0.06 75); --demo-ink: #f6dcb0;
     --mock-field: #24221d;
     color-scheme: dark;
@@ -185,7 +185,10 @@ footer a { color: var(--muted); }
 .res-sub { font: 400 13.5px/1.35 var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; column-gap: 12px; }
 .status { font-size: 12.5px; font-weight: 600; text-align: right; }
 .status.ready { color: var(--accent-ink); }
-.status.missing { color: var(--danger); }
+.status.missing { color: var(--danger); background: none; border: 0; padding: 8px 0; min-height: 44px; font-family: inherit; cursor: pointer; }
+.status.missing::after { content: " \25BE"; }
+.status.missing[aria-expanded="true"]::after { content: " \25B4"; }
+.res-note { grid-column: 1 / -1; margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--danger-soft); color: var(--danger); font-size: 13.5px; }
 .res-foot { display: flex; align-items: center; min-height: 44px; padding: 0 16px; font-size: 14px; font-weight: 600; text-decoration: none; background: none; border: 0; color: var(--accent-ink); cursor: pointer; width: 100%; text-align: left; }
 
 /* ticket day */
