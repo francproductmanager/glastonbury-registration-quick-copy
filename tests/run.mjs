@@ -105,6 +105,7 @@ const appSrc = readFileSync(join(ROOT, "app.js"), "utf8");
 const toolHtml = ["index.html", "demo.html"].map(f => readFileSync(join(ROOT, f), "utf8"));
 const sitePages = GENERATED.flatMap(g => { const f = join(ROOT, g); return !existsSync(f) ? [] : statSync(f).isDirectory() ? walk(f) : [f]; }).filter(f => f.endsWith(".html"));
 const adsSrc = readFileSync(join(ROOT, "ads.js"), "utf8");
+const counterSrc = readFileSync(join(ROOT, "counter.js"), "utf8");
 
 console.log("\nStatic checks");
 await test("Security policy allows Google ads but keeps every other protection", () => {
@@ -114,14 +115,14 @@ await test("Security policy allows Google ads but keeps every other protection",
   assert(/Referrer-Policy = "strict-origin-when-cross-origin"/.test(toml), "referrer policy");
 });
 await test("The tool's code makes no network requests; pages load only Google's ad loader", () => {
-  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
+  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
     const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO);
     assert(!urls.length, `${name} references ${urls.join(", ")}`);
   }
   const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780";
   for (const h of [...toolHtml, ...sitePages.map(f => readFileSync(f, "utf8"))]) {
     const srcs = [...h.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map(m => m[1]);
-    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u), `unexpected script ${u}`);
+    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || (h === toolHtml[0] && /^counter\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
     assert(srcs.includes(LOADER), "AdSense loader missing");
     assert(!/<link[^>]+href="https?:/.test(h.replace(/<link rel="canonical"[^>]+>/, "")), "external stylesheet or font");
   }
@@ -132,8 +133,38 @@ await test("No dangerous APIs in app.js or ads.js", () => {
     for (const bad of ["innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval(", "new Function", "fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon", "importScripts", 'setAttribute("style"', "postMessage", "localStorage", "sessionStorage"].filter(b => src === appSrc ? !/Storage$/.test(b) : true)) assert(!code.includes(bad), `found ${bad}`);
   }
 });
+await test("counter.js makes exactly one request, to this site's visit counter, and carries no data", () => {
+  const code = counterSrc.replace(/\/\/.*$/gm, "");
+  eq((code.match(/fetch\(/g) || []).length, 1, "one fetch");
+  assert(/fetch\("\/api\/visits", \{ method: first \? "POST" : "GET", credentials: "omit", cache: "no-store", referrerPolicy: "no-referrer" \}\)/.test(code), "same-site path, no cookies, no referrer, no body");
+  for (const bad of ["innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval(", "new Function", "XMLHttpRequest", "WebSocket", "sendBeacon", "postMessage", "localStorage", "tdqc:pages", "body:"]) assert(!code.includes(bad), `found ${bad}`);
+  assert(toolHtml[0].includes('<script src="counter.js') && !toolHtml[1].includes("counter.js"), "on the tool's home page only, not the demo");
+});
+await test("Visit counter function: counts each POST once, even many at the same moment; GET only reads", async () => {
+  const { handle } = await import(new URL("../netlify/functions/visits.mjs", import.meta.url));
+  // a stand-in for Netlify Blobs with real conditional writes (etags), plus a delay so writes race
+  const data = new Map(); let version = 0;
+  const pause = () => new Promise(r => setTimeout(r, Math.random() * 5));
+  const store = {
+    async get(k) { await pause(); return data.has(k) ? JSON.parse(data.get(k).body) : null; },
+    async getWithMetadata(k) { await pause(); const e = data.get(k); return e ? { data: JSON.parse(e.body), etag: e.etag } : null; },
+    async setJSON(k, v, o = {}) {
+      await pause(); const e = data.get(k);
+      if ((o.onlyIfNew && e) || (o.onlyIfMatch && (!e || e.etag !== o.onlyIfMatch))) return { modified: false };
+      data.set(k, { body: JSON.stringify(v), etag: String(++version) }); return { modified: true };
+    },
+  };
+  const call = async (method) => (await (await handle(new Request("https://x/api/visits", { method }), store)).json()).count;
+  eq(await call("GET"), 0, "starts at zero");
+  eq(await call("POST"), 1, "first visit");
+  await Promise.all(Array.from({ length: 25 }, () => handle(new Request("https://x/api/visits", { method: "POST" }), store)));
+  eq(await call("GET"), 26, "25 simultaneous visits all counted");
+  eq(await call("GET"), 26, "reading doesn't count");
+  eq((await handle(new Request("https://x/api/visits", { method: "DELETE" }), store)).status, 405, "other methods refused");
+  eq([...data.keys()], ["home"], "stores one number, nothing else"); eq(JSON.parse(data.get("home").body), { count: 26 }, "just the count");
+});
 await test("Sources and tooling are never served", () => {
-  for (const p of ["/site-src/*", "/scripts/*", "/tests/*"]) assert(new RegExp(`from = "${p.replace(/[*/]/g, "\\$&")}"[\\s\\S]*?status = 404[\\s\\S]*?force = true`).test(toml), `${p} not blocked`);
+  for (const p of ["/site-src/*", "/scripts/*", "/tests/*", "/netlify/*"]) assert(new RegExp(`from = "${p.replace(/[*/]/g, "\\$&")}"[\\s\\S]*?status = 404[\\s\\S]*?force = true`).test(toml), `${p} not blocked`);
   assert(!existsSync(join(ROOT, "site")), "the old separate guides site folder is gone");
 });
 await test("scripts/verify-live.sh passes against an honest deploy and catches a tampered one", async () => {
@@ -482,6 +513,25 @@ await test("Home: one main action, how it works, questions, footer with commit a
   for (const l of ["/guides/", "/faq/", "/about/", "/privacy/", "/terms/", "/contact/"]) assert(links.some(([t, h]) => h === l), `footer link ${l}`);
   assert(await p.locator(".guides-links a[href^='/guides/']").count() >= 4, "guide links on home");
   noErrors(p); await p.context().close();
+});
+await test("Visit counter: shown at the bottom of home, one count per session, sends nothing", async () => {
+  const ctx = await context(); const calls = [];
+  await ctx.route("**/api/visits", r => { const q = r.request(); calls.push({ method: q.method(), body: q.postData(), cookie: q.headers().cookie, referer: q.headers().referer }); r.fulfill({ contentType: "application/json", body: JSON.stringify({ count: 12345 }) }); });
+  const p = await page(ctx); await seed(p, GROUP);
+  await waitText(p, ".visit-count", "12,345 visits");
+  assert(await p.evaluate(() => document.querySelector(".v-home").lastElementChild.classList.contains("visit-count")), "at the very bottom");
+  eq(calls.map(c => c.method), ["POST"], "first view counts a visit");
+  assert(calls.every(c => !c.body && !c.cookie && !c.referer), "no body, cookies or referrer");
+  await p.goto(B + "#/p/g1"); await p.goto(B + "#/data"); await p.goto(B + "#/");
+  await waitText(p, ".visit-count", "12,345 visits");
+  eq(calls.length, 1, "other screens never call it; coming back home doesn't count again");
+  await p.reload(); await waitText(p, ".visit-count", "12,345 visits");
+  eq(calls.map(c => c.method), ["POST", "GET"], "a reload in the same session only reads the total");
+  noErrors(p); await ctx.close();
+  // If the counter can't be reached, the page shows no number and nothing breaks
+  const c2 = await context(); await c2.route("**/api/visits", r => r.abort());
+  const q = await page(c2); await q.goto(B); await q.waitForTimeout(300);
+  eq(await q.textContent(".visit-count"), "", "no number"); noErrors(q); await c2.close();
 });
 await test("Home lists saved groups newest first and updates when another tab changes storage", async () => {
   const ctx = await context(); const p = await page(ctx); await p.goto(B);
@@ -841,7 +891,7 @@ await test("Data page: explains storage, shows the version, deletes everything w
   await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: Date.now(), people: g } })), GROUP);
   await p.goto(stamped.url + "#/data");
   const text = await p.textContent("main");
-  assert(text.includes("Its code makes no network requests") && text.includes("Google's ad code runs on these pages"), "honest about the tool and the ads");
+  assert(text.includes("Its code never sends your group anywhere") && text.includes("visit counter") && text.includes("Google's ad code runs on these pages"), "honest about the tool, the counter and the ads");
   assert((await p.textContent(".check")).includes("0123456"), "version");
   p.once("dialog", d => d.accept()); await p.click("text=Delete everything on this phone");
   eq(await pages(p), {}, "deleted"); eq(await p.locator("text=Delete everything on this phone").count(), 0, "button hidden when empty");
