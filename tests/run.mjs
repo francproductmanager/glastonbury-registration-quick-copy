@@ -270,7 +270,7 @@ await test("Ad slots sit where we chose: 3 per guide, none on privacy, terms, co
   eq(slots("faq/index.html"), ["faq-mid", "faq-end"], "faq");
   eq(slots("about/index.html"), ["about-end"], "about");
   for (const f of ["privacy/index.html", "terms/index.html", "contact/index.html", "404.html"]) eq(slots(f), [], f);
-  const known = [...adsSrc.matchAll(/^\s+"([a-z-]+)": "",/gm)].map(m => m[1]);
+  const known = [...adsSrc.matchAll(/^\s+"([a-z-]+)": "\d*",/gm)].map(m => m[1]);
   const used = new Set([...sitePages.flatMap(f => slots(relative(ROOT, f))), ...[...appSrc.matchAll(/ad\("([a-z-]+)"\)/g)].map(m => m[1])]);
   eq([...used].sort(), [...known].sort(), "every slot in ads.js is used, and every used slot is in ads.js");
 });
@@ -706,49 +706,67 @@ await test("Reduced motion: everything still works", async () => {
 // ---------- ad slots ----------
 console.log("\nAd slots");
 // ads.js with made-up ad unit IDs, as if the owner had created them in AdSense
-const fakeAds = () => adsSrc.replace(/^(\s+"[a-z-]+": )"",/gm, (_, k) => `${k}"1234567890",`);
+const fakeAds = () => adsSrc.replace(/^(\s+"[a-z-]+": )"\d*",/gm, (_, k) => `${k}"1234567890",`);
+// Pretend Google filled every ad: AdSense marks the <ins> and puts a creative inside it
+const fillAds = p => p.evaluate(() => document.querySelectorAll("ins.adsbygoogle").forEach(i => { i.setAttribute("data-ad-status", "filled"); i.replaceChildren(Object.assign(document.createElement("div"), { className: "fake-creative" })); i.firstChild.setAttribute("data-h", "250"); }));
 async function adsContext() {
   const ctx = await context();
   await ctx.route("**/ads.js*", r => r.fulfill({ contentType: "application/javascript", body: fakeAds() }));
   await ctx.addInitScript(() => { window.__pushes = 0; window.adsbygoogle = { push: () => { window.__pushes++; } }; });
   return ctx;
 }
-await test("Slots without an ad unit ID show nothing", async () => {
-  const p = await page(await context()); await seed(p, GROUP);
+await test("An ad that doesn't load leaves no trace (ad blocker, nothing to show)", async () => {
+  const p = await page(await context()); await seed(p, GROUP); // Google's loader is blocked in tests
   for (const r of ["", "#/new", "#/add", "#/p/g1", "#/data"]) {
     await p.goto(B + r); await p.waitForTimeout(30);
-    eq(await p.locator("ins.adsbygoogle").count(), 0, `${r}: no ad`);
-    eq(await p.locator(".ad-slot:visible").count(), 0, `${r}: slot hidden`);
+    eq(await p.locator(".ad-slot:visible, .ad-label:visible").count(), 0, `${r}: nothing visible`);
+    const h = await p.locator(".ad-slot").evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
+    assert(h.every(x => x === 0), `${r}: unfilled slots take no space (${h})`);
   }
   noErrors(p); await p.context().close();
 });
-await test("Filled slots get a labelled AdSense unit, once, on every screen", async () => {
+await test("Every slot gets a labelled AdSense unit, once, on every screen", async () => {
   const p = await page(await adsContext()); await seed(p, GROUP);
-  const expect = { "": ["home-mid", "home-end"], "#/new": ["create-end"], "#/add": ["editor-end"], "#/edit/g1": ["editor-end"], "#/p/g1": ["group-end"], "#/data": ["data-end"] };
+  const expect = { "": ["home-end"], "#/new": ["create-end"], "#/add": ["editor-end"], "#/edit/g1": ["editor-end"], "#/p/g1": ["group-between", "group-between", "group-end"], "#/data": ["data-end"] };
   for (const [r, names] of Object.entries(expect)) {
     await p.goto(B); await p.goto(B + r); await p.waitForTimeout(40);
     const got = await p.locator(".ad-slot[data-filled]").evaluateAll(els => els.map(e => [e.dataset.slot, e.querySelector(".ad-label")?.textContent, e.querySelector("ins.adsbygoogle")?.dataset.adClient, e.querySelector("ins.adsbygoogle")?.dataset.adSlot, e.querySelectorAll("ins").length]));
     eq(got, names.map(n => [n, "Advertisement", "ca-pub-2229524942259780", "1234567890", 1]), r || "home");
   }
-  // in-app navigation (no reload) fills the new screen's slots too
   await p.goto(B); await p.click("text=Make your group's page"); await p.waitForSelector(".v-create");
-  eq(await p.locator(".ad-slot[data-filled]").count(), 1, "filled after navigation");
+  eq(await p.locator(".ad-slot[data-filled]").count(), 1, "filled after in-app navigation");
   assert(await p.evaluate(() => window.__pushes) >= 1, "AdSense asked to fill");
   await p.goto(B + "faq/"); await p.waitForTimeout(40);
   eq(await p.locator(".ad-slot[data-filled]").count(), 2, "faq slots filled");
-  noErrors(p); await p.context().close();
+  const sh = await page(await adsContext()); await sh.goto(B + "#/s/" + "x"); eq(await sh.locator(".ad-slot").count(), 0, "no ad on a broken or shared link screen");
+  noErrors(p); await p.context().close(); await sh.context().close();
 });
-await test("Ticket day: the only ad is at the very bottom, never among the copy boxes", async () => {
-  const p = await page(await adsContext()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
-  eq(await p.locator(".v-day .ad-slot").count(), 1, "one slot");
-  eq(await p.locator(".cards .ad-slot, .person .ad-slot").count(), 0, "not inside the copy cards");
-  eq(await p.locator(".v-day > :last-child").getAttribute("data-slot"), "group-end", "last on the page");
-  const [adTop, lastCopyBottom, shareBottom] = await p.evaluate(() => [
-    document.querySelector(".v-day .ad-slot").getBoundingClientRect().top,
-    Math.max(...[...document.querySelectorAll(".v-day .copy")].map(b => b.getBoundingClientRect().bottom)),
-    document.querySelector(".share").getBoundingClientRect().bottom]);
-  assert(adTop > shareBottom && adTop - lastCopyBottom > 200, `ad too close to the copy boxes (${Math.round(adTop - lastCopyBottom)}px)`);
-  noErrors(p); await p.context().close();
+await test("Ticket day: one ad between each person (5 for 6 people), each clearly set apart", async () => {
+  const six = ["Alex", "Sam", "Jo", "Priya", "Dev", "Tom"].map((name, i) => ({ name, reg: ["1029384756", "5647382910", "3141592653", "1618033988", "2718281828", "1414213562"][i], postcode: "BS1 4DJ" }));
+  for (const [people, between] of [[six, 5], [GROUP, 2], [GROUP.slice(0, 1), 0]]) {
+    const p = await page(await adsContext()); await seed(p, people); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
+    eq(await p.locator(".v-day > .ad-slot[data-slot='group-between']").count(), between, `${people.length} people`);
+    eq(await p.locator(".person .ad-slot").count(), 0, "never inside a person's card");
+    eq(await p.locator(".v-day > :last-child").getAttribute("data-slot"), "group-end", "one at the very bottom");
+    // every between-slot sits between two person cards
+    const order = await p.locator(".v-day > .person, .v-day > .ad-slot[data-slot='group-between']").evaluateAll(els => els.map(e => e.classList.contains("person") ? "P" : "A").join(""));
+    eq(order, Array(people.length).fill("P").join("A"), "alternates person, ad, person");
+    if (people.length === 6) {
+      await fillAds(p); await p.addStyleTag({ content: ".fake-creative { height: 250px; background: #ccc; }" });
+      const r = await p.evaluate(() => [...document.querySelectorAll(".v-day > .ad-slot[data-slot='group-between']")].map(a => {
+        const s = getComputedStyle(a), box = a.getBoundingClientRect();
+        return { label: getComputedStyle(a.querySelector(".ad-label")).display, border: s.borderTopStyle, bg: s.backgroundColor,
+          above: box.top - a.previousElementSibling.getBoundingClientRect().bottom, below: a.nextElementSibling.getBoundingClientRect().top - box.bottom };
+      }));
+      const cardBg = await p.locator(".person").first().evaluate(e => getComputedStyle(e).backgroundColor);
+      for (const x of r) {
+        eq(x.label, "block", "labelled Advertisement"); eq(x.border, "dashed", "dashed panel");
+        assert(x.bg !== cardBg, "different background from the person cards");
+        assert(x.above >= 32 && x.below >= 32, `at least 32px clear of the cards (${x.above}, ${x.below})`);
+      }
+    }
+    noErrors(p); await p.context().close();
+  }
 });
 
 // ---------- security ----------

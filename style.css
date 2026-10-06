@@ -162,11 +162,13 @@ footer a { color: var(--muted); }
 .guides-links ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .guides-links a { color: var(--accent-ink); }
 
-/* ad slots (see ads.js): hidden until the slot has an ad unit, always labelled, kept clear of buttons */
-.ad-slot { margin: 20px 0; }
+/* ad slots (see ads.js): nothing shows until Google fills the slot; then it sits in its own
+   dashed panel with a label and extra space, so it can't be mistaken for part of the tool */
 .ad-slot:not([data-filled]) { display: none; }
-.ad-label { margin: 0 0 4px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.ad-slot ins.adsbygoogle { display: block; min-height: 100px; }
+.ad-slot ins.adsbygoogle { display: block; }
+.ad-label { display: none; margin: 0 0 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ad-slot:has(ins[data-ad-status="filled"]) { margin: 26px 0; padding: 10px 12px 12px; background: var(--surface-sunk); border: 1px dashed var(--border-strong); border-radius: 12px; }
+.ad-slot:has(ins[data-ad-status="filled"]) > .ad-label { display: block; }
 .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot); margin-right: 6px; vertical-align: middle; }
 .dot.big { width: 8px; height: 8px; }
 

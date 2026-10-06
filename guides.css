@@ -82,7 +82,10 @@ main { padding-top: 28px; padding-bottom: 40px; }
 .site-foot nav a { color: var(--ink-2); min-height: 32px; display: inline-flex; align-items: center; }
 .site-foot p { margin: 0; }
 
-.ad-slot { margin: 28px 0; }
+/* ad slots (see ads.js): nothing shows until Google fills the slot; then it sits in its own
+   dashed panel with a label and extra space, so it can't be mistaken for part of the tool */
 .ad-slot:not([data-filled]) { display: none; }
-.ad-label { margin: 0 0 4px !important; font-size: 11px !important; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted) !important; }
-.ad-slot ins.adsbygoogle { display: block; min-height: 100px; }
+.ad-slot ins.adsbygoogle { display: block; }
+.ad-label { display: none; margin: 0 0 6px !important; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted) !important; }
+.ad-slot:has(ins[data-ad-status="filled"]) { margin: 26px 0; padding: 10px 12px 12px; background: var(--surface-sunk); border: 1px dashed var(--border-strong); border-radius: 12px; }
+.ad-slot:has(ins[data-ad-status="filled"]) > .ad-label { display: block; }

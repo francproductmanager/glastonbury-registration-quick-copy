@@ -20,6 +20,7 @@ export const APPROVED_NUMBERS = new Set([
   "1029384756", "5647382910", "3141592653", "0141592653", "1618033988", "2718281828", "1414213562",
   "173205080", "0123456789", "1234567890", "10000000", "0222222222",
   "31536000", // one year in seconds (a cache header), not a reg number
+  "2945530362", // the AdSense "Standard" ad unit ID in ads.js, not a reg number
 ]);
 // Postcodes of famous public buildings, standard examples, and invalid ones. Never anyone's home.
 export const APPROVED_POSTCODES = new Set([

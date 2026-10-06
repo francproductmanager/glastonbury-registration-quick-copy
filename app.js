@@ -415,7 +415,6 @@
            ["Send everyone the link.", " It opens the same page on their phones."],
            ["Tap, paste, next.", " Each box goes blue once it's used, so you know who's done."]]
             .map(([b, rest], i) => h("li", null, h("span", { class: "num" }, String(i + 1)), h("span", null, h("strong", null, b), rest))))),
-      ad("home-mid"),
       h("section", { class: "section" }, h("h2", null, "Questions"), faqList(FAQ)),
       h("section", { class: "section guides-links" },
         h("h2", null, "Ticket day guides"),
@@ -720,7 +719,8 @@
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
       h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a box, then paste it into the ticket site.")),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
-      cards,
+      // an ad between one person and the next (never inside a card), drawn as its own marked panel
+      cards.flatMap((c, i) => (i ? [ad("group-between"), c] : [c])),
       finish,
       clear,
       shareCard(page),
@@ -794,8 +794,7 @@
       h("div", { class: "card ilist" },
         page.people.map(p => h("div", { class: "irow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
         h("p", { class: "note" }, "From the link you were sent")),
-      h("div", { class: "btn-row" }, save, notNow),
-      ad("shared-end"));
+      h("div", { class: "btn-row" }, save, notNow));
   }
 
   function viewMissing() {
