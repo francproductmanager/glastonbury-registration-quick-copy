@@ -497,55 +497,87 @@ await test("Home lists saved groups newest first and updates when another tab ch
 
 // ---------- create ----------
 console.log("\nCreate and edit");
-await test("Paste with a missing postcode routes to the form with that row in error, then saves", async () => {
+const PASTE = "Alex: 1029384756 BS1 4DJ\nPriya 1618033988";
+const REVIEW = ".v-create > button.btn-primary";
+const nameBox = (p, i) => p.locator('input[placeholder="First name is enough"]').nth(i);
+await test("Paste step: no live list; Review details only once someone is found; manual entry always available", async () => {
   const p = await page(await context()); await p.goto(B + "#/new");
-  const btn = p.locator(".v-create > button.btn-primary");
-  assert(await btn.isDisabled(), "disabled when empty"); eq(await p.textContent(".res-head span"), "No reg numbers found yet", "empty head");
-  await p.fill("textarea", "Alex: 1029384756 BS1 4DJ\nPriya 1618033988");
-  eq(await p.textContent(".res-head span"), "Found 2 people", "found"); eq(await btn.textContent(), "Next step: Confirm your details", "button label when something's missing");
-  eq(await p.locator(".status").allTextContents(), ["Ready", "Almost ready"], "statuses");
-  const why = p.locator(".res-note");
-  assert(!(await why.isVisible()), "explanation starts closed");
-  await p.click("text=Almost ready");
-  assert(await why.isVisible() && (await why.textContent()).includes("you can add it in the next step"), "explains the next step");
-  eq(await p.getAttribute(".status.missing", "aria-expanded"), "true", "announced as expanded");
-  await p.click("text=Almost ready"); assert(!(await why.isVisible()), "closes again");
-  await btn.click();
-  await p.waitForSelector(".ecard.has-error");
-  eq(await p.textContent("h1"), "Confirm your details", "title");
-  eq(await p.textContent(".v-edit > button.btn-primary"), "Details correct, Create group", "final button");
-  eq(await p.locator(".err:not(:empty)").allTextContents(), ["Add a postcode."], "error");
-  eq(await pages(p), {}, "nothing saved yet");
-  await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("se17pb");
-  await p.click("text=Create group"); await p.waitForSelector(".v-day");
-  const saved = Object.values(await pages(p))[0].people;
-  eq(saved, [{ name: "Alex", reg: "1029384756", postcode: "BS1 4DJ" }, { name: "Priya", reg: "1618033988", postcode: "SE1 7PB" }], "saved and normalised");
+  eq(await p.textContent("h1"), "Add your group's details", "title");
+  const manual = p.locator("text=Enter details manually");
+  assert(await p.locator(REVIEW).isDisabled(), "Review disabled when empty"); assert(await manual.isEnabled(), "manual enabled when empty");
+  eq(await p.textContent(".hint"), "", "no hint when empty");
+  await p.fill("textarea", "hi all, see you at the farm");
+  assert(await p.locator(REVIEW).isDisabled(), "Review disabled when nothing's found"); assert(await manual.isEnabled(), "manual enabled with unrecognised text");
+  eq(await p.textContent(".hint"), "We couldn't find any registration numbers yet.", "explains why");
+  await p.fill("textarea", PASTE);
+  assert(await p.locator(REVIEW).isEnabled(), "Review enabled once someone is found"); assert(await manual.isEnabled(), "manual still enabled");
+  eq(await p.textContent(".hint"), "", "hint cleared");
+  const shown = await p.textContent(".v-create");
+  assert(!shown.includes("Priya") && !shown.includes("1618033988"), "no list of detected people on the paste step");
   noErrors(p); await p.context().close();
 });
-await test("Paste with everyone complete saves straight to the group page", async () => {
+await test("Review step: parsed rows, missing postcode flagged, saves only the reviewed people", async () => {
   const p = await page(await context()); await p.goto(B + "#/new");
-  await p.fill("textarea", "Alex 1029384756 BS1 4DJ"); await p.click("text=Create group (1 person)");
-  await p.waitForSelector(".v-day"); eq(await p.textContent("h1"), "Alex", "title");
-  await p.context().close();
+  await p.fill("textarea", PASTE); await p.click(REVIEW);
+  await p.waitForSelector(".ecard.has-error");
+  eq(await p.textContent("h1"), "Check your group's details", "title");
+  assert((await p.textContent(".v-edit")).includes("Correct anything that needs changing, or add people manually."), "helper");
+  eq(await p.textContent(".v-edit > button.btn-primary"), "Save group", "save button"); eq(await p.textContent(".add-person"), "+ Add someone", "add button");
+  eq(await p.textContent(".v-edit > .back"), "‹ Back to messages", "can go back to the messages");
+  eq(await p.locator(".err:not(:empty)").allTextContents(), ["Add a postcode to continue."], "error");
+  eq(await pages(p), {}, "nothing saved yet");
+  await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("se17pb");
+  await p.click("text=Save group"); await p.waitForSelector(".v-day");
+  const saved = Object.values(await pages(p))[0].people;
+  eq(saved, [{ name: "Alex", reg: "1029384756", postcode: "BS1 4DJ" }, { name: "Priya", reg: "1618033988", postcode: "SE1 7PB" }], "saved and normalised");
+  const stored = await p.evaluate(() => [localStorage, sessionStorage].flatMap(s => Object.keys(s).map(k => s.getItem(k))).join("\n"));
+  assert(!stored.includes("Alex:") && !stored.includes("Priya 1618033988"), "the pasted text is never stored");
+  await p.goto(B + "#/new"); eq(await p.inputValue("textarea"), "", "a new setup starts empty after saving");
+  noErrors(p); await p.context().close();
 });
-await test("Add by hand keeps parsed people; validation messages; blank rows ignored; 6 max; remove", async () => {
+await test("Back before any change keeps the text; after a change, back returns to the review with the changes", async () => {
   const p = await page(await context()); await p.goto(B + "#/new");
-  await p.fill("textarea", "Alex 1029384756 BS1 4DJ"); await p.click("text=+ Add someone by hand");
-  await p.waitForSelector(".v-edit"); eq(await p.inputValue('input[placeholder="Digits only"]'), "1029384756", "prefilled");
+  await p.fill("textarea", PASTE); await p.click(REVIEW); await p.waitForSelector(".v-edit");
+  await p.click("text=Back to messages"); await p.waitForSelector(".v-create");
+  eq(await p.inputValue("textarea"), PASTE, "text kept");
+  await p.click(REVIEW); await p.waitForSelector(".v-edit");
+  await nameBox(p, 0).fill("Alexandra");
+  eq(await p.textContent(".v-edit > .back"), "‹ Back", "no way back to the messages once something's changed");
+  await p.goBack(); await p.waitForURL(/#\/add$/); await p.waitForSelector(".v-edit");
+  eq(await nameBox(p, 0).inputValue(), "Alexandra", "the phone's back button can't undo the change");
+  await p.locator(".ecard .textbtn").nth(1).click();
+  await p.goto(B + "#/new"); await p.waitForURL(/#\/add$/);
+  eq(await p.locator(".ecard").count(), 1, "removing someone counts as a change, and is kept");
+  await p.click(".v-edit > .back"); await p.waitForSelector(".v-home");
+  await p.click("text=Set up your group"); await p.waitForSelector(".v-create");
+  eq(await p.inputValue("textarea"), "", "starting again from home is a fresh setup");
+  noErrors(p); await p.context().close();
+});
+await test("Enter details manually: from an empty box, by keyboard; validation; blank rows ignored; 6 max; remove", async () => {
+  const q = await page(await context()); await q.goto(B + "#/new");
+  await q.click("text=Enter details manually"); await q.waitForSelector(".v-edit");
+  eq(await q.locator(".ecard").count(), 1, "one blank row"); eq(await nameBox(q, 0).inputValue(), "", "blank");
+  await q.context().close();
+  const p = await page(await context()); await p.goto(B + "#/new");
+  await p.fill("textarea", "Alex 1029384756 BS1 4DJ");
+  await p.focus("textarea"); await p.keyboard.press("Tab"); await p.keyboard.press("Tab"); await p.keyboard.press("Enter");
+  await p.waitForSelector(".v-edit"); eq(await p.locator(".ecard").count(), 1, "manual entry ignores the pasted text");
+  eq(await nameBox(p, 0).inputValue(), "", "starts blank");
   for (let i = 0; i < 5; i++) await p.click(".add-person");
   assert(await p.locator(".add-person").isDisabled(), "disabled at 6"); eq(await p.textContent(".add-person"), "6 people max per booking", "max label");
-  const name = i => p.locator('input[placeholder="First name is enough"]').nth(i), reg = i => p.locator('input[placeholder="Digits only"]').nth(i), pc = i => p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(i);
+  const name = i => nameBox(p, i), reg = i => p.locator('input[placeholder="Digits only"]').nth(i), pc = i => p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(i);
+  await name(0).fill("Alex"); await reg(0).fill("1029384756"); await pc(0).fill("BS1 4DJ");
   await name(1).fill("NoReg"); await pc(1).fill("E1 6AN");
   await name(2).fill("TooLong"); await reg(2).fill("1234567890123"); await pc(2).fill("E1 6AN");
   await name(3).fill("Nothing");
-  await p.click("text=Create group");
-  eq(await p.locator(".err").allTextContents(), ["", "Add a reg number (digits only).", "Reg numbers are at most 12 digits.", "Add a reg number (digits only). Add a postcode.", "", ""], "messages");
+  await p.click("text=Save group");
+  eq(await p.locator(".err").allTextContents(), ["", "Add a reg number (digits only).", "Reg numbers are at most 12 digits.", "Add a reg number (digits only). Add a postcode to continue.", "", ""], "messages");
   eq(await reg(1).evaluate(e => e.classList.contains("bad")), true, "reg border");
   eq(await pc(1).evaluate(e => e.classList.contains("bad")), false, "only failing input marked");
   for (const i of [3, 2, 1]) await p.locator(".ecard .textbtn").nth(i).click();
   assert(!(await p.locator(".add-person").isDisabled()), "re-enabled");
   await reg(1).fill(" 27182 81828 "); await pc(1).fill("sw1a1aa"); await name(1).fill("Bea");
-  await p.click("text=Create group"); await p.waitForSelector(".v-day");
+  await p.click("text=Save group"); await p.waitForSelector(".v-day");
   eq(Object.values(await pages(p))[0].people.map(x => [x.name, x.reg, x.postcode]), [["Alex", "1029384756", "BS1 4DJ"], ["Bea", "2718281828", "SW1A 1AA"]], "blank rows ignored, normalised");
   noErrors(p); await p.context().close();
 });
@@ -947,6 +979,7 @@ await test("Malicious share links and pasted chat text never execute", async () 
   codes.push(Buffer.from(JSON.stringify({ t: PAYLOADS[0], p: [[PAYLOADS[0], "1", PAYLOADS[2]]] })).toString("base64url"));
   for (const code of codes) { await p.goto(B + "#/s/" + code); await p.waitForTimeout(50); assert(!(await p.evaluate(() => window.__pwned)), "link executed"); }
   await p.goto(B + "#/new"); await p.fill("textarea", PAYLOADS.map(x => `${x} 2718281828 SW1A 1AA`).join("\n"));
+  await p.click(".v-create > button.btn-primary"); await p.waitForSelector(".v-edit"); // the review step shows the parsed names
   await p.waitForTimeout(50); assert(!(await p.evaluate(() => window.__pwned)), "paste executed");
   await ctx.close();
 });
@@ -955,7 +988,7 @@ await test("No CSP violations on any screen; the only outside request is Google'
   p.on("request", r => { if (!r.url().startsWith(B) && !r.url().startsWith("data:")) outbound.push(r.url()); });
   await p.goto(B); await p.locator(".copy.hero").first().click(); await p.locator(".mock-field").first().fill("1029384756");
   await p.goto(B + "#/new"); await p.fill("textarea", "Alex 1029384756 BS1 4DJ\nPriya 1618033988"); await p.click(".v-create > button.btn-primary");
-  await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("E1 6AN"); await p.click("text=Create group"); await p.waitForSelector(".v-day");
+  await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("E1 6AN"); await p.click("text=Save group"); await p.waitForSelector(".v-day");
   await p.locator(".v-day .copy").first().click(); await p.click("text=What's in the link?"); await p.click(".share .btn-primary");
   const link = await clip(p); await p.goto(link); await p.goto(B + "#/data"); await p.goto(B + "#/s/broken"); await p.goto(B + "demo.html"); await p.goto(B + "faq/");
   const strange = outbound.filter(u => !ADS_HOST.test(u));
