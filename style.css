@@ -136,6 +136,7 @@ h2.plain { font: 600 16px/1.35 var(--sans); }
 .saved .names { font-weight: 600; }
 .saved .open { font-weight: 600; color: var(--accent-ink); white-space: nowrap; }
 .saved-list { display: flex; flex-direction: column; gap: 8px; }
+.saved-empty { text-align: center; }
 .section { display: flex; flex-direction: column; gap: 10px; }
 .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .steps li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; font-size: 15px; }

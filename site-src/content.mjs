@@ -252,7 +252,7 @@ const FAQ_ITEMS = [
   ["What if someone in my group can't pay the balance?", "If the balance isn't paid by the end of the window, that ticket is cancelled and goes into the spring resale. In recent years the deposit was refunded minus an admin fee."],
   ["Can I give my ticket to a friend?", "No. Glastonbury tickets carry the holder's photo and are non-transferable. Returned tickets are sold again only through the official resale."],
   ["Is there a resale?", "Usually, in the spring, for tickets that weren't fully paid for. See [resale and coach tickets](/guides/resale-and-coach-tickets/)."],
-  ["Does the tool work on iPhone and Android?", "Yes, in any modern browser. Copying uses your browser's clipboard. If copying fails, you can press and hold to select the number instead."],
+  ["Does the tool work on iPhone and Android?", "Yes, in any modern browser. Copying uses your browser's clipboard. If copying fails, the box says so: tap it to try again, or type the number in from the screen."],
   ["What does Keep screen on do?", "It asks your browser to stop the screen locking while your group's page is open, if your browser supports it. It switches off when you leave the page."],
   ["How do I delete my data?", "In the tool, open How your data is handled and choose Delete everything on this phone. Clearing your browser's site data also removes it."],
   ["Who makes this?", "A product manager, not a professional developer, who got fed up scrolling the group chat for numbers every ticket day. See [About](/about/)."],
