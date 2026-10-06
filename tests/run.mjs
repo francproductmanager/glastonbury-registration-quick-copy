@@ -165,6 +165,20 @@ await test("No middle dots, em dashes or en dashes anywhere we write", () => {
   }
   assert(!bad.length, bad.join(", "));
 });
+await test("No real registration numbers or postcodes: only approved made-up values", async () => {
+  const { findPersonalData } = await import(join(ROOT, "scripts", "check-personal-data.mjs"));
+  const bad = [];
+  for (const f of execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean)) {
+    if (/package-lock\.json$|LICENSE|\.(woff2|png|ico)$/.test(f) || !existsSync(join(ROOT, f))) continue;
+    for (const x of findPersonalData(readFileSync(join(ROOT, f), "utf8"))) bad.push(`${f}: ${x}`);
+  }
+  assert(!bad.length, bad.join("; "));
+  // the check itself catches what it should, in every format people type
+  // (built from pieces so these unapproved examples never appear whole in this file)
+  const n = ["4815", "162", "342"], pc = [["N7", "9AB"], ["SW9", "8JX"], ["EH1", "2NG"]];
+  for (const t of [n.join(""), n.join(" "), n.join("-"), n.join("") + "00", `Postcode: ${pc[0].join(" ")}`, pc[0].join("").toLowerCase(), pc[1].join(" "), pc[2].join(" ")]) assert(findPersonalData(t).length, `missed ${t}`);
+  for (const t of ["1029384756", "BS1 4DJ", "sw1a1aa", "2026-10-06", "#e3f6eb", "ca-pub-2229524942259780", "1234567", 'href="data:image/svg+xml,%3Csvg viewBox=%220 0 100 100%22%3E"']) eq(findPersonalData(t), [], t);
+});
 await test("Fonts are self-hosted and present", () => {
   const css = readFileSync(join(ROOT, "style.css"), "utf8");
   const files = [...css.matchAll(/url\("fonts\/([^"]+)"\)/g)].map(m => m[1]);
