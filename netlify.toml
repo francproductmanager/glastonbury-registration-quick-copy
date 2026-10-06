@@ -34,6 +34,10 @@
   for = "/ads.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
+[[headers]]
+  for = "/.well-known/security.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
 
 # Sources and tooling stay in the repo, not on the website
 [[redirects]]

@@ -203,6 +203,16 @@ await test("Generated pages are up to date with site-src, and the tool's index.h
   }
   for (const f of ["index.html", "demo.html", "app.js"]) assert(readFileSync(join(tmp, f)).equals(readFileSync(join(ROOT, f))), `build changed ${f}`);
 });
+await test("security.txt is valid and not about to expire", async () => {
+  const t = readFileSync(join(ROOT, ".well-known", "security.txt"), "utf8");
+  assert(t.includes(`Contact: ${SOURCE_REPO}/security/advisories/new`), "contact");
+  assert(t.includes(`Canonical: ${SITE_URL}/.well-known/security.txt`), "canonical");
+  const expires = new Date(t.match(/^Expires: (.+)$/m)[1]);
+  assert(expires - Date.now() > 30 * 864e5, `security.txt expires ${expires.toISOString().slice(0, 10)}: move the Expires date on a year`);
+  assert(expires - Date.now() < 366 * 864e5, "Expires should be at most a year away");
+  const p = await page(await context()); const r = await p.goto(B + ".well-known/security.txt");
+  eq(r.status(), 200, "served"); await p.context().close();
+});
 await test("ads.txt is exactly Google's AdSense line", () => {
   eq(readFileSync(join(ROOT, "ads.txt"), "utf8"), "google.com, pub-2229524942259780, DIRECT, f08c47fec0942fa0\n", "ads.txt");
 });
