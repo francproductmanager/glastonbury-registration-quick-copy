@@ -7,7 +7,8 @@ set -euo pipefail
 SITE="${SITE:-https://glastoquickcopy.netlify.app}"
 EXPECT="$(git rev-parse HEAD)"
 TRIES="${TRIES:-1}"
-FILES=(index.html demo.html app.js style.css robots.txt fonts/newsreader-latin-500-normal.woff2 fonts/instrument-sans-latin-400-normal.woff2 fonts/instrument-sans-latin-500-normal.woff2 fonts/instrument-sans-latin-600-normal.woff2 fonts/ibm-plex-mono-latin-400-normal.woff2 fonts/ibm-plex-mono-latin-500-normal.woff2 fonts/ibm-plex-mono-latin-600-normal.woff2)
+# Every file the website serves (everything in the repo except sources, tooling and docs)
+mapfile -t FILES < <(git ls-files -- '*.html' '*.js' '*.css' '*.txt' '*.xml' 'fonts/*.woff2' ':!site-src' ':!scripts' ':!tests' ':!.github' ':!node_modules')
 tmp="$(mktemp -d)"
 
 # 1. Which commit is live? (stamped into <meta name="source-commit"> at deploy time)
@@ -37,13 +38,17 @@ for f in "${FILES[@]}"; do
   fi
 done
 
-# 3. The security headers must be in place
+# 3. The security headers must be in place. The policy allows Google's ads but must keep
+#    blocking plugins, <base> hijacking, form submissions and other sites framing the pages.
 headers="$(curl -fsSI --max-time 30 "$SITE/")"
-if grep -qi "^content-security-policy:.*connect-src 'none'" <<<"$headers"; then
-  echo "✓ Security policy header blocks all network requests"
-else
-  echo "::error::The Content-Security-Policy header is missing or has changed"
-  fail=1
-fi
+csp="$(grep -i '^content-security-policy:' <<<"$headers" || true)"
+for d in "object-src 'none'" "base-uri 'none'" "form-action 'none'" "frame-ancestors 'none'"; do
+  if grep -qF "$d" <<<"$csp"; then
+    echo "✓ Security policy has $d"
+  else
+    echo "::error::The Content-Security-Policy header is missing $d"
+    fail=1
+  fi
+done
 
 exit "$fail"

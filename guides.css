@@ -1,0 +1,88 @@
+/* Guides site. Same design tokens and fonts as the tool. */
+@font-face { font-family: "Newsreader"; font-weight: 500; font-style: normal; font-display: swap; src: url("/fonts/newsreader-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("/fonts/instrument-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("/fonts/instrument-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("/fonts/instrument-sans-latin-600-normal.woff2") format("woff2"); }
+
+:root {
+  --bg: #fbfaf6; --surface: #ffffff; --surface-sunk: #fbfaf6;
+  --ink: #22201c; --ink-2: #3d3a34; --muted: #625e55;
+  --border: #e3dfd6; --border-strong: #d6d1c6; --divider: #eeebe4;
+  --accent: oklch(0.52 0.12 250); --accent-hover: oklch(0.47 0.12 250); --accent-ink: oklch(0.45 0.12 250);
+  --accent-deep: oklch(0.38 0.1 250); --accent-soft: oklch(0.95 0.03 250); --on-accent: #ffffff;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161512; --surface: #1f1d19; --surface-sunk: #191814;
+    --ink: #f1eee6; --ink-2: #dcd7cc; --muted: #a8a397;
+    --border: #34312b; --border-strong: #4a463e; --divider: #2c2a25;
+    --accent: oklch(0.72 0.11 250); --accent-hover: oklch(0.77 0.1 250); --accent-ink: oklch(0.78 0.1 250);
+    --accent-deep: oklch(0.86 0.07 250); --accent-soft: oklch(0.3 0.05 250); --on-accent: #10151d;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 var(--sans); }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+a:hover { color: var(--accent-deep); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.site-head { border-bottom: 1px solid var(--border); background: var(--bg); }
+.head-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 60px; flex-wrap: wrap; }
+.wordmark { font: 500 19px var(--serif); color: var(--ink); text-decoration: none; }
+.site-head nav { display: flex; gap: 16px; align-items: center; font-size: 15px; }
+.site-head nav a { color: var(--ink-2); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.site-head nav a:hover { color: var(--accent-deep); }
+.site-head .nav-cta { color: var(--accent-ink); font-weight: 600; }
+
+main { padding-top: 28px; padding-bottom: 40px; }
+.page h1 { font: 500 38px/1.1 var(--serif); letter-spacing: -0.02em; margin: 0 0 12px; text-wrap: balance; }
+.page h2 { font: 500 26px/1.2 var(--serif); margin: 36px 0 8px; }
+.page h3 { font: 600 18px/1.35 var(--sans); margin: 24px 0 4px; }
+.page p, .page li { color: var(--ink-2); text-wrap: pretty; }
+.page p { margin: 0 0 14px; }
+.page ul, .page ol { padding-left: 22px; margin: 0 0 16px; }
+.page li { margin-bottom: 8px; }
+.lead { font-size: 19px; color: var(--muted) !important; }
+.crumbs { font-size: 14px; margin-bottom: 6px !important; }
+.crumbs a { color: var(--muted); }
+.tip { background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; margin: 20px 0; }
+.tip p { margin: 0; color: var(--accent-deep) !important; font-weight: 600; }
+.cta { margin: 24px 0 !important; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 22px; border-radius: 14px; font-weight: 600; text-decoration: none; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-hover); color: var(--on-accent); }
+.cards { display: grid; gap: 10px; margin: 12px 0 20px; }
+@media (min-width: 640px) { .cards { grid-template-columns: 1fr 1fr; } }
+.gcard { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; text-decoration: none; color: var(--ink); }
+.gcard:hover { border-color: var(--border-strong); color: var(--ink); }
+.gtitle { font-weight: 600; }
+.gsum { font-size: 15px; color: var(--muted); line-height: 1.5; }
+.related h2 { font-size: 22px; }
+.sources { font-size: 15px; }
+.updated { font-size: 14px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 14px; margin-top: 28px; }
+
+.faq-list { display: flex; flex-direction: column; margin-bottom: 20px; }
+.faq { border-top: 1px solid var(--border); padding: 14px 0; }
+.faq:last-child { border-bottom: 1px solid var(--border); }
+.faq summary { list-style: none; cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; gap: 12px; color: var(--ink); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq-sign { color: var(--muted); font-weight: 400; }
+.faq-sign::before { content: "+"; }
+.faq[open] .faq-sign::before { content: "\2212"; }
+.faq p { margin: 8px 0 0; font-size: 16px; }
+
+.site-foot { border-top: 1px solid var(--border); padding: 20px 0 32px; font-size: 14px; color: var(--muted); }
+.site-foot nav { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 10px; }
+.site-foot nav a { color: var(--ink-2); min-height: 32px; display: inline-flex; align-items: center; }
+.site-foot p { margin: 0; }
+
+.ad-slot { margin: 28px 0; }
+.ad-slot:not([data-filled]) { display: none; }
+.ad-label { margin: 0 0 4px !important; font-size: 11px !important; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted) !important; }
+.ad-slot ins.adsbygoogle { display: block; min-height: 100px; }
