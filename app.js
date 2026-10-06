@@ -493,13 +493,25 @@
       const head = found.length ? `Found ${found.length} ${found.length === 1 ? "person" : "people"}` : "No reg numbers found yet";
       results.replaceChildren(...[
         h("div", { class: "res-head" }, h("span", null, head), h("span", { class: "max" }, `${MAX_PEOPLE} max`)),
-        found.map(p => h("div", { class: "res-row" },
-          h("span", { class: "avatar", "aria-hidden": "true" }, p.name.charAt(0).toUpperCase()),
-          h("span", null, h("div", { class: "res-name" }, p.name),
-            h("div", { class: "res-sub" }, h("span", null, p.reg), h("span", null, p.postcode || "no postcode"))),
-          h("span", { class: "status " + (p.postcode ? "ready" : "missing") }, p.postcode ? "Ready" : "Add postcode"))),
+        found.map(p => {
+          const row = h("div", { class: "res-row" },
+            h("span", { class: "avatar", "aria-hidden": "true" }, p.name.charAt(0).toUpperCase()),
+            h("span", null, h("div", { class: "res-name" }, p.name),
+              h("div", { class: "res-sub" }, h("span", null, p.reg), h("span", null, p.postcode || "no postcode"))));
+          if (p.postcode) { row.append(h("span", { class: "status ready" }, "Ready")); return row; }
+          // Missing details can only be added on the next screen, so explain rather than ask here
+          const note = h("p", { class: "res-note", hidden: true }, "We couldn't pick out a postcode here, but don't worry: you can add it in the next step.");
+          const toggle = h("button", { type: "button", class: "status missing", "aria-expanded": "false", onclick: () => {
+            note.hidden = !note.hidden;
+            toggle.setAttribute("aria-expanded", String(!note.hidden));
+          } }, "Almost ready");
+          row.append(toggle, note);
+          return row;
+        }),
         h("button", { type: "button", class: "res-foot", onclick: () => { pendingRows = { rows: found.map(p => ({ ...p })), showErrors: false }; go("add"); } }, "+ Add someone by hand")].flat());
-      submit.textContent = found.length ? `Create group (${found.length} ${found.length === 1 ? "person" : "people"})` : "Create group";
+      submit.textContent = !found.length ? "Create group"
+        : found.some(p => !p.postcode) ? "Next step: Confirm your details"
+        : `Create group (${found.length} ${found.length === 1 ? "person" : "people"})`;
       submit.disabled = !found.length;
     }
     ta.addEventListener("input", () => { found = parseImport(ta.value); draw(); });
@@ -589,7 +601,7 @@
     (src.length ? src : [{}]).forEach(addRow);
     if (handoff && handoff.showErrors) rows.forEach(validate);
 
-    const save = h("button", { type: "button", class: "btn btn-primary" }, id ? "Save changes" : "Create group");
+    const save = h("button", { type: "button", class: "btn btn-primary" }, id ? "Save changes" : "Details correct, Create group");
     save.addEventListener("click", () => {
       const results = rows.map(validate);
       const people = results.filter(x => !x.blank).map(x => x.person);
@@ -604,7 +616,7 @@
     });
     wrap.append(
       back(id ? "#/p/" + id : "#/new", "Back"),
-      h("h1", null, id ? "Edit group" : "Add people"),
+      h("h1", null, id ? "Edit group" : handoff ? "Confirm your details" : "Add people"),
       list, addBtn, banner, save, ad("editor-end"));
     return wrap;
   }
