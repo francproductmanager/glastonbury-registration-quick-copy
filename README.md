@@ -89,11 +89,11 @@ Ads only appear in **named slots** that we place page by page. Google never plac
 
 | Slot | Where |
 |---|---|
-| `home-mid`, `home-end` | Home: after "How it works", and after the questions |
+| `home-end` | Home: after the questions |
 | `create-end` | Paste screen: below the Create button |
 | `editor-end` | Add or edit people: below Save |
-| `group-end` | Ticket day: at the very bottom, below sharing and Edit/Delete, well away from the copy boxes |
-| `shared-end` | Opening a shared link: below Save / Not now |
+| `group-between` | Ticket day: between one person and the next (5 for a group of 6), each in its own dashed, labelled panel with extra space around it |
+| `group-end` | Ticket day: at the very bottom, below sharing and Edit/Delete |
 | `data-end` | How your data is handled: at the bottom |
 | `guide-top`, `guide-mid`, `guide-end` | Each guide: after the intro, halfway through, before Related guides |
 | `guides-end` | Guides list: at the bottom |
@@ -102,7 +102,7 @@ Ads only appear in **named slots** that we place page by page. Google never plac
 
 There are no ads on Privacy, Terms, Contact or the 404 page.
 
-**To switch a slot on:** in AdSense go to **Ads > By ad unit > Display ads**, create a unit (one per slot is easiest, named after the slot) and copy its `data-ad-slot` number into `ads.js`. A slot with no number stays hidden.
+Every slot currently uses the **"Standard"** responsive display unit (`2945530362`). To give a slot its own unit (for separate reporting, or another format), create it in AdSense under **Ads > By ad unit** and put its `data-ad-slot` number next to the slot in `ads.js`. A slot set to `""` stays hidden, and a slot whose ad doesn't load takes up no space.
 
 **Consent:** in AdSense, under **Privacy and messaging**, publish Google's consent message for the UK, EEA and Switzerland (the option with Consent, Do not consent and Manage options).
 
