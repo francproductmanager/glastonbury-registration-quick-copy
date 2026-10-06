@@ -20,7 +20,7 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 - **The tool's code never sends your group anywhere.** `app.js` makes no network requests (the tests check this).
 - **The site shows Google ads.** That keeps it free. Like any site with Google ads, Google's ad code runs on its pages, and Google uses cookies to show and measure ads (with a consent message in the UK, EEA and Switzerland). Ads only appear in fixed slots, never next to the copy buttons. See the [privacy policy](https://glastobolt.co.uk/privacy/).
 - **Security policy.** Because of the ads, the Content Security Policy allows Google's ad servers. It still blocks plugins, `<base>` hijacking and form submissions, and stops other sites embedding the pages.
-- **Share links carry the data themselves.** First names, reg numbers and postcodes are packed into the part of the link after `#`, which browsers never send to a server. Surnames are left out. It's encoded, not encrypted, so only send it to your group.
+- **Share links carry the data themselves.** First names, reg numbers and postcodes are packed into the part of the link after `#`, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead ("Alex 1", "Alex 2"). It's encoded, not encrypted, so only send it to your group.
 - **Opening a link saves nothing** until you tap "Save to this phone".
 - **Your clipboard.** Some keyboards, like Gboard, keep a clipboard history. You can clear it after ticket day.
 

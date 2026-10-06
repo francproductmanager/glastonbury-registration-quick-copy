@@ -71,7 +71,7 @@
   // Compact binary format, base64url-encoded into the link after "#/s/":
   //   byte 0: format version (2; version 1 links still decode)
   //   then per person:
-  //     1 byte name length + UTF-8 first name (surname initial added only to tell duplicates apart)
+  //     1 byte name length + UTF-8 first name (a repeated first name gets a number: "Alex 1", "Alex 2")
   //     1 byte: high nibble = reg number digit count, low nibble = postcode character count
   //     5 bytes: reg number as an integer, little-endian (digit count restores leading zeros)
   //     postcode: 0 to 9, A to Z, space, "-" at 6 bits per character, padded to whole bytes;
@@ -94,12 +94,17 @@
     const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
     return Uint8Array.from(bin, c => c.charCodeAt(0));
   }
+  // First names only. When a first name repeats, a number tells them apart ("Alex 1", "Alex 2"),
+  // so nothing from a surname ever goes into the link.
   function shareNames(people) {
-    const words = people.map(p => p.name.trim().split(/\s+/).filter(Boolean));
-    const firsts = words.map(w => w[0] || "");
-    return firsts.map((f, i) => {
-      const dup = firsts.some((g, j) => j !== i && g.toLowerCase() === f.toLowerCase());
-      return dup && words[i].length > 1 ? `${f} ${words[i][words[i].length - 1][0]}.` : f;
+    const firsts = people.map(p => p.name.trim().split(/\s+/)[0] || "");
+    const total = Object.create(null), seen = Object.create(null);
+    for (const f of firsts) if (f) total[f.toLowerCase()] = (total[f.toLowerCase()] || 0) + 1;
+    return firsts.map(f => {
+      const k = f.toLowerCase();
+      if (!f || total[k] < 2) return f;
+      seen[k] = (seen[k] || 0) + 1;
+      return `${f} ${seen[k]}`;
     });
   }
   // Page title is always "Glasto group, <first names>", never user-typed.
@@ -770,7 +775,7 @@
         h("summary", null, "What's in the link?"),
         h("div", { class: "link-box" },
           rows.map(p => h("div", { class: "lrow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
-          h("p", { class: "link-foot" }, "Just these. First names only. Anyone with the link can read them, so keep it to the group."))));
+          h("p", { class: "link-foot" }, "Just these: first names, registration numbers and postcodes. No surnames; two people with the same first name are numbered. Anyone with the group link can read the names, registration numbers and postcodes. Share it only with your group."))));
   }
 
   // ---------- share link opened ----------
@@ -824,7 +829,7 @@
       block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
       block("Is it sent anywhere?", "Not by this tool. Its code makes no network requests and there's no server copy of your group."),
       block("Ads", "The site is free because it shows Google ads. As on any site with ads, Google's ad code runs on these pages and Google uses cookies to show and measure ads. ", h("a", { href: "/privacy/" }, "Privacy and cookies")),
-      block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out. It's encoded, not encrypted, so anyone with the link can read it."),
+      block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead (Alex 1, Alex 2). It's encoded, not encrypted, so anyone with the link can read it."),
       block("Your clipboard", "Some keyboards, like Gboard, keep a clipboard history. You can clear it from the keyboard's clipboard menu after ticket day."),
       h("section", { class: "card check" },
         h("h2", { class: "plain" }, "Check it yourself"),

@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SITE, PAGES, GUIDES } from "./content.mjs";
+import { safeUrl } from "./safe-url.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = ROOT;
@@ -13,11 +14,12 @@ const URL_ = SITE.url;
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // Inline markup allowed in content: **bold** and [text](url). Everything else is escaped.
+// Every link must pass safeUrl (see safe-url.mjs), or the build stops.
 function inline(s) {
   return esc(s)
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\[(.+?)\]\((.+?)\)/g, (_, t, u) => {
-      const external = /^https?:/.test(u);
+      const external = /^https:/i.test(safeUrl(u));
       return `<a href="${u}"${external ? ' rel="noopener"' : ""}>${t}</a>`;
     });
 }
@@ -127,7 +129,7 @@ for (const g of GUIDES) {
 <h1>${inline(g.title)}</h1>
 <p class="lead">${inline(g.summary)}</p>
 ${blocks([{ ad: "guide-top" }, ...withAds])}
-${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${u}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
+${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${esc(safeUrl(u))}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
 ${blocks([{ ad: "guide-end" }])}
 <aside class="related"><h2>Related guides</h2>${blocks([{ cards: related }])}</aside>
 </article>`;
