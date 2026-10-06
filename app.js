@@ -313,11 +313,11 @@
     const P = { reg: "1029384756", postcode: "BS1 4DJ" };
     let step = 0; // 0 copy reg, 1 paste reg, 2 copy postcode, 3 paste postcode, 4 done
     const msg = h("p", { class: "try-msg", role: "status", "aria-live": "polite" });
-    const field = (label) => {
-      const b = h("button", { type: "button", class: "mock-field" });
-      b.label = label;
-      return b;
-    };
+    // How to paste on this device: press and hold on touch screens, a shortcut with a keyboard
+    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+    const howToPaste = touch ? "press and hold inside it, then tap Paste" : "click inside it and press Ctrl+V (\u2318V on a Mac)";
+    // Real text boxes, like the ticket site's: people paste into them themselves
+    const field = (label) => h("input", { type: "text", class: "mock-field", "aria-label": `${label} (practice box)`, autocomplete: "off", spellcheck: "false", autocapitalize: "characters" });
     const regField = field("Registration no."), pcField = field("Postcode");
     const regBox = copyBox("Reg number", P.reg, () => tapBox("reg"), "hero");
     const pcBox = copyBox("Postcode", P.postcode, () => tapBox("pc"), "hero");
@@ -327,52 +327,55 @@
     function draw() {
       regBox.setState(step >= 1 ? "used" : step === 0 ? "next" : "idle");
       pcBox.setState(step >= 3 ? "used" : step === 2 ? "next" : "idle");
-      for (const [f, filledAt, targetAt, value] of [[regField, 2, 1, P.reg], [pcField, 4, 3, P.postcode]]) {
+      for (const [f, filledAt, targetAt] of [[regField, 2, 1], [pcField, 4, 3]]) {
         f.classList.toggle("is-filled", step >= filledAt);
         f.classList.toggle("is-target", step === targetAt);
-        f.replaceChildren(step >= filledAt ? value : h("span", { class: "ph" }, step === targetAt ? "Tap to paste" : ""));
-        f.setAttribute("aria-label", step >= filledAt ? `${f.label}: ${value}` : `Paste into ${f.label}`);
+        f.readOnly = step >= filledAt;
+        f.placeholder = step === targetAt ? "Paste here" : "";
       }
-      done.replaceChildren(...(step === 4 ? [
-        h("p", { class: "try-msg good" }, "Done. That's the whole trick, and it works the same for everyone in your group."),
-        h("a", { class: "btn btn-primary btn-sm", href: "#/new" }, "Start the tool for real"),
-      ] : []));
+      done.replaceChildren(...(step === 4 ? [h("p", { class: "try-msg good" }, "Done. That's the whole trick: tap to copy, paste into the ticket site, move on. It works the same for everyone in your group.")] : []));
       msg.hidden = step === 4;
     }
     async function tapBox(which) {
       if (which === "reg" && step === 0) {
         await copyText(P.reg);
         step = 1;
-        setMsg("Great, you just copied the whole number in an instant. Now tap the Registration no. box below to paste it.", true);
+        setMsg(`Copied, the whole number in one tap. Now paste it into the Registration no. box below: ${howToPaste}.`, true);
       } else if (which === "pc" && step === 2) {
         await copyText(P.postcode);
         step = 3;
-        setMsg("Copied the postcode in an instant too. Tap the Postcode box below to paste it.", true);
+        setMsg(`Copied. Now paste it into the Postcode box: ${howToPaste}.`, true);
       } else if (step === 1 || step === 3) {
-        setMsg("Now tap the highlighted box below to paste it.");
+        setMsg(`Now paste it into the highlighted box below: ${howToPaste}.`);
       } else if (step === 2) {
         setMsg("Next, tap the postcode to copy it.");
       }
       draw();
     }
-    function tapField(which) {
-      if (which === "reg" && step === 1) { step = 2; setMsg("Pasted. Now tap the postcode above to copy it."); }
-      else if (which === "pc" && step === 3) { step = 4; }
-      else if (step === 0 || step === 2) setMsg("Copy it first: tap the highlighted box above.");
+    function onType(which) {
+      const f = which === "reg" ? regField : pcField;
+      const v = f.value.trim();
+      if (!v) return;
+      const right = which === "reg" ? digits(v) === P.reg : normPostcode(v) === P.postcode;
+      if (which === "reg" && step <= 1 && right) { step = 2; f.value = P.reg; setMsg("Pasted. Now tap the postcode above to copy it."); }
+      else if (which === "pc" && step === 3 && right) { step = 4; f.value = P.postcode; }
+      else if (which === "pc" && step < 2) { f.value = ""; setMsg("Start with the reg number: tap it above to copy it."); }
+      else if (!right && v.length >= (which === "reg" ? 10 : 6)) setMsg("That doesn't match. Copy it from the box above, then paste it here.");
       draw();
     }
-    regField.addEventListener("click", () => tapField("reg"));
-    pcField.addEventListener("click", () => tapField("pc"));
-    const reset = h("button", { type: "button", class: "textbtn", onclick: () => { step = 0; setMsg("Tap the reg number to copy it. Example data."); draw(); } }, "Reset");
+    regField.addEventListener("input", () => onType("reg"));
+    pcField.addEventListener("input", () => onType("pc"));
+    for (const [f, at] of [[regField, 0], [pcField, 2]]) f.addEventListener("focus", () => { if (step === at) setMsg("Copy it first: tap the highlighted box above."); });
+    const reset = h("button", { type: "button", class: "textbtn", onclick: () => { step = 0; regField.value = pcField.value = ""; setMsg("Tap the reg number to copy it. Example data."); draw(); } }, "Reset");
     setMsg("Tap the reg number to copy it. Example data.");
     draw();
     return h("section", { class: "card", "aria-label": "Try it" },
       h("div", { class: "card-head" }, h("span", { class: "card-title" }, "Try it"), reset),
       h("div", { class: "copy-grid" }, regBox, pcBox),
       h("div", { class: "mock" },
-        h("div", { class: "mock-cap" }, "Ticket site form"),
-        h("div", { class: "mock-row" }, h("span", null, "Registration no."), regField),
-        h("div", { class: "mock-row" }, h("span", null, "Postcode"), pcField)),
+        h("div", { class: "mock-cap" }, "Practice ticket form"),
+        h("label", { class: "mock-row" }, h("span", null, "Registration no."), regField),
+        h("label", { class: "mock-row" }, h("span", null, "Postcode"), pcField)),
       msg, done);
   }
 
@@ -402,14 +405,13 @@
       h("p", { class: "lead" }, "When you reach the booking page, the clock is running and you need up to six registration numbers and postcodes. Get them all on one page before ticket day, then tap to copy and paste each one. No hunting through the group chat."),
       tryIt(),
       h("a", { class: "btn btn-primary", href: "#/new" }, "Make your group's page"),
-      h("p", { class: "cta-note" }, "Takes a minute. No sign-up."),
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
         h("span", { class: "open" }, "Open ›")))) : null,
       h("section", { class: "section" },
         h("h2", null, "How it works"),
         h("ol", { class: "steps" },
-          [["Paste your group chat.", " Names, numbers and postcodes get sorted for you."],
+          [["Add your group.", " Everyone's reg numbers and postcodes, together on one page."],
            ["Send everyone the link.", " It opens the same page on their phones."],
            ["Tap, paste, next.", " Each box goes blue once it's used, so you know who's done."]]
             .map(([b, rest], i) => h("li", null, h("span", { class: "num" }, String(i + 1)), h("span", null, h("strong", null, b), rest))))),
