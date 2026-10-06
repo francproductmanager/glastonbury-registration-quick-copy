@@ -89,6 +89,9 @@ main { padding-top: 28px; padding-bottom: 40px; }
 /* Google's recommended rule: an ad it couldn't fill (or one waiting for site approval) leaves no gap */
 .ad-slot ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .ad-slot:has(ins[data-ad-status="unfilled"]) { display: none; }
+/* Not (yet) holding an ad: zero height, keeps its width for Google, and cancels the page's
+   spacing so it adds no gap between items (ads.js sets is-empty / is-live) */
+.ad-slot.is-empty, .ad-slot:not(:has(ins[data-ad-status="filled"])) { height: 0; overflow: hidden; padding: 0; border: 0; margin: calc(-1 * var(--gap, 0px)) 0 0; }
 .ad-label { display: none; margin: 0 0 6px !important; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted) !important; }
 .ad-slot:has(ins[data-ad-status="filled"]) { margin: 26px 0; padding: 10px 12px 12px; background: var(--surface-sunk); border: 1px dashed var(--border-strong); border-radius: 12px; }
 .ad-slot:has(ins[data-ad-status="filled"]) > .ad-label { display: block; }
