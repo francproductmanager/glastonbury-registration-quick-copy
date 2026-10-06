@@ -485,9 +485,10 @@ await test("Home: one main action, how it works, questions, footer with commit a
 });
 await test("Home lists saved groups newest first and updates when another tab changes storage", async () => {
   const ctx = await context(); const p = await page(ctx); await p.goto(B);
+  eq(await p.textContent(".saved-empty"), "No groups saved yet. Set one up before ticket day.", "empty state");
   await p.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.now() - 1000, people: [{ name: "Old", reg: "1", postcode: "E1 6AN" }] }, b2: { created: Date.now(), people: [{ name: "New", reg: "2", postcode: "E1 6AN" }] } })));
   await p.reload();
-  eq(await p.locator(".saved .names").allTextContents(), ["New", "Old"], "order");
+  eq(await p.locator(".saved .names").allTextContents(), ["New", "Old"], "order"); eq(await p.locator(".saved-empty").count(), 0, "no empty state with groups");
   const q = await page(ctx); await q.goto(B);
   await q.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({})));
   await p.waitForTimeout(200);
@@ -606,9 +607,12 @@ await test("Up next, progress, per-person status, clipboard, all done, clear tic
   eq(await p.textContent("h1"), "Alex, Sam, Jo", "title");
   eq(await boxes.evaluateAll(bs => bs.map(b => b.className.includes("is-next"))), [true, false, false, false, false, false], "first is up next");
   eq(await p.textContent(".stat .v"), "0 of 6 copied", "progress");
+  eq(await p.textContent(".subtitle"), "Tap a number or postcode to copy it, then paste it into the ticket form.", "instruction");
   await boxes.nth(1).click(); eq(await clip(p), "BS1 4DJ", "clipboard");
+  await waitText(p, "#toast", "Postcode copied: BS1 4DJ");
   eq(await boxes.nth(0).evaluate(b => b.className.includes("is-next")), true, "still up next (reading order)");
   await boxes.nth(0).click(); eq(await clip(p), "1029384756", "clipboard 2");
+  await waitText(p, "#toast", "Registration number copied: 1029384756");
   eq(await p.locator(".pstatus").first().textContent(), "Done \u2713", "person done");
   eq(await boxes.nth(2).evaluate(b => b.className.includes("is-next")), true, "next moves on");
   eq(await boxes.nth(0).getAttribute("aria-label"), "Copy reg number 1029384756, copied", "aria-label");
@@ -636,8 +640,8 @@ await test("Copy failure shows the failed state and a hint", async () => {
   } }));
   await seed(p, GROUP); await p.goto(B + "#/p/g1");
   const b = p.locator(".v-day .copy").first(); await b.click();
-  assert(await b.evaluate(e => e.classList.contains("is-fail")), "fail class"); assert((await b.textContent()).includes("hold to select"), "hint");
-  assert((await p.textContent("#toast")).includes("Couldn't copy"), "toast");
+  assert(await b.evaluate(e => e.classList.contains("is-fail")), "fail class"); assert((await b.textContent()).includes("tap to try again"), "hint");
+  eq(await p.textContent("#toast"), "Couldn't copy. Tap to try again.", "toast");
   eq(await p.textContent(".stat .v"), "0 of 6 copied", "not counted");
   await p.context().close();
 });

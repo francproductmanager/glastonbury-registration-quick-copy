@@ -341,7 +341,8 @@
       b.classList.toggle("is-next", state === "next");
       b.classList.toggle("is-used", state === "used");
       b.classList.toggle("is-fail", state === "fail");
-      const hint = { next: "up next", used: "copied ✓", fail: "hold to select" }[state] || "tap to copy";
+      // Text inside a button can't be selected on phones, so a failed copy says to tap again
+      const hint = { next: "up next", used: "copied ✓", fail: "tap to try again" }[state] || "tap to copy";
       lbl.textContent = `${kind}, ${hint}`;
       b.setAttribute("aria-label", `Copy ${kind.toLowerCase()} ${value}${state === "used" ? ", copied" : ""}`);
     };
@@ -349,13 +350,15 @@
     b.addEventListener("click", () => onTap(b));
     return b;
   }
-  async function copyValue(value) {
+  // what: "Registration number" or "Postcode". The value stays in the message so people can
+  // see exactly what they copied.
+  async function copyValue(what, value) {
     const ok = await copyText(value);
     if (ok) {
       if (navigator.vibrate) { try { navigator.vibrate(30); } catch {} }
-      toast(`Copied ${value}`);
+      toast(`${what} copied: ${value}`);
     } else {
-      toast("Couldn't copy. Long-press to select it.", true);
+      toast("Couldn't copy. Tap to try again.", true);
     }
     return ok;
   }
@@ -463,7 +466,8 @@
       h("a", { class: "btn btn-primary", href: "#/new", onclick: () => { draft = null; } }, "Set up your group"),
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
-        h("span", { class: "open" }, "Open ›")))) : null,
+        h("span", { class: "open" }, "Open ›"))))
+        : h("p", { class: "help saved-empty" }, "No groups saved yet. Set one up before ticket day."),
       tryIt(),
       h("section", { class: "section" },
         h("h2", null, "How it works"),
@@ -731,7 +735,7 @@
       finish.hidden = !(DEMO && count === total);
     }
     async function tap(k, value) {
-      const ok = await copyValue(value);
+      const ok = await copyValue(k[0] === "r" ? "Registration number" : "Postcode", value);
       if (ok) { used.add(k); failed.delete(k); saveUsed(id, used); }
       else failed.add(k);
       update();
@@ -776,7 +780,7 @@
       DEMO ? h("div", { class: "demo-banner" }, "Demo with made-up people. Nothing is saved.") : null,
       savedNote,
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
-      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a box, then paste it into the ticket site.")),
+      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form.")),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
       // an ad between one person and the next (never inside a card), drawn as its own marked panel
       cards.flatMap((c, i) => (i ? [ad("group-between"), c] : [c])),
