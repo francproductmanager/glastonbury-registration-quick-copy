@@ -773,6 +773,18 @@ await test("Expired groups are cleared when the tool opens, with their ticks; no
     noErrors(p); await p.context().close();
   }
 });
+await test("Clearing also runs when the only screen opened is an expired or broken link", async () => {
+  const expiredLink = await linkMadeAt("2026-10-15T12:00:00Z");
+  for (const [code, h1] of [[expiredLink, "This group link has expired"], ["broken", "This link doesn't open"]]) {
+    const p = await page(await context()); await p.clock.setFixedTime(new Date("2026-10-31T12:00:00Z")); await p.goto(B);
+    await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: Date.now(), people: g } })), GROUP);
+    await p.goto("about:blank"); await p.clock.setFixedTime(new Date("2026-12-01T12:00:00Z"));
+    await p.goto(B + "#/s/" + code);
+    eq(await p.textContent("h1"), h1, "screen");
+    eq(await pages(p), {}, `expired group cleared on the "${h1}" screen`);
+    noErrors(p); await p.context().close();
+  }
+});
 await test("Saved groups from before seasonal clearing get a date from when they were made", async () => {
   const p = await page(await context()); await p.clock.setFixedTime(new Date("2026-11-20T12:00:00Z")); await p.goto(B);
   await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.parse("2026-11-03T12:00:00Z"), people: g }, b2: { created: 0, people: g } })), GROUP);
