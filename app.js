@@ -459,7 +459,8 @@
       h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
       h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
       h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."),
-      h("a", { class: "btn btn-primary", href: "#/new" }, "Set up your group"),
+      // Starting from home always begins a fresh setup
+      h("a", { class: "btn btn-primary", href: "#/new", onclick: () => { draft = null; } }, "Set up your group"),
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
         h("span", { class: "open" }, "Open ›")))) : null,
@@ -537,58 +538,43 @@
     return people;
   }
 
-  // ---------- create (paste from chat) ----------
-  let pendingRows = null; // hand-off from the import screen to the manual form (memory only)
+  // ---------- set up a group: 1. paste messages (optional), 2. review and edit ----------
+  // The setup in progress lives in memory only, never in storage: the pasted text (so going
+  // back keeps it) and the rows on the review step. Once anything on the review step has been
+  // changed, the paste step is skipped, so re-reading the messages can't undo those changes.
+  let draft = null; // { text, rows, edited, showErrors }
+  const newDraft = () => ({ text: "", rows: [], edited: false, showErrors: false });
   function viewCreate() {
-    let found = [];
-    const results = h("div", { class: "results", "aria-live": "polite" });
-    const submit = h("button", { type: "button", class: "btn btn-primary" });
+    if (draft && draft.edited) { location.replace("#/add"); return null; }
+    if (!draft) draft = newDraft();
     const ta = h("textarea", { class: "import", rows: "6", placeholder: "e.g. Alex 1029384756 BS1 4DJ", spellcheck: "false", autocomplete: "off", maxlength: "6000" });
+    ta.value = draft.text;
+    const review = h("button", { type: "button", class: "btn btn-primary" }, "Review details");
+    const hint = h("p", { class: "help hint", role: "status" });
+    const manual = h("button", { type: "button", class: "btn btn-secondary" }, "Enter details manually");
     function draw() {
-      const head = found.length ? `Found ${found.length} ${found.length === 1 ? "person" : "people"}` : "No reg numbers found yet";
-      results.replaceChildren(...[
-        h("div", { class: "res-head" }, h("span", null, head), h("span", { class: "max" }, `${MAX_PEOPLE} max`)),
-        found.map(p => {
-          const row = h("div", { class: "res-row" },
-            h("span", { class: "avatar", "aria-hidden": "true" }, p.name.charAt(0).toUpperCase()),
-            h("span", null, h("div", { class: "res-name" }, p.name),
-              h("div", { class: "res-sub" }, h("span", null, p.reg), h("span", null, p.postcode || "no postcode"))));
-          if (p.postcode) { row.append(h("span", { class: "status ready" }, "Ready")); return row; }
-          // Missing details can only be added on the next screen, so explain rather than ask here
-          const note = h("p", { class: "res-note", hidden: true }, "We couldn't pick out a postcode here, but don't worry: you can add it in the next step.");
-          const toggle = h("button", { type: "button", class: "status missing", "aria-expanded": "false", onclick: () => {
-            note.hidden = !note.hidden;
-            toggle.setAttribute("aria-expanded", String(!note.hidden));
-          } }, "Almost ready");
-          row.append(toggle, note);
-          return row;
-        }),
-        h("button", { type: "button", class: "res-foot", onclick: () => { pendingRows = { rows: found.map(p => ({ ...p })), showErrors: false }; go("add"); } }, "+ Add someone by hand")].flat());
-      submit.textContent = !found.length ? "Create group"
-        : found.some(p => !p.postcode) ? "Next step: Confirm your details"
-        : `Create group (${found.length} ${found.length === 1 ? "person" : "people"})`;
-      submit.disabled = !found.length;
+      const found = parseImport(draft.text).length;
+      review.disabled = !found;
+      hint.textContent = !found && draft.text.trim() ? "We couldn't find any registration numbers yet." : "";
     }
-    ta.addEventListener("input", () => { found = parseImport(ta.value); draw(); });
-    submit.addEventListener("click", () => {
-      if (!found.length) return;
-      if (found.some(p => !p.postcode)) {
-        pendingRows = { rows: found.map(p => ({ ...p })), showErrors: true };
-        go("add");
-        return;
-      }
-      const pid = savePage(null, found);
-      if (pid) { toast("Saved on this phone"); go("p/" + pid); }
+    ta.addEventListener("input", () => { draft.text = ta.value; draw(); });
+    review.addEventListener("click", () => {
+      const rows = parseImport(draft.text);
+      if (!rows.length) return;
+      Object.assign(draft, { rows, edited: false, showErrors: true });
+      go("add");
     });
+    // Always available, whatever is (or isn't) in the box: start the review step with a blank row
+    manual.addEventListener("click", () => { Object.assign(draft, { rows: [], edited: false, showErrors: false }); go("add"); });
     draw();
     return h("div", { class: "view v-create" },
       back("#/", "Back"),
-      h("h1", null, "Who's in your group?"),
-      h("label", { class: "import-label" }, "Paste the messages from your group chat", ta),
-      h("p", { class: "help" }, "We pick out names, reg numbers and postcodes as you paste."),
-      results,
-      submit,
-      h("p", { class: "cta-note" }, "Saves on this phone. You can edit anything after."),
+      h("h1", null, "Add your group's details"),
+      h("label", { class: "import-label" }, "Paste your group chat messages", ta),
+      h("p", { class: "help" }, "Paste messages to fill in details faster. You can check and edit everything next."),
+      hint,
+      review,
+      manual,
       ad("create-end"));
   }
 
@@ -607,20 +593,30 @@
     const all = loadAll();
     const existing = id ? all[id] : null;
     if (id && !existing) return viewMissing();
-    const handoff = !id && pendingRows ? pendingRows : null;
-    pendingRows = null;
-    const src = existing ? existing.people : handoff ? handoff.rows : [];
+    // Setting up a new group: the rows come from the setup in progress (or start blank)
+    if (!id && !draft) draft = newDraft();
+    const setup = id ? null : draft;
+    const src = existing ? existing.people : setup.rows;
     const rows = [];
     const wrap = h("div", { class: "view v-edit" });
     const list = h("div", { class: "section" });
     const banner = h("div", { class: "banner-ok", role: "status", hidden: true });
-    const addBtn = h("button", { type: "button", class: "add-person", onclick: () => addRow({}) });
+    const addBtn = h("button", { type: "button", class: "add-person", onclick: () => { addRow({}); changed(); } });
+    const backLink = id ? back("#/p/" + id, "Back") : setup.edited ? back("#/", "Back") : back("#/new", "Back to messages");
 
     function renumber() {
       rows.forEach((r, i) => { r.title.textContent = `Person ${i + 1}`; });
       addBtn.disabled = rows.length >= MAX_PEOPLE;
-      addBtn.textContent = rows.length >= MAX_PEOPLE ? `${MAX_PEOPLE} people max per booking` : "+ Add person";
+      addBtn.textContent = rows.length >= MAX_PEOPLE ? `${MAX_PEOPLE} people max per booking` : "+ Add someone";
     }
+    // Keep the setup's rows in step with the screen. After the first change, going back to the
+    // messages is no longer offered (the phone's back button lands here again, see viewCreate).
+    function changed() {
+      if (!setup) return;
+      setup.rows = rows.map(r => ({ name: r.name.value, reg: r.reg.value, postcode: r.postcode.value }));
+      if (!setup.edited) { setup.edited = true; backLink.replaceWith(back("#/", "Back")); }
+    }
+    list.addEventListener("input", changed);
     function addRow(p) {
       if (rows.length >= MAX_PEOPLE) return;
       const r = {
@@ -631,7 +627,7 @@
         err: h("p", { class: "err", role: "alert" }),
       };
       r.card = h("div", { class: "card ecard" },
-        h("div", { class: "ehead" }, r.title, h("button", { type: "button", class: "textbtn", onclick: () => { rows.splice(rows.indexOf(r), 1); r.card.remove(); renumber(); } }, "Remove")),
+        h("div", { class: "ehead" }, r.title, h("button", { type: "button", class: "textbtn", onclick: () => { rows.splice(rows.indexOf(r), 1); r.card.remove(); renumber(); changed(); } }, "Remove")),
         h("label", { class: "field" }, "Name", r.name),
         h("div", { class: "egrid" }, h("label", { class: "field" }, "Reg number", r.reg), h("label", { class: "field" }, "Postcode", r.postcode)),
         r.err);
@@ -647,7 +643,7 @@
       if (!blank) {
         if (!reg) { msgs.push("Add a reg number (digits only)."); regBad = true; }
         else if (reg.length > MAX_REG_DIGITS) { msgs.push(`Reg numbers are at most ${MAX_REG_DIGITS} digits.`); regBad = true; }
-        if (!postcode) { msgs.push("Add a postcode."); pcBad = true; }
+        if (!postcode) { msgs.push("Add a postcode to continue."); pcBad = true; }
       }
       r.err.textContent = msgs.join(" ");
       r.reg.classList.toggle("bad", regBad);
@@ -656,9 +652,9 @@
       return { blank, ok: !msgs.length, person: { name: name || "Unnamed", reg, postcode } };
     }
     (src.length ? src : [{}]).forEach(addRow);
-    if (handoff && handoff.showErrors) rows.forEach(validate);
+    if (setup && setup.showErrors) rows.forEach(validate);
 
-    const save = h("button", { type: "button", class: "btn btn-primary" }, id ? "Save changes" : "Details correct, Create group");
+    const save = h("button", { type: "button", class: "btn btn-primary" }, id ? "Save changes" : "Save group");
     save.addEventListener("click", () => {
       const results = rows.map(validate);
       const people = results.filter(x => !x.blank).map(x => x.person);
@@ -666,15 +662,17 @@
       if (!people.length) { toast("Add at least one person", true); return; }
       const pid = savePage(id, people);
       if (!pid) return;
+      if (!id) draft = null; // only the reviewed people are kept; the pasted text is dropped
       banner.textContent = "Saved on this phone ✓";
       banner.hidden = false;
       toast("Saved on this phone");
       go("p/" + pid);
     });
-    wrap.append(
-      back(id ? "#/p/" + id : "#/new", "Back"),
-      h("h1", null, id ? "Edit group" : handoff ? "Confirm your details" : "Add people"),
-      list, addBtn, banner, save, ad("editor-end"));
+    wrap.append(...[
+      backLink,
+      h("h1", null, id ? "Edit group" : "Check your group's details"),
+      id ? null : h("p", { class: "help" }, "Correct anything that needs changing, or add people manually."),
+      list, addBtn, banner, save, ad("editor-end")].filter(Boolean));
     return wrap;
   }
 

@@ -10,7 +10,7 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 
 ## How it works
 
-1. **Add your group.** Everyone's reg numbers and postcodes, together on one page. You can type them in or paste them from a message, and anyone missing a postcode is flagged.
+1. **Add your group.** Everyone's reg numbers and postcodes, together on one page. Paste your group chat messages to fill them in, or type them yourself, then check and edit everyone before saving. Anyone missing a postcode is flagged. The pasted text is never saved.
 2. **Send everyone the link.** Opening it saves an editable copy on their phones and goes straight to the copy screen.
 3. **Tap, paste, next.** Each box goes blue once it's copied, the next one is highlighted, and a progress bar counts what's done. "Keep screen on" stops your phone locking while you book.
 

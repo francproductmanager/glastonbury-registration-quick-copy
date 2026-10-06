@@ -219,10 +219,10 @@ export const GUIDES = [
     body: [
       "Glasto Quick Copy is a free tool that puts your whole group's registration numbers and postcodes on one page, so on ticket day you can tap to copy each one and paste it straight into the booking form.",
       { h2: "1. Paste your group chat" },
-      "Open the tool and choose **Set up your group**. Paste the messages where your friends sent their details. The tool picks out names, registration numbers and postcodes as you paste, and flags anyone whose postcode is missing.",
-      "Prefer typing? Choose **Add someone by hand** and fill in each person.",
+      "Open the tool and choose **Set up your group**. Paste the messages where your friends sent their details, then choose **Review details**. The tool picks out names, registration numbers and postcodes for you.",
+      "Prefer typing? Choose **Enter details manually** and fill in each person.",
       { h2: "2. Check and save" },
-      "Check each person's number against what they sent. When everyone shows as ready, create the group. It's saved in your browser on your phone. There's no account to make.",
+      "Check each person's name, number and postcode against what they sent. Fix anything that's wrong, add anyone who's missing, and fill in any postcode the tool couldn't find. Then choose **Save group**. It's saved in your browser on your phone. There's no account to make.",
       { h2: "3. Send everyone the link" },
       "Use **Share link** or **Copy link** to send the page to your group. Opening it saves an editable copy on their phones, ready to use. The link contains first names, registration numbers and postcodes only, so keep it within the group.",
       { h2: "4. On ticket day" },
