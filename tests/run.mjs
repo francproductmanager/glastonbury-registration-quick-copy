@@ -390,25 +390,40 @@ console.log("\nShare links");
 
 // ---------- home: try it ----------
 console.log("\nHome");
-await test("Try it: copy, guided paste, both fields, then a Start prompt", async () => {
+await test("Try it: copy, then a real paste into each practice box, then done", async () => {
   const p = await page(await context()); await p.goto(B);
   const msg = () => p.textContent(".try-msg");
-  await p.locator(".mock-field").first().click();
-  assert((await msg()).includes("Copy it first"), "tapping a field first should explain");
+  const reg = p.locator(".mock-field").first(), pc = p.locator(".mock-field").nth(1);
+  await reg.focus();
+  assert((await msg()).includes("Copy it first"), "focusing a box first should explain");
   await p.locator(".copy.hero").first().click();
   eq(await clip(p), "1029384756", "clipboard");
-  assert((await msg()).includes("Great, you just copied the whole number in an instant"), "copied message");
-  assert(await p.locator(".mock-field").first().evaluate(e => e.classList.contains("is-target")), "reg field highlighted");
-  eq(await p.locator(".mock-field").first().textContent(), "Tap to paste", "not pasted automatically");
-  await p.locator(".mock-field").first().click();
-  eq(await p.locator(".mock-field").first().textContent(), "1029384756", "pasted on tap");
+  assert((await msg()).includes("Now paste it into the Registration no. box below") && (await msg()).includes("Ctrl+V"), "tells you how to paste");
+  assert(await reg.evaluate(e => e.classList.contains("is-target")), "reg box highlighted");
+  eq(await reg.inputValue(), "", "not pasted automatically");
+  eq(await reg.getAttribute("placeholder"), "Paste here", "says paste here");
+  await reg.click(); await reg.fill("12345"); await reg.fill("1234567890");
+  assert((await msg()).includes("doesn't match"), "wrong number explained");
+  await reg.fill(""); await reg.focus(); await p.keyboard.press("ControlOrMeta+V");
+  await waitText(p, ".try-msg", "Pasted. Now tap the postcode above to copy it.");
+  eq(await reg.inputValue(), "1029384756", "pasted for real");
+  assert(await reg.evaluate(e => e.readOnly), "locked once right");
   await p.locator(".copy.hero").nth(1).click(); eq(await clip(p), "BS1 4DJ", "postcode clipboard");
-  await p.locator(".mock-field").nth(1).click();
+  await pc.focus(); await p.keyboard.press("ControlOrMeta+V");
+  await p.waitForSelector(".try-done p");
   assert((await p.textContent(".try-done")).includes("That's the whole trick"), "done message");
-  eq(await p.locator(".try-done a").getAttribute("href"), "#/new", "Start link");
+  eq(await p.locator(".try-done a").count(), 0, "no extra Start button: the main button sits just below");
   await p.click("text=Reset");
-  eq(await p.locator(".mock-field").first().textContent(), "", "reset clears");
+  eq(await reg.inputValue(), "", "reset clears"); eq(await pc.inputValue(), "", "reset clears postcode");
   noErrors(p); await p.context().close();
+});
+await test("Try it on a phone: says press and hold, then Paste", async () => {
+  const ctx = await browser.newContext({ permissions: CLIP, viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await offline(ctx); const p = await page(ctx); await p.goto(B);
+  await p.locator(".copy.hero").first().tap();
+  await p.waitForFunction(() => document.querySelector(".try-msg").textContent.startsWith("Copied"));
+  const m = await p.textContent(".try-msg"); assert(m.includes("press and hold inside it, then tap Paste"), "touch instructions: " + m);
+  await ctx.close();
 });
 await test("Home: one main action, how it works, questions, footer with commit and data link", async () => {
   const p = await page(await context()); await p.goto(stamped.url);
@@ -664,8 +679,9 @@ await test("Corrupted storage never crashes any screen", async () => {
 });
 await test("Reduced motion: everything still works", async () => {
   const p = await page(await context({ reducedMotion: "reduce" })); await p.goto(B);
-  await p.locator(".copy.hero").first().click(); await p.locator(".mock-field").first().click();
-  eq(await p.locator(".mock-field").first().textContent(), "1029384756", "works");
+  await p.locator(".copy.hero").first().click(); await p.waitForFunction(() => document.querySelector(".try-msg").textContent.startsWith("Copied"));
+  await p.locator(".mock-field").first().fill("1029384756");
+  eq(await p.textContent(".try-msg"), "Pasted. Now tap the postcode above to copy it.", "works");
   await p.context().close();
 });
 
@@ -743,7 +759,7 @@ await test("Malicious share links and pasted chat text never execute", async () 
 await test("No CSP violations on any screen; the only outside request is Google's ad loader", async () => {
   const ctx = await context(); const p = await page(ctx); const outbound = [];
   p.on("request", r => { if (!r.url().startsWith(B) && !r.url().startsWith("data:")) outbound.push(r.url()); });
-  await p.goto(B); await p.locator(".copy.hero").first().click(); await p.locator(".mock-field").first().click();
+  await p.goto(B); await p.locator(".copy.hero").first().click(); await p.locator(".mock-field").first().fill("1029384756");
   await p.goto(B + "#/new"); await p.fill("textarea", "Alex 1029384756 BS1 4DJ\nPriya 1618033988"); await p.click(".v-create > button.btn-primary");
   await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("E1 6AN"); await p.click("text=Create group"); await p.waitForSelector(".v-day");
   await p.locator(".v-day .copy").first().click(); await p.click("text=What's in the link?"); await p.click(".share .btn-primary");
