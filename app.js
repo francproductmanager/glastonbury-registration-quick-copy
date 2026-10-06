@@ -25,6 +25,31 @@
     },
   });
 
+  // ---------- seasonal expiry ----------
+  // Groups and share links are cleared on a seasonal schedule, using UK dates:
+  //   created June to October   -> cleared from 1 December of that year (main sale)
+  //   created November to May   -> cleared from 1 June that follows (spring resale)
+  // Dates are compared as "YYYY-MM-DD" text in Europe/London time, so GMT/BST never shifts a day.
+  // Clearing can only happen when the tool is opened; nothing runs while it's closed.
+  // Links made before expiry dates existed (formats 0 to 2) stop opening on LEGACY_CUTOFF,
+  // and saved groups with no usable creation date are cleared then too.
+  const LEGACY_CUTOFF = "2026-12-01";
+  const FIRST_RELEASE = Date.UTC(2024, 0, 1); // creation times before this are not real ones
+  const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+  const UK_DATE = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit" });
+  function ukDate(ms) {
+    const p = Object.fromEntries(UK_DATE.formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+    return `${p.year}-${p.month}-${p.day}`;
+  }
+  const todayUK = () => ukDate(Date.now());
+  function expiryFor(ms) {
+    const [y, m] = ukDate(ms).split("-").map(Number);
+    return m >= 6 && m <= 10 ? `${y}-12-01` : `${m >= 11 ? y + 1 : y}-06-01`;
+  }
+  const isExpired = (expires) => todayUK() >= expires;
+  const storedExpiry = (pg) => ISO_DATE.test(pg.expires) ? pg.expires
+    : Number(pg.created) >= FIRST_RELEASE ? expiryFor(Number(pg.created)) : LEGACY_CUTOFF;
+
   // Everything read from storage is re-validated: unknown shapes are dropped instead of
   // crashing the page, and maps have no prototype so ids like "__proto__" can't resolve.
   function cleanPages(raw) {
@@ -42,18 +67,31 @@
         }))
         .filter(x => x.reg)
         .slice(0, MAX_PEOPLE);
-      if (people.length) out[id] = { created: Number(pg.created) || 0, people };
+      if (people.length) out[id] = { created: Number(pg.created) || 0, expires: storedExpiry(pg), people };
     }
     return out;
   }
+  let warnedRead = false, warnedClear = false;
   function loadAll() {
     if (DEMO) return demoStore;
-    let raw = null;
-    try { raw = JSON.parse(localStorage.getItem(KEY)); } catch {}
+    let raw = null, text = null;
+    try { text = localStorage.getItem(KEY); }
+    catch { if (!warnedRead) { warnedRead = true; toast("Couldn't read the groups saved on this phone.", true); } return Object.create(null); }
+    try { raw = JSON.parse(text); } catch {}
     const all = cleanPages(raw);
+    // Seasonal expiry: drop groups past their date, with their copied ticks
+    const gone = Object.keys(all).filter(id => isExpired(all[id].expires));
+    for (const id of gone) delete all[id];
     // Earlier versions could store a payment card; cleanPages drops it, so rewrite if one was there.
-    if (raw && typeof raw === "object" && Object.values(raw).some(pg => pg && typeof pg === "object" && "card" in pg)) {
-      try { localStorage.setItem(KEY, JSON.stringify(all)); } catch {}
+    const hadCard = raw && typeof raw === "object" && Object.values(raw).some(pg => pg && typeof pg === "object" && "card" in pg);
+    if (gone.length || hadCard) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(all));
+        for (const id of gone) { try { sessionStorage.removeItem(usedKey(id)); } catch {} }
+      } catch {
+        // Expired groups stay hidden, but never claim they were deleted when they weren't
+        if (gone.length && !warnedClear) { warnedClear = true; toast("Couldn't clear old groups from this phone.", true); }
+      }
     }
     return all;
   }
@@ -69,7 +107,9 @@
 
   // ---------- share links ----------
   // Compact binary format, base64url-encoded into the link after "#/s/":
-  //   byte 0: format version (2; version 1 links still decode)
+  //   byte 0: format version (3; versions 1 and 2 still decode, until LEGACY_CUTOFF)
+  //   bytes 1 to 2 (version 3 only): the group's clear-by date, as days since 1 January 1970,
+  //     little-endian. It travels with the link, so opening it later never restarts the clock.
   //   then per person:
   //     1 byte name length + UTF-8 first name (a repeated first name gets a number: "Alex 1", "Alex 2")
   //     1 byte: high nibble = reg number digit count, low nibble = postcode character count
@@ -80,6 +120,10 @@
   // Links made before v1 (base64 JSON, start with "eyJ") still decode.
   const SHARE_V1 = 1;
   const SHARE_V2 = 2;
+  const SHARE_V3 = 3;
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const dateToDays = (iso) => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) / DAY_MS;
+  const daysToDate = (n) => new Date(n * DAY_MS).toISOString().slice(0, 10);
   const PC_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const PC_ALPHABET_V2 = PC_ALPHABET + " -";
   const PC_RAW = 15; // v2: postcode length nibble 15 = 1 length byte + raw UTF-8 follows
@@ -127,7 +171,8 @@
   }
 
   function encodeShare(page) {
-    const out = [SHARE_V2];
+    const days = dateToDays(ISO_DATE.test(page.expires) ? page.expires : expiryFor(Date.now()));
+    const out = [SHARE_V3, days & 255, days >> 8];
     const names = shareNames(page.people);
     page.people.slice(0, MAX_PEOPLE).forEach((p, i) => {
       const nb = nameBytes(names[i]);
@@ -145,10 +190,13 @@
   }
 
   function decodeShareBinary(bytes, version) {
-    const alphabet = version === SHARE_V2 ? PC_ALPHABET_V2 : PC_ALPHABET;
+    const v2plus = version >= SHARE_V2; // v3 is v2 with a date in front
+    const alphabet = v2plus ? PC_ALPHABET_V2 : PC_ALPHABET;
     const people = [];
     let i = 1;
     const need = (n) => { if (i + n > bytes.length) throw new Error("truncated"); };
+    let expires = null;
+    if (version === SHARE_V3) { need(2); expires = daysToDate(bytes[1] | (bytes[2] << 8)); i = 3; }
     while (i < bytes.length && people.length < MAX_PEOPLE) {
       need(1); const nl = bytes[i++];
       if (nl > MAX_NAME_BYTES) throw new Error("bad name");
@@ -161,7 +209,7 @@
       i += 5;
       const reg = regLen ? String(n).padStart(regLen, "0").slice(-regLen) : "";
       let pc = "";
-      if (version === SHARE_V2 && pcLen === PC_RAW) {
+      if (v2plus && pcLen === PC_RAW) {
         need(1); const rl = bytes[i++];
         if (rl > 24) throw new Error("bad postcode");
         need(rl); pc = new TextDecoder().decode(bytes.subarray(i, i + rl)); i += rl;
@@ -183,7 +231,7 @@
       // v1 dropped spaces, so re-insert them; v2 keeps the postcode exactly as saved
       people.push({ name: name || "Unnamed", reg, postcode: version === SHARE_V1 ? normPostcode(pc) : pc });
     }
-    return people.length ? { people } : null;
+    return people.length ? { people, expires } : null;
   }
 
   function decodeShareLegacy(bytes) {
@@ -206,7 +254,7 @@
       if (!m) return null;
       const bytes = fromB64u(m[0]);
       if (!bytes.length) return null;
-      if (bytes[0] === SHARE_V1 || bytes[0] === SHARE_V2) return decodeShareBinary(bytes, bytes[0]);
+      if (bytes[0] === SHARE_V1 || bytes[0] === SHARE_V2 || bytes[0] === SHARE_V3) return decodeShareBinary(bytes, bytes[0]);
       return decodeShareLegacy(bytes);
     } catch { return null; }
   }
@@ -548,7 +596,9 @@
     const all = loadAll();
     if (id && !all[id]) { toast("This group was deleted in another tab", true); go(""); return null; }
     const pid = id || newId();
-    all[pid] = { created: id ? all[id].created : Date.now(), people: people.map(p => ({ name: p.name, reg: p.reg, postcode: p.postcode })) };
+    // Editing never extends a group's life: it keeps the date it was first due to be cleared
+    const now = Date.now();
+    all[pid] = { created: id ? all[id].created : now, expires: id ? all[id].expires : expiryFor(now), people: people.map(p => ({ name: p.name, reg: p.reg, postcode: p.postcode })) };
     return saveAll(all) ? pid : null;
   }
 
@@ -722,8 +772,11 @@
 
     const clear = h("button", { type: "button", class: "linkbtn clear-ticks", onclick: () => { used.clear(); failed.clear(); saveUsed(id, used); update(); } }, "Clear ticks");
     update();
+    const savedNote = justSaved === id ? h("div", { class: "banner-ok", role: "status" }, "Saved on this phone. You can edit or delete this group here.") : null;
+    justSaved = null;
     return h("div", { class: "view v-day" },
       DEMO ? h("div", { class: "demo-banner" }, "Demo with made-up people. Nothing is saved.") : null,
+      savedNote,
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
       h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a box, then paste it into the ticket site.")),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
@@ -737,7 +790,7 @@
         h("span", { class: "acts" },
           h("a", { class: "linkbtn", href: "#/edit/" + id }, "Edit"),
           h("button", { type: "button", class: "linkbtn danger", onclick: () => {
-            if (!confirm(`Delete ${firstNames(people)} from this phone?`)) return;
+            if (!confirm("Delete this group from this phone? This won't affect anyone else's copy.")) return;
             const a = loadAll(); delete a[id]; saveAll(a);
             try { sessionStorage.removeItem(usedKey(id)); } catch {}
             toast("Group deleted"); go("");
@@ -779,30 +832,40 @@
   }
 
   // ---------- share link opened ----------
+  // Opening a valid link saves the group straight away and opens its copy screen. An expired
+  // link shows nothing from the link and saves nothing.
+  let justSaved = null; // id of a group a link has just saved, for a one-off note (memory only)
   function viewShared(enc) {
     const page = decodeShare(enc);
     if (!page) return viewBroken();
+    // A link carries its clear-by date. It can never outlive what a group made today would get,
+    // so a hand-edited date can't keep it forever. Older links have no date: they open until
+    // LEGACY_CUTOFF and get the same date as a group made today.
+    const cap = expiryFor(Date.now());
+    const expires = page.expires ? (page.expires < cap ? page.expires : cap) : todayUK() < LEGACY_CUTOFF ? cap : null;
+    if (!expires || isExpired(expires)) return viewExpired();
     const all = loadAll();
     const key = JSON.stringify(page.people);
     const existing = Object.keys(all).find(id => JSON.stringify(all[id].people) === key);
     if (existing) { location.replace("#/p/" + existing); return null; }
-    const save = h("button", { type: "button", class: "btn btn-primary" }, "Save to this phone");
-    save.addEventListener("click", () => {
-      const a = loadAll();
-      const again = Object.keys(a).find(id => JSON.stringify(a[id].people) === key);
-      const pid = again || newId();
-      if (!again) { a[pid] = { created: Date.now(), people: page.people }; if (!saveAll(a)) return; }
-      toast("Saved on this phone");
-      location.replace("#/p/" + pid);
-    });
-    const notNow = h("button", { type: "button", class: "btn btn-secondary", onclick: () => location.replace("#/") }, "Not now");
+    const pid = newId();
+    all[pid] = { created: Date.now(), expires, people: page.people };
+    if (!saveAll(all)) return viewSaveFailed();
+    justSaved = pid;
+    location.replace("#/p/" + pid);
+    return null;
+  }
+  function viewExpired() {
     return h("div", { class: "view v-inter" },
-      h("h1", null, "Your group's ready"),
-      h("p", { class: "lead" }, "Check everyone's here, then save it for ticket day."),
-      h("div", { class: "card ilist" },
-        page.people.map(p => h("div", { class: "irow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
-        h("p", { class: "note" }, "From the link you were sent")),
-      h("div", { class: "btn-row" }, save, notNow));
+      h("h1", { class: "small" }, "This group link has expired"),
+      h("p", { class: "lead" }, "Ask the person who shared it to make a new one."),
+      h("a", { class: "btn btn-secondary", href: "#/" }, "Back to home"));
+  }
+  function viewSaveFailed() {
+    return h("div", { class: "view v-inter" },
+      h("h1", { class: "small" }, "Couldn't save this group"),
+      h("p", { class: "lead" }, "This browser didn't let the group be saved on this phone. If private browsing is on, turn it off and open the link again."),
+      h("a", { class: "btn btn-secondary", href: "#/" }, "Back to home"));
   }
 
   function viewMissing() {
@@ -827,6 +890,7 @@
       back("#/", "Home"),
       h("h1", null, "How your data is handled"),
       block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
+      block("When it's cleared", "Groups and links are cleared on a seasonal schedule: details created from June through October are cleared on 1 December; details created from November through May are cleared on 1 June. Dates are UK dates. Clearing happens the next time you open the tool on this phone."),
       block("Is it sent anywhere?", "Not by this tool. Its code makes no network requests and there's no server copy of your group."),
       block("Ads", "The site is free because it shows Google ads. As on any site with ads, Google's ad code runs on these pages and Google uses cookies to show and measure ads. ", h("a", { href: "/privacy/" }, "Privacy and cookies")),
       block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead (Alex 1, Alex 2). It's encoded, not encrypted, so anyone with the link can read it."),
