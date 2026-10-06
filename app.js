@@ -468,7 +468,8 @@
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
         h("span", { class: "open" }, "Open ›"))))
         : h("p", { class: "help saved-empty" }, "No groups saved yet. Set one up before ticket day."),
-      tryIt(),
+      // The practice demo is for newcomers: once a group is saved on this phone, it's hidden
+      ids.length ? null : tryIt(),
       h("section", { class: "section" },
         h("h2", null, "How it works"),
         h("ol", { class: "steps" },
