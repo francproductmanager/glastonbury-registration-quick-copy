@@ -11,7 +11,7 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 ## How it works
 
 1. **Add your group.** Everyone's reg numbers and postcodes, together on one page. You can type them in or paste them from a message, and anyone missing a postcode is flagged.
-2. **Send everyone the link.** It opens the same page on their phones. They see a preview and choose whether to save it.
+2. **Send everyone the link.** Opening it saves an editable copy on their phones and goes straight to the copy screen.
 3. **Tap, paste, next.** Each box goes blue once it's copied, the next one is highlighted, and a progress bar counts what's done. "Keep screen on" stops your phone locking while you book.
 
 ## Privacy
@@ -21,7 +21,8 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 - **The site shows Google ads.** That keeps it free. Like any site with Google ads, Google's ad code runs on its pages, and Google uses cookies to show and measure ads (with a consent message in the UK, EEA and Switzerland). Ads only appear in fixed slots, never next to the copy buttons. See the [privacy policy](https://glastobolt.co.uk/privacy/).
 - **Security policy.** Because of the ads, the Content Security Policy allows Google's ad servers. It still blocks plugins, `<base>` hijacking and form submissions, and stops other sites embedding the pages.
 - **Share links carry the data themselves.** First names, reg numbers and postcodes are packed into the part of the link after `#`, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead ("Alex 1", "Alex 2"). It's encoded, not encrypted, so only send it to your group.
-- **Opening a link saves nothing** until you tap "Save to this phone".
+- **Opening a link saves an editable copy** on that phone and goes straight to the copy screen. Opening the same link again reuses that copy.
+- **Seasonal clearing.** Groups and links are cleared on a schedule, by UK date: anything created from June through October is cleared on 1 December; anything created from November through May is cleared on 1 June. Share links carry their clear-by date, so an old link stops opening even if it's never been opened before. Clearing happens the next time the tool is opened, since nothing runs while it's closed.
 - **Your clipboard.** Some keyboards, like Gboard, keep a clipboard history. You can clear it after ticket day.
 
 ## Is the live tool really running this code?
@@ -57,7 +58,7 @@ bash scripts/verify-live.sh
 
 ### Share link format
 
-Links look like `/#/s/<code>`. The code is a small binary format, base64url-encoded: a version byte, then per person a first name, the reg number as a 5-byte integer and the postcode packed at 6 bits per character. Older formats still open. Details are in the comments in `app.js`.
+Links look like `/#/s/<code>`. The code is a small binary format, base64url-encoded: a version byte, the group's clear-by date (2 bytes, days since 1970), then per person a first name, the reg number as a 5-byte integer and the postcode packed at 6 bits per character. Older formats with no date open until 1 December 2026, then count as expired. Details are in the comments in `app.js`.
 
 ## Running it locally
 

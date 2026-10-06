@@ -56,7 +56,7 @@ const CLIP = ["clipboard-read", "clipboard-write"];
 function hookedSource() {
   return readFileSync(join(ROOT, "app.js"), "utf8").replace(
     '  window.addEventListener("hashchange", render);',
-    '  window.__t = { encodeShare, decodeShare, shareNames, parseImport, normPostcode };\n  window.addEventListener("hashchange", render);');
+    '  window.__t = { encodeShare, decodeShare, shareNames, parseImport, normPostcode, expiryFor, todayUK };\n  window.addEventListener("hashchange", render);');
 }
 // Tests never reach the internet: Google's ad loader and anything else external is aborted
 const ADS_HOST = /^https:\/\/pagead2\.googlesyndication\.com\//;
@@ -82,7 +82,8 @@ const waitText = (p, sel, text) => p.waitForFunction(([s, t]) => document.queryS
 const pages = p => p.evaluate(() => JSON.parse(localStorage.getItem("tdqc:pages:v1") || "{}"));
 async function seed(p, people, id = "g1") {
   await p.goto(B);
-  await p.evaluate(([id, people]) => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ [id]: { created: 1, people } })), [id, people]);
+  // created now, so seasonal clearing never removes a test's group whatever today's date is
+  await p.evaluate(([id, people]) => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ [id]: { created: Date.now(), people } })), [id, people]);
 }
 const GROUP = [
   { name: "Alex Morgan", reg: "1029384756", postcode: "BS1 4DJ" },
@@ -484,7 +485,7 @@ await test("Home: one main action, how it works, questions, footer with commit a
 });
 await test("Home lists saved groups newest first and updates when another tab changes storage", async () => {
   const ctx = await context(); const p = await page(ctx); await p.goto(B);
-  await p.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: 1, people: [{ name: "Old", reg: "1", postcode: "E1 6AN" }] }, b2: { created: 2, people: [{ name: "New", reg: "2", postcode: "E1 6AN" }] } })));
+  await p.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.now() - 1000, people: [{ name: "Old", reg: "1", postcode: "E1 6AN" }] }, b2: { created: Date.now(), people: [{ name: "New", reg: "2", postcode: "E1 6AN" }] } })));
   await p.reload();
   eq(await p.locator(".saved .names").allTextContents(), ["New", "Old"], "order");
   const q = await page(ctx); await q.goto(B);
@@ -667,18 +668,110 @@ await test("Delete a group (with confirm) and the cancel path", async () => {
 
 // ---------- share link opened ----------
 console.log("\nShare links opened");
-await test("Opening a link shows a preview and saves nothing until you choose", async () => {
+const SAVED_NOTE = "Saved on this phone. You can edit or delete this group here.";
+// A share link made on a given date (UTC ISO), with the clock fixed so its clear-by date is known
+async function linkMadeAt(iso, people = GROUP) {
+  const p = await page(await context({ hook: true })); await p.clock.setFixedTime(new Date(iso)); await p.goto(B);
+  const code = await p.evaluate(g => __t.encodeShare({ people: g }), people);
+  await p.context().close(); return code;
+}
+// The same group as a version 2 link (no date), as links made before seasonal clearing were
+const asV2 = (code) => { const b = Buffer.from(code, "base64url"); return Buffer.from([2, ...b.subarray(3)]).toString("base64url"); };
+const withDays = (code, days) => { const b = Buffer.from(code, "base64url"); b[1] = days & 255; b[2] = days >> 8; return b.toString("base64url"); };
+
+await test("Opening a link saves the group and lands on its copy screen; opening it again reuses it", async () => {
   const p = await page(await context({ hook: true })); await p.goto(B);
   const code = await p.evaluate(g => __t.encodeShare({ people: g }), GROUP);
-  const q = await page(await context()); await q.goto(B + "#/s/" + code);
-  eq(await q.textContent("h1"), "Your group's ready", "preview");
-  eq(await q.locator(".irow").count(), 3, "rows"); eq(await pages(q), {}, "not saved yet");
-  await q.click("text=Not now"); await q.waitForSelector(".v-home"); eq(await pages(q), {}, "Not now saves nothing");
+  const q = await page(await context()); await q.goto(B + "#/s/" + code); await q.waitForSelector(".v-day");
+  const saved = await pages(q); const id = Object.keys(saved)[0];
+  eq(Object.keys(saved).length, 1, "saved"); assert(q.url().endsWith("#/p/" + id), "on the copy screen");
+  eq(saved[id].people.map(x => x.reg), GROUP.map(x => x.reg), "the group's numbers");
+  eq(await q.textContent(".banner-ok"), SAVED_NOTE, "says it was saved");
   assert(!q.url().includes("#/s/"), "code left the address bar");
-  await q.goto(B + "#/s/" + code); await q.click("text=Save to this phone"); await q.waitForSelector(".v-day");
-  const id = Object.keys(await pages(q))[0]; assert(q.url().endsWith("#/p/" + id), "redirected to the saved page");
+  await q.reload(); await q.waitForSelector(".v-day"); eq(await q.locator(".banner-ok").count(), 0, "note shown once");
   await q.goto(B + "#/s/" + code); await q.waitForSelector(".v-day");
-  eq(Object.keys(await pages(q)).length, 1, "already saved: straight to the page, no duplicate");
+  eq(Object.keys(await pages(q)), [id], "identical group reused, no duplicate"); eq(await q.locator(".banner-ok").count(), 0, "no saved note when reused");
+  // the saved copy works with the normal Edit and Delete controls, and editing keeps its clear-by date
+  const expires = (await pages(q))[id].expires;
+  await q.click(".bottom-row >> text=Edit"); await q.locator(".v-edit input").first().fill("Alexandra");
+  await q.click("text=Save changes"); await q.waitForSelector(".v-day");
+  eq((await pages(q))[id].people[0].name, "Alexandra", "edited"); eq((await pages(q))[id].expires, expires, "editing never extends");
+  q.once("dialog", d => { assert(d.message() === "Delete this group from this phone? This won't affect anyone else's copy.", d.message()); d.accept(); });
+  await q.click(".bottom-row .danger"); await q.waitForSelector(".v-home"); eq(await pages(q), {}, "deleted");
+  noErrors(p, q); await p.context().close(); await q.context().close();
+});
+await test("Seasonal clear-by dates, in UK time", async () => {
+  const p = await page(await context({ hook: true })); await p.goto(B);
+  const cases = [
+    ["2026-10-31T12:00:00Z", "2026-12-01"], ["2026-11-02T12:00:00Z", "2027-06-01"], ["2027-05-15T12:00:00Z", "2027-06-01"], ["2027-06-02T12:00:00Z", "2027-12-01"],
+    ["2026-12-31T12:00:00Z", "2027-06-01"], ["2027-01-10T12:00:00Z", "2027-06-01"], ["2026-06-01T12:00:00Z", "2026-12-01"],
+    ["2027-05-31T22:30:00Z", "2027-06-01"], // 23:30 on 31 May in the UK (BST): still May
+    ["2027-05-31T23:30:00Z", "2027-12-01"], // 00:30 on 1 June in the UK: June
+    ["2026-10-31T23:30:00Z", "2026-12-01"], // GMT again by then: still 31 October
+  ];
+  for (const [at, want] of cases) eq(await p.evaluate(t => __t.expiryFor(Date.parse(t)), at), want, at);
+  noErrors(p); await p.context().close();
+});
+await test("Expired groups are cleared when the tool opens, with their ticks; nothing else is touched", async () => {
+  const cases = [
+    ["2026-10-31T12:00:00Z", "2026-11-30T23:30:00Z", "2026-12-01T00:00:30Z"],
+    ["2026-11-02T12:00:00Z", "2027-05-31T22:30:00Z", "2027-05-31T23:30:00Z"], // UK midnight in BST
+    ["2027-05-15T12:00:00Z", "2027-05-31T12:00:00Z", "2027-06-01T12:00:00Z"],
+    ["2027-06-02T12:00:00Z", "2027-11-30T12:00:00Z", "2027-12-01T12:00:00Z"],
+  ];
+  for (const [made, stillThere, gone] of cases) {
+    const p = await page(await context()); await p.clock.setFixedTime(new Date(made)); await p.goto(B);
+    await p.evaluate(g => {
+      localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: Date.now(), people: g } }));
+      localStorage.setItem("someone-else", "keep me"); sessionStorage.setItem("tdqc:used:g1", '["r0"]'); sessionStorage.setItem("other-session", "keep me");
+    }, GROUP);
+    await p.clock.setFixedTime(new Date(stillThere)); await p.reload();
+    eq(Object.keys(await pages(p)), ["g1"], `${made}: still there at ${stillThere}`);
+    await p.clock.setFixedTime(new Date(gone)); await p.reload();
+    eq(await pages(p), {}, `${made}: cleared at ${gone}`);
+    eq(await p.locator(".saved").count(), 0, "not listed");
+    eq(await p.evaluate(() => [localStorage.getItem("someone-else"), sessionStorage.getItem("tdqc:used:g1"), sessionStorage.getItem("other-session")]), ["keep me", null, "keep me"], "only the group and its ticks removed");
+    noErrors(p); await p.context().close();
+  }
+});
+await test("Saved groups from before seasonal clearing get a date from when they were made", async () => {
+  const p = await page(await context()); await p.clock.setFixedTime(new Date("2026-11-20T12:00:00Z")); await p.goto(B);
+  await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.parse("2026-11-03T12:00:00Z"), people: g }, b2: { created: 0, people: g } })), GROUP);
+  await p.reload();
+  await p.clock.setFixedTime(new Date("2026-12-02T12:00:00Z")); await p.reload();
+  eq(Object.keys(await pages(p)), ["a1"], "made in November: kept until June; no usable date: cleared on 1 December 2026");
+  noErrors(p); await p.context().close();
+});
+await test("A link carries its clear-by date: an expired link shows nothing and saves nothing, even on first open", async () => {
+  const code = await linkMadeAt("2026-10-15T12:00:00Z");
+  const q = await page(await context()); await q.clock.setFixedTime(new Date("2026-11-20T12:00:00Z")); await q.goto(B + "#/s/" + code); await q.waitForSelector(".v-day");
+  eq(Object.values(await pages(q))[0].expires, "2026-12-01", "keeps the sender's date, not a fresh one");
+  const r = await page(await context()); await r.clock.setFixedTime(new Date("2026-12-01T09:00:00Z")); await r.goto(B + "#/s/" + code);
+  eq(await r.textContent("h1"), "This group link has expired", "expired");
+  assert((await r.textContent("main")).includes("Ask the person who shared it to make a new one."), "explains");
+  assert(!(await r.textContent("main")).includes(GROUP[0].reg), "shows nothing from the link"); eq(await pages(r), {}, "saves nothing");
+  await r.click("text=Back to home"); await r.waitForSelector(".v-home");
+  noErrors(q, r); await q.context().close(); await r.context().close();
+});
+await test("A hand-edited far-future date is capped; older links open until 1 December 2026", async () => {
+  const code = await linkMadeAt("2026-11-10T12:00:00Z");
+  const p = await page(await context()); await p.clock.setFixedTime(new Date("2026-11-10T12:00:00Z"));
+  await p.goto(B + "#/s/" + withDays(code, 65535)); await p.waitForSelector(".v-day");
+  eq(Object.values(await pages(p))[0].expires, "2027-06-01", "capped to what a group made today gets");
+  const old = asV2(code);
+  const q = await page(await context()); await q.clock.setFixedTime(new Date("2026-11-30T23:30:00Z")); await q.goto(B + "#/s/" + old); await q.waitForSelector(".v-day");
+  eq(Object.keys(await pages(q)).length, 1, "a version 2 link still opens before the cutoff");
+  const r = await page(await context()); await r.clock.setFixedTime(new Date("2026-12-01T00:30:00Z")); await r.goto(B + "#/s/" + old);
+  eq(await r.textContent("h1"), "This group link has expired", "a version 2 link has expired from the cutoff"); eq(await pages(r), {}, "saves nothing");
+  noErrors(p, q, r); for (const x of [p, q, r]) await x.context().close();
+});
+await test("Storage errors are reported, never claimed as saved or cleared", async () => {
+  const code = await linkMadeAt(new Date().toISOString());
+  const p = await page(await context({ init: () => { Storage.prototype.setItem = function () { throw new Error("full"); }; } }));
+  await p.goto(B + "#/s/" + code); await p.waitForSelector(".v-inter");
+  eq(await p.textContent("h1"), "Couldn't save this group", "says it wasn't saved"); eq(await p.locator(".banner-ok").count(), 0, "no saved note");
+  const q = await page(await context({ init: () => { Storage.prototype.getItem = function () { throw new Error("blocked"); }; } }));
+  await q.goto(B); await waitText(q, "#toast", "Couldn't read the groups saved on this phone.");
   noErrors(p, q); await p.context().close(); await q.context().close();
 });
 await test("Broken, tampered and oversized links say the link doesn't open", async () => {
@@ -694,7 +787,7 @@ await test("Broken, tampered and oversized links say the link doesn't open", asy
 console.log("\nData, demo and robustness");
 await test("Data page: explains storage, shows the version, deletes everything with confirm", async () => {
   const p = await page(await context()); await p.goto(stamped.url);
-  await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: 1, people: g } })), GROUP);
+  await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: Date.now(), people: g } })), GROUP);
   await p.goto(stamped.url + "#/data");
   const text = await p.textContent("main");
   assert(text.includes("Its code makes no network requests") && text.includes("Google's ad code runs on these pages"), "honest about the tool and the ads");
@@ -839,7 +932,7 @@ console.log("\nSecurity");
 const PAYLOADS = ['<img src=x onerror="window.__pwned=1">', "<script>window.__pwned=1</script>", '"><svg onload=window.__pwned=1>', "javascript:window.__pwned=1"];
 await test("Malicious names and postcodes in saved groups never execute (every screen)", async () => {
   const p = await page(await context()); await p.goto(B);
-  const store = Object.fromEntries(PAYLOADS.map((x, i) => [`k${i}`, { created: i, people: [{ name: x, reg: "123", postcode: x.slice(0, 12) }] }]));
+  const store = Object.fromEntries(PAYLOADS.map((x, i) => [`k${i}`, { created: Date.now() - i, people: [{ name: x, reg: "123", postcode: x.slice(0, 12) }] }]));
   await p.evaluate(s => localStorage.setItem("tdqc:pages:v1", JSON.stringify(s)), store);
   for (const r of ["", "#/data", ...Object.keys(store).flatMap(k => [`#/p/${k}`, `#/edit/${k}`])]) {
     await p.goto(B + r); await p.waitForTimeout(30);

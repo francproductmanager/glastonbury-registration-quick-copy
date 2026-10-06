@@ -71,7 +71,6 @@ h2.plain { font: 600 16px/1.35 var(--sans); }
 .subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; }
 .lead { color: var(--muted); }
 .help { font-size: 13.5px; color: var(--muted); }
-.note { font-size: 13px; color: var(--muted); }
 .back { font-size: 14px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; align-self: flex-start; }
 .back:hover { color: var(--ink); }
 
@@ -247,11 +246,7 @@ button.stat { cursor: pointer; font: inherit; }
 .add-person:disabled { color: var(--placeholder); cursor: default; }
 .banner-ok { background: var(--accent-soft); color: var(--accent-deep); font-weight: 600; border-radius: 14px; padding: 12px 14px; }
 
-/* interstitial list + data page */
-.ilist { padding: 4px 16px 12px; gap: 0; }
-.irow { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--divider); }
-.irow .vals { font: 400 14px/1.4 var(--mono); color: var(--ink-2); display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-.ilist .note { padding-top: 10px; }
+/* data page */
 .dblock { display: flex; flex-direction: column; gap: 4px; }
 .dblock p { font-size: 15px; color: var(--ink-2); }
 .dblock code, .code { font: 400 13.5px var(--mono); }
