@@ -1,14 +1,15 @@
-// Builds the guides site (site/) from site-src/content.mjs.
+// Builds the guides, FAQ and info pages into the site root from site-src/content.mjs.
 //   node site-src/build.mjs
-// The output is committed, so Netlify serves plain files. At deploy time Netlify only swaps
-// __SITE_URL__ for the site's real address (see site/netlify.toml and site/deploy.sh).
-import { mkdirSync, writeFileSync, copyFileSync, readdirSync, rmSync, existsSync } from "node:fs";
+// The output is committed, so Netlify serves plain files exactly as they are in the repo.
+// The tool itself (index.html, demo.html, app.js) is hand-written and never touched here.
+import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SITE, PAGES, GUIDES } from "./content.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = join(ROOT, "site");
+const OUT = ROOT;
+const URL_ = SITE.url;
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // Inline markup allowed in content: **bold** and [text](url). Everything else is escaped.
@@ -29,7 +30,8 @@ function blocks(list) {
     if (b.ol) return `<ol>${b.ol.map((x) => `<li>${inline(x)}</li>`).join("")}</ol>`;
     if (b.tip) return `<aside class="tip"><p>${inline(b.tip)}</p></aside>`;
     if (b.faq) return `<div class="faq-list">${b.faq.map(([q, a]) => `<details class="faq"><summary><span>${inline(q)}</span><span class="faq-sign" aria-hidden="true"></span></summary>${(Array.isArray(a) ? a : [a]).map((x) => `<p>${inline(x)}</p>`).join("")}</details>`).join("")}</div>`;
-    if (b.cta) return `<p class="cta"><a class="btn btn-primary" href="/start">${inline(b.cta)}</a></p>`;
+    if (b.cta) return `<p class="cta"><a class="btn btn-primary" href="/#/new">${inline(b.cta)}</a></p>`;
+    if (b.ad) return `<div class="ad-slot" data-slot="${esc(b.ad)}"></div>`;
     if (b.cards) return `<div class="cards">${b.cards.map((g) => `<a class="gcard" href="/guides/${g.slug}/"><span class="gtitle">${inline(g.title)}</span><span class="gsum">${inline(g.summary)}</span></a>`).join("")}</div>`;
     throw new Error("unknown block " + JSON.stringify(b));
   }).join("\n");
@@ -45,17 +47,18 @@ function layout({ path, title, description, body, updated, jsonld }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(full)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="__SITE_URL__${path}">
+<link rel="canonical" href="${URL_}${path}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="${path.startsWith("/guides/") && path !== "/guides/" ? "article" : "website"}">
-<meta property="og:url" content="__SITE_URL__${path}">
+<meta property="og:url" content="${URL_}${path}">
 <meta name="theme-color" content="#fbfaf6">
 <meta name="google-adsense-account" content="${SITE.adsenseClient}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%8B%3C/text%3E%3C/svg%3E">
 <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/guides.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}" crossorigin="anonymous"></script>
+<script src="/ads.js" defer></script>
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>\n` : ""}</head>
 <body>
 <header class="site-head">
@@ -64,7 +67,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(
     <nav aria-label="Main">
       <a href="/guides/">Guides</a>
       <a href="/faq/">FAQ</a>
-      <a class="nav-cta" href="/start">Open the tool</a>
+      <a class="nav-cta" href="/">Open the tool</a>
     </nav>
   </div>
 </header>
@@ -96,11 +99,12 @@ function write(rel, html) {
   writeFileSync(file, html);
 }
 
-// clean generated HTML (keep hand-written files: netlify.toml, deploy.sh, site.css, ads.txt, robots.txt)
+// Clean only what this script generates. Never the tool's own index.html.
 for (const d of ["guides", "faq", "about", "contact", "privacy", "terms"]) if (existsSync(join(OUT, d))) rmSync(join(OUT, d), { recursive: true });
-for (const f of ["index.html", "404.html", "sitemap.xml"]) if (existsSync(join(OUT, f))) rmSync(join(OUT, f));
+for (const f of ["404.html", "sitemap.xml", "robots.txt"]) if (existsSync(join(OUT, f))) rmSync(join(OUT, f));
+for (const p of PAGES) if (p.file === "index.html") throw new Error("index.html is the tool; content pages can't use it");
 
-const urls = [];
+const urls = ["/"];
 for (const p of PAGES) {
   const jsonld = p.faqSchema ? {
     "@context": "https://schema.org", "@type": "FAQPage",
@@ -114,12 +118,17 @@ for (const g of GUIDES) {
   const path = `/guides/${g.slug}/`;
   const jsonld = { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, dateModified: g.isoDate, author: { "@type": "Person", name: "The Glasto Quick Copy maker" }, publisher: { "@type": "Organization", name: SITE.name } };
   const related = GUIDES.filter((x) => x.slug !== g.slug).slice(0, 3);
+  // ads: after the intro, before the heading nearest the middle, and before the related guides
+  const heads = g.body.map((b, i) => (b && b.h2 ? i : -1)).filter(i => i > 0);
+  const mid = heads.length ? heads.reduce((a, i) => (Math.abs(i - g.body.length / 2) < Math.abs(a - g.body.length / 2) ? i : a)) : -1;
+  const withAds = mid > 0 ? [...g.body.slice(0, mid), { ad: "guide-mid" }, ...g.body.slice(mid)] : g.body;
   const body = `<article class="page guide">
 <p class="crumbs"><a href="/guides/">Guides</a></p>
 <h1>${inline(g.title)}</h1>
 <p class="lead">${inline(g.summary)}</p>
-${blocks(g.body)}
+${blocks([{ ad: "guide-top" }, ...withAds])}
 ${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${u}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
+${blocks([{ ad: "guide-end" }])}
 <aside class="related"><h2>Related guides</h2>${blocks([{ cards: related }])}</aside>
 </article>`;
   write(`guides/${g.slug}/index.html`, layout({ path, title: g.title, description: g.summary, body, updated: g.updated, jsonld }));
@@ -127,11 +136,8 @@ ${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(
 }
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>__SITE_URL__${u}</loc></url>`).join("\n")}
+${urls.map((u) => `  <url><loc>${URL_}${u}</loc></url>`).join("\n")}
 </urlset>
 `);
-
-// fonts are shared with the tool
-mkdirSync(join(OUT, "fonts"), { recursive: true });
-for (const f of readdirSync(join(ROOT, "fonts"))) copyFileSync(join(ROOT, "fonts", f), join(OUT, "fonts", f));
-console.log(`Built ${PAGES.length} pages and ${GUIDES.length} guides into site/`);
+write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${URL_}/sitemap.xml\n`);
+console.log(`Built ${PAGES.length} pages and ${GUIDES.length} guides into the site root`);

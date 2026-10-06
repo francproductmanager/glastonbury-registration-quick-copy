@@ -14,7 +14,7 @@ These keep the tool safe for everyone who types their friends' details into it. 
 
 **The tool** (repo root: `index.html`, `demo.html`, `app.js`, `style.css`, `fonts/`):
 
-1. **No network requests and no ads.** No analytics, trackers, ad code, CDNs, APIs, remote fonts or remote scripts. The Content Security Policy keeps `connect-src 'none'`, `script-src 'self'` and `style-src 'self'`. Never use inline `style=""` attributes.
+1. **The tool's code makes no network requests.** No analytics, trackers, CDNs, APIs, remote fonts or remote scripts. The only outside code is Google's AdSense loader, and ads only go in the named slots in `ads.js`. The Content Security Policy must keep `object-src 'none'`, `base-uri 'none'`, `form-action 'none'` and `frame-ancestors 'none'`. Never use inline `style=""` attributes.
 2. **No server-side storage.** Data stays in the browser and in share links only.
 3. **No dependencies at runtime.** Plain HTML, CSS and JavaScript, no build step.
 4. **Render user data as text.** Use `textContent` and the `h()` helper; never `innerHTML`, `eval` or `new Function`.
@@ -22,7 +22,7 @@ These keep the tool safe for everyone who types their friends' details into it. 
 6. **Never commit real registration numbers or postcodes**, not even in tests. Use made-up data.
 7. **No em dashes, en dashes or middle dots** in anything we write. The tests check this.
 
-**The guides site** (`site-src/`, generated into `site/`) carries Google AdSense on its own address. Edit `site-src/content.mjs`, run `node site-src/build.mjs` and commit both. Keep facts sourced and dated, and never add ad code or links to it from the tool.
+**The guides and info pages** (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `404.html`, `sitemap.xml`, `robots.txt`) are generated from `site-src/`. Edit `site-src/content.mjs`, run `node site-src/build.mjs` and commit both. Keep facts sourced and dated. **Ads** only go in named slots (`{ ad: "name" }` in content, `ad("name")` in `app.js`, listed in `ads.js`), and never next to the copy buttons.
 
 The automated tests check several of these.
 
