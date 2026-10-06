@@ -1,4 +1,4 @@
-// Browser tests for Glasto Quick Copy (the tool) and the guides site.
+// Browser tests for Glasto Quick Copy: the tool, the guides and info pages, and the ad slots.
 // Serves the tool locally with its production security headers, drives it with
 // Playwright (Chromium) and checks every user flow, edge cases and the security
 // guarantees in CONTRIBUTING.md.
@@ -13,7 +13,8 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const SITE = join(ROOT, "site");
+const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "404.html", "sitemap.xml", "robots.txt"];
+const SITE_URL = "https://glastobolt.co.uk";
 const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
 const TYPES = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".txt": "text/plain", ".woff2": "font/woff2", ".xml": "application/xml" };
 const toml = readFileSync(join(ROOT, "netlify.toml"), "utf8");
@@ -57,8 +58,12 @@ function hookedSource() {
     '  window.addEventListener("hashchange", render);',
     '  window.__t = { encodeShare, decodeShare, shareNames, parseImport, normPostcode };\n  window.addEventListener("hashchange", render);');
 }
+// Tests never reach the internet: Google's ad loader and anything else external is aborted
+const ADS_HOST = /^https:\/\/pagead2\.googlesyndication\.com\//;
+async function offline(ctx) { await ctx.route(u => !/^http:\/\/127\.0\.0\.1[:/]/.test(u.href) && !u.href.startsWith("data:"), r => r.abort()); }
 async function context({ hook = false, perms = CLIP, init, reducedMotion } = {}) {
   const ctx = await browser.newContext({ permissions: perms, viewport: { width: 390, height: 844 }, reducedMotion });
+  await offline(ctx);
   if (hook) await ctx.route("**/app.js*", r => r.fulfill({ contentType: "application/javascript", body: hookedSource() }));
   if (init) await ctx.addInitScript(init);
   return ctx;
@@ -97,29 +102,38 @@ function walk(dir, out = []) {
 }
 const appSrc = readFileSync(join(ROOT, "app.js"), "utf8");
 const toolHtml = ["index.html", "demo.html"].map(f => readFileSync(join(ROOT, f), "utf8"));
-const sitePages = walk(SITE).filter(f => f.endsWith(".html"));
+const sitePages = GENERATED.flatMap(g => { const f = join(ROOT, g); return !existsSync(f) ? [] : statSync(f).isDirectory() ? walk(f) : [f]; }).filter(f => f.endsWith(".html"));
+const adsSrc = readFileSync(join(ROOT, "ads.js"), "utf8");
 
 console.log("\nStatic checks");
-await test("Tool CSP is strict in the Netlify header and both pages' <meta>", () => {
-  for (const src of [toml, ...toolHtml]) {
-    for (const d of ["default-src 'none'", "script-src 'self';", "style-src 'self';", "font-src 'self';", "connect-src 'none'", "form-action 'none'", "base-uri 'none'"]) assert(src.includes(d), `missing ${d}`);
-    assert(!/unsafe-inline|unsafe-eval|https?:\/\/[^\s"']*googlesyndication/.test(src.match(/Content-Security-Policy[^\n]*/)[0]), "CSP loosened");
-  }
-  assert(/frame-ancestors 'none'/.test(toml), "frame-ancestors must be 'none'");
+await test("Security policy allows Google ads but keeps every other protection", () => {
+  for (const d of ["default-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'", "upgrade-insecure-requests"]) assert(CSP.includes(d), `missing ${d}`);
+  for (const d of ["object-src", "base-uri", "form-action", "frame-ancestors"]) assert(!new RegExp(`${d} [^;]*(https:|\\*)`).test(CSP), `${d} loosened`);
+  for (const h of toolHtml) assert(!/http-equiv="Content-Security-Policy"/.test(h), "the Netlify header is the only policy; no <meta> copy to drift");
+  assert(/Referrer-Policy = "strict-origin-when-cross-origin"/.test(toml), "referrer policy");
 });
-await test("Tool never loads ads or any external script, font or stylesheet", () => {
-  for (const [name, src] of [["app.js", appSrc], ["index.html", toolHtml[0]], ["demo.html", toolHtml[1]], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
-    assert(!/googlesyndication|adsbygoogle|googletagmanager|google-analytics/.test(src.replace('name="google-adsense-account"', "")), `${name} references ad/analytics code`);
+await test("The tool's code makes no network requests; pages load only Google's ad loader", () => {
+  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
     const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO);
     assert(!urls.length, `${name} references ${urls.join(", ")}`);
   }
+  const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780";
+  for (const h of [...toolHtml, ...sitePages.map(f => readFileSync(f, "utf8"))]) {
+    const srcs = [...h.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map(m => m[1]);
+    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u), `unexpected script ${u}`);
+    assert(srcs.includes(LOADER), "AdSense loader missing");
+    assert(!/<link[^>]+href="https?:/.test(h.replace(/<link rel="canonical"[^>]+>/, "")), "external stylesheet or font");
+  }
 });
-await test("No dangerous APIs in app.js", () => {
-  const code = appSrc.replace(/\/\/.*$/gm, "");
-  for (const bad of ["innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval(", "new Function", "fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon", "importScripts", 'setAttribute("style"', "postMessage"]) assert(!code.includes(bad), `found ${bad}`);
+await test("No dangerous APIs in app.js or ads.js", () => {
+  for (const src of [appSrc, adsSrc]) {
+    const code = src.replace(/\/\/.*$/gm, "");
+    for (const bad of ["innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval(", "new Function", "fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon", "importScripts", 'setAttribute("style"', "postMessage", "localStorage", "sessionStorage"].filter(b => src === appSrc ? !/Storage$/.test(b) : true)) assert(!code.includes(bad), `found ${bad}`);
+  }
 });
-await test("The tool's address never serves the guides site or its sources", () => {
-  for (const p of ["/site/*", "/site-src/*"]) assert(new RegExp(`from = "${p.replace(/[*/]/g, "\\$&")}"[\\s\\S]*?status = 404[\\s\\S]*?force = true`).test(toml), `${p} not blocked`);
+await test("Sources and tooling are never served", () => {
+  for (const p of ["/site-src/*", "/scripts/*", "/tests/*"]) assert(new RegExp(`from = "${p.replace(/[*/]/g, "\\$&")}"[\\s\\S]*?status = 404[\\s\\S]*?force = true`).test(toml), `${p} not blocked`);
+  assert(!existsSync(join(ROOT, "site")), "the old separate guides site folder is gone");
 });
 await test("scripts/verify-live.sh passes against an honest deploy and catches a tampered one", async () => {
   const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT }).toString().trim();
@@ -155,86 +169,99 @@ await test("Fonts are self-hosted and present", () => {
   const css = readFileSync(join(ROOT, "style.css"), "utf8");
   const files = [...css.matchAll(/url\("fonts\/([^"]+)"\)/g)].map(m => m[1]);
   assert(files.length === 7, `expected 7 font faces, got ${files.length}`);
-  for (const f of files) assert(existsSync(join(ROOT, "fonts", f)) && existsSync(join(SITE, "fonts", f)), `missing font ${f}`);
+  for (const f of files) assert(existsSync(join(ROOT, "fonts", f)), `missing font ${f}`);
 });
 
-// ---------- guides site ----------
-console.log("\nGuides site (AdSense)");
-await test("Generated pages are up to date with site-src", () => {
+// ---------- guides and info pages ----------
+console.log("\nGuides and info pages (AdSense)");
+await test("Generated pages are up to date with site-src, and the tool's index.html is untouched", () => {
   const tmp = mkdtempSync(join(tmpdir(), "qc-"));
   cpSync(ROOT, tmp, { recursive: true, filter: s => !s.includes("node_modules") && !s.includes(".git") });
   execFileSync(process.execPath, [join(tmp, "site-src", "build.mjs")], { stdio: "ignore" });
-  for (const f of walk(join(tmp, "site"))) {
-    const rel = relative(join(tmp, "site"), f);
-    assert(existsSync(join(SITE, rel)), `run "node site-src/build.mjs": ${rel} is missing`);
-    assert(readFileSync(f).equals(readFileSync(join(SITE, rel))), `run "node site-src/build.mjs": ${rel} is out of date`);
+  for (const g of GENERATED) {
+    const base = join(tmp, g);
+    assert(existsSync(base), `build did not produce ${g}`);
+    for (const f of statSync(base).isDirectory() ? walk(base) : [base]) {
+      const rel = relative(tmp, f);
+      assert(existsSync(join(ROOT, rel)), `run "node site-src/build.mjs": ${rel} is missing`);
+      assert(readFileSync(f).equals(readFileSync(join(ROOT, rel))), `run "node site-src/build.mjs": ${rel} is out of date`);
+    }
   }
+  for (const f of ["index.html", "demo.html", "app.js"]) assert(readFileSync(join(tmp, f)).equals(readFileSync(join(ROOT, f))), `build changed ${f}`);
 });
 await test("ads.txt is exactly Google's AdSense line", () => {
-  eq(readFileSync(join(SITE, "ads.txt"), "utf8"), "google.com, pub-2229524942259780, DIRECT, f08c47fec0942fa0\n", "ads.txt");
+  eq(readFileSync(join(ROOT, "ads.txt"), "utf8"), "google.com, pub-2229524942259780, DIRECT, f08c47fec0942fa0\n", "ads.txt");
 });
 await test("Every page has the AdSense tag, title, description, canonical and footer links", () => {
-  assert(sitePages.length >= 16, `only ${sitePages.length} pages`);
+  assert(sitePages.length >= 15, `only ${sitePages.length} pages`);
   for (const f of sitePages) {
-    const h = readFileSync(f, "utf8"), rel = relative(SITE, f);
+    const h = readFileSync(f, "utf8"), rel = relative(ROOT, f);
     assert(h.includes('src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780"'), `${rel}: AdSense script`);
     assert(h.includes('name="google-adsense-account" content="ca-pub-2229524942259780"'), `${rel}: AdSense meta`);
     assert(/<title>[^<]{10,}<\/title>/.test(h) && /name="description" content="[^"]{40,}"/.test(h), `${rel}: title/description`);
-    assert(h.includes('rel="canonical" href="__SITE_URL__/'), `${rel}: canonical`);
+    assert(h.includes(`rel="canonical" href="${SITE_URL}/`), `${rel}: canonical`);
     for (const l of ["/privacy/", "/terms/", "/contact/", "/about/", "/faq/", "/guides/"]) assert(h.includes(`href="${l}"`), `${rel}: footer link ${l}`);
     assert(h.includes("not affiliated with"), `${rel}: disclaimer`);
   }
+  for (const h of toolHtml) assert(h.includes('name="google-adsense-account" content="ca-pub-2229524942259780"'), "tool AdSense meta");
 });
-await test("All internal links on the guides site resolve", () => {
-  for (const f of sitePages) {
-    for (const [, href] of readFileSync(f, "utf8").matchAll(/href="(\/[^"#]*)"/g)) {
-      if (href === "/start" || href.startsWith("/fonts/") || href === "/site.css") continue;
-      const target = join(SITE, href.endsWith("/") ? href + "index.html" : href);
-      assert(existsSync(target), `${relative(SITE, f)} links to missing ${href}`);
-    }
+await test("All internal links resolve (guides, info pages and the tool's links)", () => {
+  const hrefs = [...sitePages.flatMap(f => [...readFileSync(f, "utf8").matchAll(/href="(\/[^"#]*)/g)].map(m => [relative(ROOT, f), m[1]])),
+    ...[...appSrc.matchAll(/"(\/(?:guides|faq|about|privacy|terms|contact)\/[^"]*)"/g)].map(m => ["app.js", m[1]])];
+  assert(hrefs.length > 100, "too few links found");
+  for (const [from, href] of hrefs) {
+    if (href.startsWith("/fonts/") || href === "/guides.css") continue;
+    const target = join(ROOT, href.endsWith("/") ? href + "index.html" : href);
+    assert(existsSync(target), `${from} links to missing ${href}`);
   }
 });
-await test("Privacy policy has the disclosures AdSense requires", () => {
-  const h = readFileSync(join(SITE, "privacy", "index.html"), "utf8");
-  for (const s of ["Third-party vendors, including Google, use cookies to serve ads based on your prior visits", "Google&#39;s use of advertising cookies", "adssettings.google.com", "aboutads.info", "policies.google.com/technologies/partner-sites", "consent", "Netlify"].map(x => x.replace("&#39;", "'")))
-    assert(h.includes(s) || h.includes(s.replace("'", "&#39;")), `missing "${s}"`);
+await test("Sitemap and robots.txt use the real address and list every page", () => {
+  const sm = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
+  const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
+  assert(locs.includes(SITE_URL + "/") && locs.length === 1 + sitePages.filter(f => !f.endsWith("404.html")).length, `sitemap has ${locs.length} entries`);
+  assert(locs.every(u => u.startsWith(SITE_URL + "/")), "sitemap address");
+  assert(readFileSync(join(ROOT, "robots.txt"), "utf8").includes(`Sitemap: ${SITE_URL}/sitemap.xml`), "robots.txt sitemap");
+});
+await test("Privacy policy has the disclosures AdSense requires, and is honest about the tool", () => {
+  const h = readFileSync(join(ROOT, "privacy", "index.html"), "utf8").replace(/&#39;/g, "'");
+  for (const s of ["Third-party vendors, including Google, use cookies to serve ads based on your prior visits", "Google's use of advertising cookies", "adssettings.google.com", "aboutads.info", "policies.google.com/technologies/partner-sites", "consent", "Netlify", "including the tool's pages, shows Google ads"])
+    assert(h.includes(s), `missing "${s}"`);
+  const all = sitePages.map(f => readFileSync(f, "utf8")).join("\n") + appSrc;
+  for (const stale of ["never appear on the tool", "blocks it from connecting", "separate web address", "connect-src 'none'"]) assert(!all.includes(stale), `stale promise: "${stale}"`);
 });
 await test("Guides have real depth: 8 articles of 300+ words with sources and dates", () => {
-  const guides = sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(SITE, f).replace(/\\/g, "/")));
+  const guides = sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(ROOT, f).replace(/\\/g, "/")));
   assert(guides.length === 8, `${guides.length} guides`);
   for (const f of guides) {
     const text = readFileSync(f, "utf8").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
     const words = text.split(/\s+/).filter(Boolean).length;
-    assert(words > 300, `${relative(SITE, f)} has only ${words} words`);
-    assert(/Last checked \d+ \w+ \d{4}/.test(text), `${relative(SITE, f)}: no date`);
+    assert(words > 300, `${relative(ROOT, f)} has only ${words} words`);
+    assert(/Last checked \d+ \w+ \d{4}/.test(text), `${relative(ROOT, f)}: no date`);
   }
 });
-await test("deploy.sh fills in addresses and the /start redirect", () => {
-  const tmp = mkdtempSync(join(tmpdir(), "site-"));
-  cpSync(SITE, tmp, { recursive: true });
-  execFileSync("sh", ["deploy.sh"], { cwd: tmp, env: { ...process.env, URL: "https://example.org", APP_URL: "https://app.example.org/" } });
-  eq(readFileSync(join(tmp, "_redirects"), "utf8"), "/start https://app.example.org/ 302\n", "_redirects");
-  for (const f of walk(tmp)) if (/\.(html|xml|txt)$/.test(f)) assert(!readFileSync(f, "utf8").includes("__SITE_URL__"), `${relative(tmp, f)} still has __SITE_URL__`);
-  assert(readFileSync(join(tmp, "index.html"), "utf8").includes('href="https://example.org/"'), "canonical not filled");
+await test("Ad slots sit where we chose: 3 per guide, none on privacy, terms, contact or 404", () => {
+  const slots = f => [...readFileSync(join(ROOT, f), "utf8").matchAll(/data-slot="([a-z-]+)"/g)].map(m => m[1]);
+  for (const f of sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(ROOT, f).replace(/\\/g, "/")))) eq(slots(relative(ROOT, f)), ["guide-top", "guide-mid", "guide-end"], relative(ROOT, f));
+  eq(slots("guides/index.html"), ["guides-end"], "guides list");
+  eq(slots("faq/index.html"), ["faq-mid", "faq-end"], "faq");
+  eq(slots("about/index.html"), ["about-end"], "about");
+  for (const f of ["privacy/index.html", "terms/index.html", "contact/index.html", "404.html"]) eq(slots(f), [], f);
+  const known = [...adsSrc.matchAll(/^\s+"([a-z-]+)": "",/gm)].map(m => m[1]);
+  const used = new Set([...sitePages.flatMap(f => slots(relative(ROOT, f))), ...[...appSrc.matchAll(/ad\("([a-z-]+)"\)/g)].map(m => m[1])]);
+  eq([...used].sort(), [...known].sort(), "every slot in ads.js is used, and every used slot is in ads.js");
 });
-{
-  const site = await serve(SITE);
-  await test("Guides pages render without errors (ads blocked in tests)", async () => {
-    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    await ctx.route("https://pagead2.googlesyndication.com/**", r => r.abort());
-    const p = await page(ctx);
-    for (const u of ["", "guides/", "guides/how-glastonbury-registration-works/", "faq/", "about/", "contact/", "privacy/", "terms/"]) {
-      await p.goto(site.url + u);
-      assert((await p.textContent("h1")).length > 3, `${u}: no h1`);
-    }
-    await p.goto(site.url + "faq/");
-    await p.locator(".faq summary").first().click();
-    assert(await p.locator(".faq").first().evaluate(d => d.open), "FAQ item didn't open");
-    assert(!p.errors.length, p.errors[0]);
-    await ctx.close();
-  });
-  site.server.close();
-}
+await test("Guides pages render without errors (ads blocked in tests)", async () => {
+  const p = await page(await context());
+  for (const u of ["guides/", "guides/how-glastonbury-registration-works/", "faq/", "about/", "contact/", "privacy/", "terms/", "404.html"]) {
+    await p.goto(B + u);
+    assert((await p.textContent("h1")).length > 3, `${u}: no h1`);
+    eq(await p.locator(".ad-slot:visible").count(), 0, `${u}: empty slots stay hidden`);
+  }
+  await p.goto(B + "faq/");
+  await p.locator(".faq summary").first().click();
+  assert(await p.locator(".faq").first().evaluate(d => d.open), "FAQ item didn't open");
+  noErrors(p); await p.context().close();
+});
 
 // ---------- import parser ----------
 console.log("\nImport parser");
@@ -378,7 +405,8 @@ await test("Home: one main action, how it works, questions, footer with commit a
   const links = await p.locator("footer a").evaluateAll(as => as.map(a => [a.textContent, a.getAttribute("href")]));
   assert(links.some(([t, h]) => h === "#/data"), "data link");
   assert(links.some(([t, h]) => t === "0123456" && h === `${SOURCE_REPO}/commit/${STAMP}`), "commit link");
-  assert(!(await p.textContent("body")).match(/tracking|analytics|\bads\b/i), "no ads/tracking wording on the tool home");
+  for (const l of ["/guides/", "/faq/", "/about/", "/privacy/", "/terms/", "/contact/"]) assert(links.some(([t, h]) => h === l), `footer link ${l}`);
+  assert(await p.locator(".guides-links a[href^='/guides/']").count() >= 4, "guide links on home");
   noErrors(p); await p.context().close();
 });
 await test("Home lists saved groups newest first and updates when another tab changes storage", async () => {
@@ -585,7 +613,8 @@ await test("Data page: explains storage, shows the version, deletes everything w
   const p = await page(await context()); await p.goto(stamped.url);
   await p.evaluate(g => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ g1: { created: 1, people: g } })), GROUP);
   await p.goto(stamped.url + "#/data");
-  assert((await p.textContent("main")).includes("connect-src 'none'"), "CSP explained");
+  const text = await p.textContent("main");
+  assert(text.includes("Its code makes no network requests") && text.includes("Google's ad code runs on these pages"), "honest about the tool and the ads");
   assert((await p.textContent(".check")).includes("0123456"), "version");
   p.once("dialog", d => d.accept()); await p.click("text=Delete everything on this phone");
   eq(await pages(p), {}, "deleted"); eq(await p.locator("text=Delete everything on this phone").count(), 0, "button hidden when empty");
@@ -626,6 +655,54 @@ await test("Reduced motion: everything still works", async () => {
   await p.context().close();
 });
 
+// ---------- ad slots ----------
+console.log("\nAd slots");
+// ads.js with made-up ad unit IDs, as if the owner had created them in AdSense
+const fakeAds = () => adsSrc.replace(/^(\s+"[a-z-]+": )"",/gm, (_, k) => `${k}"1234567890",`);
+async function adsContext() {
+  const ctx = await context();
+  await ctx.route("**/ads.js*", r => r.fulfill({ contentType: "application/javascript", body: fakeAds() }));
+  await ctx.addInitScript(() => { window.__pushes = 0; window.adsbygoogle = { push: () => { window.__pushes++; } }; });
+  return ctx;
+}
+await test("Slots without an ad unit ID show nothing", async () => {
+  const p = await page(await context()); await seed(p, GROUP);
+  for (const r of ["", "#/new", "#/add", "#/p/g1", "#/data"]) {
+    await p.goto(B + r); await p.waitForTimeout(30);
+    eq(await p.locator("ins.adsbygoogle").count(), 0, `${r}: no ad`);
+    eq(await p.locator(".ad-slot:visible").count(), 0, `${r}: slot hidden`);
+  }
+  noErrors(p); await p.context().close();
+});
+await test("Filled slots get a labelled AdSense unit, once, on every screen", async () => {
+  const p = await page(await adsContext()); await seed(p, GROUP);
+  const expect = { "": ["home-mid", "home-end"], "#/new": ["create-end"], "#/add": ["editor-end"], "#/edit/g1": ["editor-end"], "#/p/g1": ["group-end"], "#/data": ["data-end"] };
+  for (const [r, names] of Object.entries(expect)) {
+    await p.goto(B); await p.goto(B + r); await p.waitForTimeout(40);
+    const got = await p.locator(".ad-slot[data-filled]").evaluateAll(els => els.map(e => [e.dataset.slot, e.querySelector(".ad-label")?.textContent, e.querySelector("ins.adsbygoogle")?.dataset.adClient, e.querySelector("ins.adsbygoogle")?.dataset.adSlot, e.querySelectorAll("ins").length]));
+    eq(got, names.map(n => [n, "Advertisement", "ca-pub-2229524942259780", "1234567890", 1]), r || "home");
+  }
+  // in-app navigation (no reload) fills the new screen's slots too
+  await p.goto(B); await p.click("text=Make your group's page"); await p.waitForSelector(".v-create");
+  eq(await p.locator(".ad-slot[data-filled]").count(), 1, "filled after navigation");
+  assert(await p.evaluate(() => window.__pushes) >= 1, "AdSense asked to fill");
+  await p.goto(B + "faq/"); await p.waitForTimeout(40);
+  eq(await p.locator(".ad-slot[data-filled]").count(), 2, "faq slots filled");
+  noErrors(p); await p.context().close();
+});
+await test("Ticket day: the only ad is at the very bottom, never among the copy boxes", async () => {
+  const p = await page(await adsContext()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
+  eq(await p.locator(".v-day .ad-slot").count(), 1, "one slot");
+  eq(await p.locator(".cards .ad-slot, .person .ad-slot").count(), 0, "not inside the copy cards");
+  eq(await p.locator(".v-day > :last-child").getAttribute("data-slot"), "group-end", "last on the page");
+  const [adTop, lastCopyBottom, shareBottom] = await p.evaluate(() => [
+    document.querySelector(".v-day .ad-slot").getBoundingClientRect().top,
+    Math.max(...[...document.querySelectorAll(".v-day .copy")].map(b => b.getBoundingClientRect().bottom)),
+    document.querySelector(".share").getBoundingClientRect().bottom]);
+  assert(adTop > shareBottom && adTop - lastCopyBottom > 200, `ad too close to the copy boxes (${Math.round(adTop - lastCopyBottom)}px)`);
+  noErrors(p); await p.context().close();
+});
+
 // ---------- security ----------
 console.log("\nSecurity");
 const PAYLOADS = ['<img src=x onerror="window.__pwned=1">', "<script>window.__pwned=1</script>", '"><svg onload=window.__pwned=1>', "javascript:window.__pwned=1"];
@@ -649,34 +726,31 @@ await test("Malicious share links and pasted chat text never execute", async () 
   await p.waitForTimeout(50); assert(!(await p.evaluate(() => window.__pwned)), "paste executed");
   await ctx.close();
 });
-await test("No CSP violations on any screen, and nothing leaves the page", async () => {
-  const ctx = await context(); const p = await page(ctx); const outbound = [], blocked = new Set();
-  p.on("request", r => { if (!r.url().startsWith(B)) outbound.push(r.url()); });
-  p.on("requestfailed", r => { if (r.failure()?.errorText === "csp") blocked.add(r.url()); });
+await test("No CSP violations on any screen; the only outside request is Google's ad loader", async () => {
+  const ctx = await context(); const p = await page(ctx); const outbound = [];
+  p.on("request", r => { if (!r.url().startsWith(B) && !r.url().startsWith("data:")) outbound.push(r.url()); });
   await p.goto(B); await p.locator(".copy.hero").first().click(); await p.locator(".mock-field").first().click();
   await p.goto(B + "#/new"); await p.fill("textarea", "Alex 1029384756 BS1 4DJ\nPriya 1618033988"); await p.click(".v-create > button.btn-primary");
   await p.locator('input[placeholder="e.g. BS1 4DJ"]').nth(1).fill("E1 6AN"); await p.click("text=Create group"); await p.waitForSelector(".v-day");
   await p.locator(".v-day .copy").first().click(); await p.click("text=What's in the link?"); await p.click(".share .btn-primary");
-  const link = await clip(p); await p.goto(link); await p.goto(B + "#/data"); await p.goto(B + "#/s/broken"); await p.goto(B + "demo.html");
+  const link = await clip(p); await p.goto(link); await p.goto(B + "#/data"); await p.goto(B + "#/s/broken"); await p.goto(B + "demo.html"); await p.goto(B + "faq/");
+  const strange = outbound.filter(u => !ADS_HOST.test(u));
+  assert(!strange.length, `unexpected requests: ${strange.join(", ")}`);
+  assert(outbound.length > 0, "the AdSense loader should be requested");
+  // the policy still blocks what doesn't affect ads
   const r = await p.evaluate(async () => {
     const out = {};
-    try { await fetch("https://example.com/x"); out.fetch = "sent"; } catch { out.fetch = "blocked"; }
-    out.img = await new Promise(res => { const i = new Image(); i.onload = () => res("loaded"); i.onerror = () => res("blocked"); i.src = "https://example.com/i.png"; setTimeout(() => res("blocked"), 1500); });
-    out.inline = await new Promise(res => { const s = document.createElement("script"); s.textContent = "window.__inl=1"; document.body.append(s); setTimeout(() => res(window.__inl ? "ran" : "blocked"), 100); });
-    out.style = await new Promise(res => { const d = document.createElement("div"); d.setAttribute("style", "width:123px"); document.body.append(d); setTimeout(() => res(d.offsetWidth === 123 ? "applied" : "blocked"), 50); });
-    out.font = await new Promise(res => { const f = new FontFace("x", "url(https://example.com/f.woff2)"); f.load().then(() => res("loaded"), () => res("blocked")); });
+    out.object = await new Promise(res => { const o = document.createElement("object"); o.data = "/ads.txt"; o.onload = () => res("loaded"); o.onerror = () => res("blocked"); document.body.append(o); setTimeout(() => res("blocked"), 500); });
+    out.base = (() => { const b = document.createElement("base"); b.href = "https://example.com/"; document.head.append(b); const a = document.createElement("a"); a.href = "x"; const v = a.href.startsWith("https://example.com/") ? "applied" : "blocked"; b.remove(); return v; })();
     return out;
   });
-  eq(r, { fetch: "blocked", img: "blocked", inline: "blocked", style: "blocked", font: "blocked" }, "probes");
-  const leaked = outbound.filter(u => !blocked.has(u) && !u.startsWith("data:"));
-  assert(!leaked.length, `requests not blocked: ${leaked.join(", ")}`);
-  const ours = p.csp.filter(m => !/example\.com|width:123px|inline script|'self'".*inline/i.test(m));
+  eq(r, { object: "blocked", base: "blocked" }, "probes");
   assert(!p.errors.length, p.errors[0]);
   await ctx.close();
   const q = await page(await context()); // fresh page: the app itself must cause zero CSP reports
   await q.goto(B); await q.goto(B + "#/new"); await q.goto(B + "#/data"); await q.goto(B + "demo.html");
   for (const b of await q.locator(".v-day .copy").all()) await b.click();
-  assert(!q.csp.length, q.csp[0]); await q.context().close();
+  assert(!q.csp.filter(m => !/object|base/i.test(m)).length, q.csp[0]); await q.context().close();
 });
 await test("Every button and link has an accessible name", async () => {
   const p = await page(await context()); await seed(p, GROUP);

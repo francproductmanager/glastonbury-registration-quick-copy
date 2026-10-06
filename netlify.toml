@@ -4,11 +4,16 @@
   # This is the only change made at deploy time; everything else is served exactly as in the repo.
   command = "sed -i \"s/__COMMIT_REF__/${COMMIT_REF:-unknown}/\" index.html demo.html"
 
+# The site shows Google AdSense ads, so scripts, images, frames and connections from Google's
+# ad servers must be allowed. Google's ad domains change over time, so this follows Google's own
+# guidance for ad pages (https: sources) and keeps every protection that doesn't affect ads:
+# no plugins, no <base> hijacking, no form submissions, and no other site can embed these pages.
+# The tool's own code (app.js) still makes no network requests at all; a test checks this.
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
-    Referrer-Policy = "no-referrer"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src https:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Referrer-Policy = "strict-origin-when-cross-origin"
     X-Content-Type-Options = "nosniff"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
@@ -21,20 +26,28 @@
   for = "/*.css"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# The guides site (site/) carries ads and is deployed separately on its own address.
-# Never serve it, or its sources, from the tool's address.
-[[redirects]]
-  from = "/site/*"
-  to = "/404"
-  status = 404
-  force = true
-[[redirects]]
-  from = "/site-src/*"
-  to = "/404"
-  status = 404
-  force = true
 [[headers]]
   for = "/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+[[headers]]
+  for = "/ads.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+# Sources and tooling stay in the repo, not on the website
+[[redirects]]
+  from = "/site-src/*"
+  to = "/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/tests/*"
+  to = "/404.html"
+  status = 404
+  force = true

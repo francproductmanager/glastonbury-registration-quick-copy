@@ -156,6 +156,16 @@ h2.plain { font: 600 16px/1.35 var(--sans); }
 /* footer */
 footer { font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
 footer a { color: var(--muted); }
+.foot-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.foot-links a { min-height: 32px; display: inline-flex; align-items: center; }
+.guides-links ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.guides-links a { color: var(--accent-ink); }
+
+/* ad slots (see ads.js): hidden until the slot has an ad unit, always labelled, kept clear of buttons */
+.ad-slot { margin: 20px 0; }
+.ad-slot:not([data-filled]) { display: none; }
+.ad-label { margin: 0 0 4px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ad-slot ins.adsbygoogle { display: block; min-height: 100px; }
 .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok-dot); margin-right: 6px; vertical-align: middle; }
 .dot.big { width: 8px; height: 8px; }
 

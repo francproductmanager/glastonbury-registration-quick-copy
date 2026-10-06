@@ -1,7 +1,7 @@
 // Glasto Quick Copy: everything runs in the browser.
-// Pages are stored in this browser's localStorage only; nothing is ever sent anywhere
-// (the Content-Security-Policy blocks all network requests). All user data is rendered
-// with textContent, never innerHTML.
+// Pages are stored in this browser's localStorage only. This code never sends them anywhere:
+// it makes no network requests (a test checks this). The site shows Google ads in fixed
+// slots (see ads.js). All user data is rendered with textContent, never innerHTML.
 (() => {
   "use strict";
 
@@ -253,8 +253,8 @@
   // The deployed commit is stamped into <meta name="source-commit"> by Netlify (see netlify.toml),
   // so anyone can see exactly which version of the public source code is running.
   const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
-  // Optional link to the guides site (set it once that site has its own domain).
-  const GUIDES_URL = "";
+  // An ad may appear here (ads.js fills it once the slot has an AdSense ad unit ID)
+  const ad = (name) => h("div", { class: "ad-slot", "data-slot": name });
   function deployedCommit() {
     const meta = document.querySelector('meta[name="source-commit"]');
     const sha = meta ? meta.content : "";
@@ -270,7 +270,9 @@
         ? h("p", null, h("span", { class: "dot", "aria-hidden": "true" }), "Open source. Running version ",
             ext(`${SOURCE_REPO}/commit/${sha}`, sha.slice(0, 7), "mono"), ", ", ext(`${SOURCE_REPO}/actions/workflows/verify-live.yml`, "checked every 6 hours"), ".")
         : h("p", null, "Open source. ", ext(SOURCE_REPO, "View the code"), "."),
-      GUIDES_URL ? h("p", null, ext(GUIDES_URL, "Ticket day guides and FAQ")) : null,
+      h("nav", { class: "foot-links", "aria-label": "Site" },
+        [["/guides/", "Guides"], ["/faq/", "FAQ"], ["/about/", "About"], ["/privacy/", "Privacy and cookies"], ["/terms/", "Terms"], ["/contact/", "Contact"]]
+          .map(([href, t]) => h("a", { href }, t))),
       h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."));
   }
   const back = (href, text) => h("a", { class: "back", href }, "‹ " + text);
@@ -385,6 +387,12 @@
     return h("div", { class: "faq-list" }, items.map(([q, a]) =>
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
+  const GUIDE_LINKS = [
+    ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
+    ["/guides/how-the-ticket-queue-works/", "How the ticket queue works"],
+    ["/guides/ticket-day-checklist/", "Ticket day checklist"],
+    ["/guides/buying-tickets-for-a-group/", "Buying tickets for a group"],
+  ];
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
@@ -405,7 +413,13 @@
            ["Send everyone the link.", " It opens the same page on their phones."],
            ["Tap, paste, next.", " Each box goes blue once it's used, so you know who's done."]]
             .map(([b, rest], i) => h("li", null, h("span", { class: "num" }, String(i + 1)), h("span", null, h("strong", null, b), rest))))),
+      ad("home-mid"),
       h("section", { class: "section" }, h("h2", null, "Questions"), faqList(FAQ)),
+      h("section", { class: "section guides-links" },
+        h("h2", null, "Ticket day guides"),
+        h("ul", null, GUIDE_LINKS.map(([href, t]) => h("li", null, h("a", { href }, t)))),
+        h("p", null, h("a", { href: "/guides/" }, "All guides"), " or ", h("a", { href: "/faq/" }, "read the FAQ"))),
+      ad("home-end"),
       footer());
   }
   const firstNames = (people) => shareNames(people).filter(Boolean).join(", ");
@@ -505,7 +519,8 @@
       h("p", { class: "help" }, "We pick out names, reg numbers and postcodes as you paste."),
       results,
       submit,
-      h("p", { class: "cta-note" }, "Saves on this phone. You can edit anything after."));
+      h("p", { class: "cta-note" }, "Saves on this phone. You can edit anything after."),
+      ad("create-end"));
   }
 
   function savePage(id, people) {
@@ -588,7 +603,7 @@
     wrap.append(
       back(id ? "#/p/" + id : "#/new", "Back"),
       h("h1", null, id ? "Edit group" : "Add people"),
-      list, addBtn, banner, save);
+      list, addBtn, banner, save, ad("editor-end"));
     return wrap;
   }
 
@@ -704,7 +719,8 @@
             const a = loadAll(); delete a[id]; saveAll(a);
             try { sessionStorage.removeItem(usedKey(id)); } catch {}
             toast("Group deleted"); go("");
-          } }, "Delete"))));
+          } }, "Delete"))),
+      ad("group-end"));
   }
 
   function shareUrl(page) {
@@ -764,7 +780,8 @@
       h("div", { class: "card ilist" },
         page.people.map(p => h("div", { class: "irow" }, h("span", null, p.name), h("span", { class: "vals" }, h("span", null, p.reg), h("span", null, p.postcode)))),
         h("p", { class: "note" }, "From the link you were sent")),
-      h("div", { class: "btn-row" }, save, notNow));
+      h("div", { class: "btn-row" }, save, notNow),
+      ad("shared-end"));
   }
 
   function viewMissing() {
@@ -789,7 +806,8 @@
       back("#/", "Home"),
       h("h1", null, "How your data is handled"),
       block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
-      block("What the site can connect to", "Nothing. The page's security policy blocks every network request (", h("code", null, "connect-src 'none'"), ")."),
+      block("Is it sent anywhere?", "Not by this tool. Its code makes no network requests and there's no server copy of your group."),
+      block("Ads", "The site is free because it shows Google ads. As on any site with ads, Google's ad code runs on these pages and Google uses cookies to show and measure ads. ", h("a", { href: "/privacy/" }, "Privacy and cookies")),
       block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out. It's encoded, not encrypted, so anyone with the link can read it."),
       block("Your clipboard", "Some keyboards, like Gboard, keep a clipboard history. You can clear it from the keyboard's clipboard menu after ticket day."),
       h("section", { class: "card check" },
@@ -802,7 +820,8 @@
         try { localStorage.removeItem(KEY); } catch {}
         toast("Everything deleted");
         render();
-      } }, "Delete everything on this phone") : null);
+      } }, "Delete everything on this phone") : null,
+      ad("data-end"));
   }
 
   // ---------- router ----------
@@ -822,6 +841,7 @@
     else node = viewHome();
     if (!node) return; // the view redirected
     app.replaceChildren(node);
+    if (window.GQCAds) window.GQCAds.fill(app);
     document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : "Glasto Quick Copy";
     window.scrollTo(0, 0);
   }

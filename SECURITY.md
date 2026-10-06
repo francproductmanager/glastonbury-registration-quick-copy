@@ -15,12 +15,13 @@ You'll get a reply as soon as possible. This is a volunteer project, so please a
 
 ## What's in scope
 
-- Anything that lets data leave the browser (network requests, CSP bypasses)
+- Anything that makes the tool's own code send data out of the browser
 - Script injection (XSS), including via crafted share links
 - Ways for one person's saved pages to be read by someone else
-- Any way for ad code from the guides site (`site/`) to run on, or read data from, the tool's address
+- Bypasses of the protections the security policy keeps (`object-src`, `base-uri`, `form-action`, `frame-ancestors`)
 
 ## What's out of scope
 
+- Google's ad code itself. The site shows Google AdSense ads, so Google's ad script runs on the site's pages, as on any site with Google ads. Report problems with it to Google.
 - Someone reading a share link they were sent. Links are encoded, not encrypted, by design, and the site says so.
 - Attacks that need an unlocked device or a malicious browser extension.
