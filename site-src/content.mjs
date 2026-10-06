@@ -142,7 +142,7 @@ export const GUIDES = [
       "Registration numbers and postcodes aren't passwords, but they are personal details. Share them only with your group, not in public posts. With [Glasto Quick Copy](/#/new) the lead booker can put everyone on one page and send the group a link that only contains first names, numbers and postcodes.",
       { h2: "Paying each other back" },
       "Agree before the day how deposits and balances will be split. A short message in the group chat with the amounts and dates saves awkward conversations later.",
-      { cta: "Make your group's page" },
+      { cta: "Set up your group" },
     ],
     sources: [OFFICIAL.tickets],
   },
@@ -219,7 +219,7 @@ export const GUIDES = [
     body: [
       "Glasto Quick Copy is a free tool that puts your whole group's registration numbers and postcodes on one page, so on ticket day you can tap to copy each one and paste it straight into the booking form.",
       { h2: "1. Paste your group chat" },
-      "Open the tool and choose **Make your group's page**. Paste the messages where your friends sent their details. The tool picks out names, registration numbers and postcodes as you paste, and flags anyone whose postcode is missing.",
+      "Open the tool and choose **Set up your group**. Paste the messages where your friends sent their details. The tool picks out names, registration numbers and postcodes as you paste, and flags anyone whose postcode is missing.",
       "Prefer typing? Choose **Add someone by hand** and fill in each person.",
       { h2: "2. Check and save" },
       "Check each person's number against what they sent. When everyone shows as ready, create the group. It's saved in your browser on your phone. There's no account to make.",
@@ -263,7 +263,7 @@ export const PAGES = [
     file: "guides/index.html", path: "/guides/", title: "Glastonbury ticket guides",
     description: "Guides to Glastonbury registration, ticket day, the online queue, buying for a group, deposits, balance payments, resale and coach tickets.",
     lead: "Everything you need to know before, during and after the Glastonbury ticket sale. Checked against official sources.",
-    body: [{ cards: GUIDES }, { cta: "Make your group's page" }, { ad: "guides-end" }],
+    body: [{ cards: GUIDES }, { cta: "Set up your group" }, { ad: "guides-end" }],
   },
   {
     file: "faq/index.html", path: "/faq/", title: "Frequently asked questions",
