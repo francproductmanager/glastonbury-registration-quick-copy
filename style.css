@@ -166,6 +166,9 @@ footer a { color: var(--muted); }
    dashed panel with a label and extra space, so it can't be mistaken for part of the tool */
 .ad-slot:not([data-filled]) { display: none; }
 .ad-slot ins.adsbygoogle { display: block; }
+/* Google's recommended rule: an ad it couldn't fill (or one waiting for site approval) leaves no gap */
+.ad-slot ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+.ad-slot:has(ins[data-ad-status="unfilled"]) { display: none; }
 .ad-label { display: none; margin: 0 0 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .ad-slot:has(ins[data-ad-status="filled"]) { margin: 26px 0; padding: 10px 12px 12px; background: var(--surface-sunk); border: 1px dashed var(--border-strong); border-radius: 12px; }
 .ad-slot:has(ins[data-ad-status="filled"]) > .ad-label { display: block; }
