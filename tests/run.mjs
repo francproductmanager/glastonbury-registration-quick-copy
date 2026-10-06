@@ -203,6 +203,22 @@ await test("Generated pages are up to date with site-src, and the tool's index.h
   }
   for (const f of ["index.html", "demo.html", "app.js"]) assert(readFileSync(join(tmp, f)).equals(readFileSync(join(ROOT, f))), `build changed ${f}`);
 });
+await test("Content links: only https:, mailto:, /paths and #anchors; anything else stops the build", async () => {
+  const { safeUrl } = await import(new URL("../site-src/safe-url.mjs", import.meta.url));
+  for (const u of ["https://example.com/a?b=1", "mailto:hello@example.com", "/guides/", "/#/new", "#sources"]) eq(safeUrl(u), u, u);
+  for (const u of ["javascript:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)", "data:text/html,x", "vbscript:x", "http://example.com", "//evil.example", "guides/x"]) {
+    let threw = false; try { safeUrl(u); } catch { threw = true; }
+    assert(threw, `accepted ${JSON.stringify(u)}`);
+  }
+  // end to end: a javascript: link in the content makes the build fail and writes nothing
+  const tmp = mkdtempSync(join(tmpdir(), "qc-"));
+  cpSync(join(ROOT, "site-src"), join(tmp, "site-src"), { recursive: true });
+  const content = join(tmp, "site-src", "content.mjs");
+  writeFileSync(content, readFileSync(content, "utf8").replace("[GitHub](https://github.com/", "[GitHub](javascript:alert(1)//"));
+  let failedBuild = false; try { execFileSync(process.execPath, [join(tmp, "site-src", "build.mjs")], { stdio: "ignore" }); } catch { failedBuild = true; }
+  assert(failedBuild, "build accepted a javascript: link");
+  assert(!existsSync(join(tmp, "about", "index.html")), "a page with the unsafe link was written");
+});
 await test("security.txt is valid and not about to expire", async () => {
   const t = readFileSync(join(ROOT, ".well-known", "security.txt"), "utf8");
   assert(t.includes(`Contact: ${SOURCE_REPO}/security/advisories/new`), "contact");
@@ -380,13 +396,18 @@ console.log("\nShare links");
     });
     assert(r.bad === 0, `${r.bad} mismatches`); assert(r.longest < 400, `longest ${r.longest}`);
   });
-  await test("Duplicate first names get an initial; surnames never in the link", async () => {
+  await test("Duplicate first names get a number; nothing from a surname in the link", async () => {
     const r = await p.evaluate(() => {
-      const people = [{ name: "Tom Okafor", reg: "1", postcode: "LS1 5DL" }, { name: "tom Hughes", reg: "2", postcode: "LS1 5DL" }, { name: "Ann Lee", reg: "3", postcode: "LS1 5DL" }];
+      const people = [{ name: "Tom Okafor", reg: "1", postcode: "LS1 5DL" }, { name: "tom Hughes", reg: "2", postcode: "LS1 5DL" }, { name: "Ann Lee", reg: "3", postcode: "LS1 5DL" }, { name: "Tom", reg: "4", postcode: "LS1 5DL" }];
       const code = __t.encodeShare({ people });
-      return { names: __t.decodeShare(code).people.map(x => x.name), raw: atob(code.replace(/-/g, "+").replace(/_/g, "/")) };
+      return {
+        names: __t.decodeShare(code).people.map(x => x.name), raw: atob(code.replace(/-/g, "+").replace(/_/g, "/")),
+        odd: __t.shareNames([{ name: "constructor A" }, { name: "constructor B" }, { name: "__proto__" }, { name: "" }]),
+      };
     });
-    eq(r.names, ["Tom O.", "tom H.", "Ann"], "names"); assert(!/Okafor|Hughes|Lee/.test(r.raw), "surname in link");
+    eq(r.names, ["Tom 1", "tom 2", "Ann", "Tom 3"], "names");
+    assert(!/Okafor|Hughes|Lee/.test(r.raw), "surname in link");
+    eq(r.odd, ["constructor 1", "constructor 2", "__proto__", ""], "names that clash with built-in properties");
   });
   await test("Older link formats still open (v1 binary and legacy JSON)", async () => {
     const r = await p.evaluate(() => [
@@ -611,7 +632,9 @@ await test("Share: copy link, what's in the link matches the decoded link", asyn
   await p.click("text=Copy link"); await waitText(p, ".share .btn-primary", "Link copied \u2713");
   const link = await clip(p); assert(link.startsWith(B + "#/s/"), "link");
   await p.click("text=What's in the link?");
-  eq(await p.locator(".lrow").evaluateAll(rs => rs.map(r => r.textContent)), ["Tom O.1029384756BS1 4DJ", "Tom H.5647382910M4 1HN"], "rows");
+  eq(await p.locator(".lrow").evaluateAll(rs => rs.map(r => r.textContent)), ["Tom 11029384756BS1 4DJ", "Tom 25647382910M4 1HN"], "rows");
+  const foot = await p.textContent(".link-foot");
+  assert(foot.includes("first names, registration numbers and postcodes") && !foot.includes("First names only"), "privacy note matches the link: " + foot);
   noErrors(p); await p.context().close();
 });
 await test("Share: uses the phone's share sheet when available", async () => {
