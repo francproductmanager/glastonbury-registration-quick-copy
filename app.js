@@ -11,6 +11,12 @@
   const MAX_REG_DIGITS = 12;
   const app = document.getElementById("app");
   const toastEl = document.getElementById("toast");
+  // index.html ships a longer explanation of the tool inside #app, so it's readable before (and
+  // without) this script. Keep it for the home screen, minus its heading and intro, which the
+  // home screen has its own versions of.
+  const HOME_TITLE = document.title;
+  const homeInfo = app.querySelector("#home-info");
+  if (homeInfo) { for (const el of homeInfo.querySelectorAll("h1, .lead")) el.remove(); homeInfo.remove(); }
 
   // ---------- storage ----------
   let demoStore = Object.assign(Object.create(null), {
@@ -450,6 +456,8 @@
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
   const GUIDE_LINKS = [
+    ["/guides/glastonbury-2027-key-dates/", "Glastonbury 2027 key dates and prices"],
+    ["/guides/resale-and-coach-tickets/", "How the spring resale works"],
     ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
     ["/guides/how-the-ticket-queue-works/", "How the ticket queue works"],
     ["/guides/ticket-day-checklist/", "Ticket day checklist"],
@@ -482,6 +490,7 @@
         h("h2", null, "Ticket day guides"),
         h("ul", null, GUIDE_LINKS.map(([href, t]) => h("li", null, h("a", { href }, t)))),
         h("p", null, h("a", { href: "/guides/" }, "All guides"), " or ", h("a", { href: "/faq/" }, "read the FAQ"))),
+      homeInfo,
       ad("home-end"),
       footer(),
       // filled by counter.js with the site's visit total; stays empty if that can't be fetched
@@ -581,8 +590,7 @@
       h("p", { class: "help" }, "Paste messages to fill in details faster. You can check and edit everything next."),
       hint,
       review,
-      manual,
-      ad("create-end"));
+      manual);
   }
 
   function savePage(id, people) {
@@ -679,7 +687,7 @@
       backLink,
       h("h1", null, id ? "Edit group" : "Check your group's details"),
       id ? null : h("p", { class: "help" }, "Correct anything that needs changing, or add people manually."),
-      list, addBtn, banner, save, ad("editor-end")].filter(Boolean));
+      list, addBtn, banner, save].filter(Boolean));
     return wrap;
   }
 
@@ -785,8 +793,7 @@
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
       h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form.")),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
-      // an ad between one person and the next (never inside a card), drawn as its own marked panel
-      cards.flatMap((c, i) => (i ? [ad("group-between"), c] : [c])),
+      cards,
       finish,
       clear,
       shareCard(page),
@@ -799,8 +806,7 @@
             const a = loadAll(); delete a[id]; saveAll(a);
             try { sessionStorage.removeItem(usedKey(id)); } catch {}
             toast("Group deleted"); go("");
-          } }, "Delete"))),
-      ad("group-end"));
+          } }, "Delete"))));
   }
 
   function shareUrl(page) {
@@ -910,8 +916,7 @@
         try { localStorage.removeItem(KEY); } catch {}
         toast("Everything deleted");
         render();
-      } }, "Delete everything on this phone") : null,
-      ad("data-end"));
+      } }, "Delete everything on this phone") : null);
   }
 
   // ---------- router ----------
@@ -936,7 +941,7 @@
     app.replaceChildren(node);
     if (window.GQCAds) window.GQCAds.fill(app);
     if (window.GQCVisits) window.GQCVisits.fill(app);
-    document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : "Glasto Quick Copy";
+    document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : DEMO ? "Demo | Glasto Quick Copy" : HOME_TITLE;
     window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", render);

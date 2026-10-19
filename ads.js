@@ -7,13 +7,10 @@
 (() => {
   const CLIENT = "ca-pub-2229524942259780";
   const SLOTS = {
-    // the tool
-    "home-end": "2945530362",      // home: after the questions
-    "create-end": "2945530362",    // paste screen: below the Create button
-    "editor-end": "2945530362",    // add or edit people: below the Save button
-    "group-between": "2945530362", // ticket day: between one person's card and the next, in its own clearly marked panel
-    "group-end": "2945530362",     // ticket day: at the very bottom, below sharing and Edit/Delete
-    "data-end": "2945530362",      // how your data is handled: at the bottom
+    // the tool: only the home screen, which has real content. The screens you use to set up,
+    // edit and copy your group carry no ads: they're working screens, not content, and ads
+    // there would sit next to buttons people tap in a hurry.
+    "home-end": "2945530362",      // home: after the questions and the explanation of the tool
     // the guides and info pages
     "guide-top": "2945530362",     // each guide: after the intro
     "guide-mid": "2945530362",     // each guide: halfway through

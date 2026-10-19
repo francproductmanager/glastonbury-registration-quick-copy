@@ -53,6 +53,16 @@ main { padding-top: 28px; padding-bottom: 40px; }
 .crumbs a { color: var(--muted); }
 .tip { background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; margin: 20px 0; }
 .tip p { margin: 0; color: var(--accent-deep) !important; font-weight: 600; }
+.byline { font-size: 14px; color: var(--muted) !important; margin-top: -4px !important; }
+.byline a { color: var(--muted); }
+.msg { margin: 16px 0 22px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; }
+.msg p { margin: 0; color: var(--ink) !important; }
+.table-wrap { overflow-x: auto; margin: 8px 0 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.table-wrap table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.45; }
+.table-wrap th, .table-wrap td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--divider); color: var(--ink-2); }
+.table-wrap thead th { font-weight: 600; color: var(--ink); background: var(--surface-sunk); }
+.table-wrap tbody th { font-weight: 600; color: var(--ink); }
+.table-wrap tr:last-child > * { border-bottom: 0; }
 .cta { margin: 24px 0 !important; }
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 22px; border-radius: 14px; font-weight: 600; text-decoration: none; }
 .btn-primary { background: var(--accent); color: var(--on-accent); }

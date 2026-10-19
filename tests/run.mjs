@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "404.html", "sitemap.xml", "robots.txt"];
+const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "updates", "404.html", "sitemap.xml", "robots.txt"];
 const SITE_URL = "https://glastobolt.co.uk";
 const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
 const TYPES = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".txt": "text/plain", ".woff2": "font/woff2", ".xml": "application/xml" };
@@ -296,18 +296,18 @@ await test("Sitemap and robots.txt use the real address and list every page", ()
 });
 await test("Privacy policy has the disclosures AdSense requires, and is honest about the tool", () => {
   const h = readFileSync(join(ROOT, "privacy", "index.html"), "utf8").replace(/&#39;/g, "'");
-  for (const s of ["Third-party vendors, including Google, use cookies to serve ads based on your prior visits", "Google's use of advertising cookies", "adssettings.google.com", "aboutads.info", "policies.google.com/technologies/partner-sites", "consent", "Netlify", "including the tool's pages, shows Google ads"])
+  for (const s of ["Third-party vendors, including Google, use cookies to serve ads based on your prior visits", "Google's use of advertising cookies", "adssettings.google.com", "aboutads.info", "policies.google.com/technologies/partner-sites", "consent", "Netlify", "shows Google ads on its home page, guides and information pages", "working screens, where you set up, edit and copy your group, show no ads"])
     assert(h.includes(s), `missing "${s}"`);
   const all = sitePages.map(f => readFileSync(f, "utf8")).join("\n") + appSrc;
   for (const stale of ["never appear on the tool", "blocks it from connecting", "separate web address", "connect-src 'none'"]) assert(!all.includes(stale), `stale promise: "${stale}"`);
 });
-await test("Guides have real depth: 8 articles of 300+ words with sources and dates", () => {
+await test("Guides have real depth: 18 or more articles of 700+ words with sources and dates", () => {
   const guides = sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(ROOT, f).replace(/\\/g, "/")));
-  assert(guides.length === 8, `${guides.length} guides`);
+  assert(guides.length >= 18, `${guides.length} guides`);
   for (const f of guides) {
     const text = readFileSync(f, "utf8").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
     const words = text.split(/\s+/).filter(Boolean).length;
-    assert(words > 300, `${relative(ROOT, f)} has only ${words} words`);
+    assert(words > 700, `${relative(ROOT, f)} has only ${words} words`);
     assert(/Last checked \d+ \w+ \d{4}/.test(text), `${relative(ROOT, f)}: no date`);
   }
 });
@@ -964,35 +964,27 @@ await test("An ad that doesn't load leaves no trace (ad blocker, nothing to show
   noErrors(p); await p.context().close();
 });
 await test("An ad box Google sizes but never fills collapses; it shows once filled", async () => {
-  const p = await page(await adsContext()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
+  const p = await page(await adsContext()); await p.goto(B); await p.waitForTimeout(40);
   // what the screenshot showed: Google gives the box a height but no "filled" status
   await p.evaluate(() => document.querySelectorAll("ins.adsbygoogle").forEach(i => { i.style.height = "400px"; i.setAttribute("data-adsbygoogle-status", "done"); }));
   await p.waitForTimeout(30);
-  const gaps = await p.evaluate(() => { const c = [...document.querySelectorAll(".v-day > .person")].map(e => e.getBoundingClientRect()); return c.slice(1).map((r, i) => Math.round(r.top - c[i].bottom)); });
-  eq(gaps, [14, 14], "no gap from sized but empty boxes");
-  const w = await p.locator(".v-day > .ad-slot").first().evaluate(e => e.getBoundingClientRect().width);
-  assert(w > 300, "keeps its width so Google can still fill it");
+  const slot = p.locator(".v-home > .ad-slot");
+  eq(await slot.evaluate(e => e.getBoundingClientRect().height), 0, "no space from a sized but empty box");
+  assert(await slot.evaluate(e => e.getBoundingClientRect().width) > 300, "keeps its width so Google can still fill it");
   await p.evaluate(() => { const i = document.querySelector("ins.adsbygoogle"); i.setAttribute("data-ad-status", "filled"); i.removeAttribute("data-adsbygoogle-status"); });
   await p.waitForTimeout(30);
-  assert(await p.locator(".v-day > .ad-slot").first().evaluate(e => e.classList.contains("is-live") && e.getBoundingClientRect().height > 300), "appears once filled, in its panel");
+  assert(await slot.evaluate(e => e.classList.contains("is-live") && e.getBoundingClientRect().height > 300), "appears once filled, in its panel");
   noErrors(p); await p.context().close();
 });
-await test("Empty ad slots add no extra space between the cards on ticket day", async () => {
-  const p = await page(await context()); await seed(p, GROUP); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
-  eq(await p.locator(".v-day > .ad-slot[data-filled]").count(), 3, "slots are there, waiting");
-  const gaps = await p.evaluate(() => { const c = [...document.querySelectorAll(".v-day > .person")].map(e => e.getBoundingClientRect()); return c.slice(1).map((r, i) => Math.round(r.top - c[i].bottom)); });
-  eq(gaps, [14, 14], "same 14px gap as with no ad slot at all");
-  noErrors(p); await p.context().close();
-});
-await test("Every slot gets a labelled AdSense unit, once, on every screen", async () => {
+await test("Every slot gets a labelled AdSense unit, once; only the home screen of the tool has one", async () => {
   const p = await page(await adsContext()); await seed(p, GROUP);
-  const expect = { "": ["home-end"], "#/new": ["create-end"], "#/add": ["editor-end"], "#/edit/g1": ["editor-end"], "#/p/g1": ["group-between", "group-between", "group-end"], "#/data": ["data-end"] };
+  const expect = { "": ["home-end"], "#/new": [], "#/add": [], "#/edit/g1": [], "#/p/g1": [], "#/data": [] };
   for (const [r, names] of Object.entries(expect)) {
     await p.goto(B); await p.goto(B + r); await p.waitForTimeout(40);
     const got = await p.locator(".ad-slot[data-filled]").evaluateAll(els => els.map(e => [e.dataset.slot, e.querySelector(".ad-label")?.textContent, e.querySelector("ins.adsbygoogle")?.dataset.adClient, e.querySelector("ins.adsbygoogle")?.dataset.adSlot, e.querySelectorAll("ins").length]));
     eq(got, names.map(n => [n, "Advertisement", "ca-pub-2229524942259780", "1234567890", 1]), r || "home");
   }
-  await p.goto(B); await p.click("text=Set up your group"); await p.waitForSelector(".v-create");
+  await p.goto(B + "#/new"); await p.waitForSelector(".v-create"); await p.click(".v-create .back"); await p.waitForSelector(".v-home");
   eq(await p.locator(".ad-slot[data-filled]").count(), 1, "filled after in-app navigation");
   assert(await p.evaluate(() => window.__pushes) >= 1, "AdSense asked to fill");
   await p.goto(B + "faq/"); await p.waitForTimeout(40);
@@ -1000,32 +992,16 @@ await test("Every slot gets a labelled AdSense unit, once, on every screen", asy
   const sh = await page(await adsContext()); await sh.goto(B + "#/s/" + "x"); eq(await sh.locator(".ad-slot").count(), 0, "no ad on a broken or shared link screen");
   noErrors(p); await p.context().close(); await sh.context().close();
 });
-await test("Ticket day: one ad between each person (5 for 6 people), each clearly set apart", async () => {
+await test("No ads on the tool's working screens: setup, editing, ticket day, data, demo", async () => {
   const six = ["Alex", "Sam", "Jo", "Priya", "Dev", "Tom"].map((name, i) => ({ name, reg: ["1029384756", "5647382910", "3141592653", "1618033988", "2718281828", "1414213562"][i], postcode: "BS1 4DJ" }));
-  for (const [people, between] of [[six, 5], [GROUP, 2], [GROUP.slice(0, 1), 0]]) {
-    const p = await page(await adsContext()); await seed(p, people); await p.goto(B + "#/p/g1"); await p.waitForTimeout(40);
-    eq(await p.locator(".v-day > .ad-slot[data-slot='group-between']").count(), between, `${people.length} people`);
-    eq(await p.locator(".person .ad-slot").count(), 0, "never inside a person's card");
-    eq(await p.locator(".v-day > :last-child").getAttribute("data-slot"), "group-end", "one at the very bottom");
-    // every between-slot sits between two person cards
-    const order = await p.locator(".v-day > .person, .v-day > .ad-slot[data-slot='group-between']").evaluateAll(els => els.map(e => e.classList.contains("person") ? "P" : "A").join(""));
-    eq(order, Array(people.length).fill("P").join("A"), "alternates person, ad, person");
-    if (people.length === 6) {
-      await fillAds(p); await p.addStyleTag({ content: ".fake-creative { height: 250px; background: #ccc; }" });
-      const r = await p.evaluate(() => [...document.querySelectorAll(".v-day > .ad-slot[data-slot='group-between']")].map(a => {
-        const s = getComputedStyle(a), box = a.getBoundingClientRect();
-        return { label: getComputedStyle(a.querySelector(".ad-label")).display, border: s.borderTopStyle, bg: s.backgroundColor,
-          above: box.top - a.previousElementSibling.getBoundingClientRect().bottom, below: a.nextElementSibling.getBoundingClientRect().top - box.bottom };
-      }));
-      const cardBg = await p.locator(".person").first().evaluate(e => getComputedStyle(e).backgroundColor);
-      for (const x of r) {
-        eq(x.label, "block", "labelled Advertisement"); eq(x.border, "dashed", "dashed panel");
-        assert(x.bg !== cardBg, "different background from the person cards");
-        assert(x.above >= 32 && x.below >= 32, `at least 32px clear of the cards (${x.above}, ${x.below})`);
-      }
-    }
-    noErrors(p); await p.context().close();
+  const p = await page(await adsContext()); await seed(p, six);
+  for (const r of ["#/new", "#/add", "#/edit/g1", "#/p/g1", "#/data"]) {
+    await p.goto(B); await p.goto(B + r); await p.waitForTimeout(40);
+    eq(await p.locator(".ad-slot").count(), 0, r);
   }
+  await p.goto(B + "demo.html"); await p.waitForSelector(".v-day"); await p.waitForTimeout(40);
+  eq(await p.locator(".ad-slot").count(), 0, "demo");
+  noErrors(p); await p.context().close();
 });
 
 // ---------- security ----------
