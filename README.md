@@ -19,7 +19,7 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 - **Saved on your phone only.** Groups live in your browser's local storage. No accounts, no database.
 - **The tool's code never sends your group anywhere.** `app.js` makes no network requests (the tests check this).
 - **One visit counter.** `counter.js` (home page only) asks this site's `/api/visits` to add one visit per browser session and shows the total. It sends no cookies, no referrer and nothing about anyone's group. The server side (`netlify/functions/visits.mjs`) stores a single number in Netlify Blobs: no IP addresses or other visitor details.
-- **The site shows Google ads.** That keeps it free. Like any site with Google ads, Google's ad code runs on its pages, and Google uses cookies to show and measure ads (with a consent message in the UK, EEA and Switzerland). Ads only appear in fixed slots, never next to the copy buttons. See the [privacy policy](https://glastobolt.co.uk/privacy/).
+- **The site shows Google ads.** That keeps it free. Like any site with Google ads, Google's ad code runs on its pages, and Google uses cookies to show and measure ads (with a consent message in the UK, EEA and Switzerland). Ads only appear in fixed slots on the home page, guides and info pages, never on the screens where you set up, edit or copy your group. See the [privacy policy](https://glastobolt.co.uk/privacy/).
 - **Security policy.** Because of the ads, the Content Security Policy allows Google's ad servers. It still blocks plugins, `<base>` hijacking and form submissions, and stops other sites embedding the pages.
 - **Share links carry the data themselves.** First names, reg numbers and postcodes are packed into the part of the link after `#`, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead ("Alex 1", "Alex 2"). It's encoded, not encrypted, so only send it to your group.
 - **Opening a link saves an editable copy** on that phone and goes straight to the copy screen. Opening the same link again reuses that copy.
@@ -51,7 +51,7 @@ bash scripts/verify-live.sh
 | `ads.js` | The ad slots and their AdSense ad unit IDs (see below) |
 | `counter.js`, `netlify/functions/visits.mjs` | The home page visit counter: the page script and the tiny server function that keeps the total |
 | `style.css`, `guides.css`, `fonts/` | Styles and self-hosted fonts (Newsreader, Instrument Sans, IBM Plex Mono, all OFL) |
-| `guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `404.html`, `sitemap.xml`, `robots.txt` | Guides and info pages, generated from `site-src/` |
+| `guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `404.html`, `sitemap.xml`, `robots.txt` | Guides and info pages, generated from `site-src/` |
 | `site-src/` | Content (`content.mjs`) and generator (`build.mjs`) for those pages |
 | `ads.txt` | Google's AdSense publisher line |
 | `netlify.toml` | Hosting config and security headers |
@@ -92,18 +92,13 @@ Ads only appear in **named slots** that we place page by page. Google never plac
 
 | Slot | Where |
 |---|---|
-| `home-end` | Home: after the questions |
-| `create-end` | Paste screen: below the Create button |
-| `editor-end` | Add or edit people: below Save |
-| `group-between` | Ticket day: between one person and the next (5 for a group of 6), each in its own dashed, labelled panel with extra space around it |
-| `group-end` | Ticket day: at the very bottom, below sharing and Edit/Delete |
-| `data-end` | How your data is handled: at the bottom |
+| `home-end` | Home: after the questions and the explanation of the tool |
 | `guide-top`, `guide-mid`, `guide-end` | Each guide: after the intro, halfway through, before Related guides |
 | `guides-end` | Guides list: at the bottom |
 | `faq-mid`, `faq-end` | FAQ: halfway down, and at the bottom |
 | `about-end` | About: at the bottom |
 
-There are no ads on Privacy, Terms, Contact or the 404 page.
+There are no ads on the tool's working screens (paste, edit, ticket day, data, shared links and the demo), or on Privacy, Terms, Contact, Updates or the 404 page. Google's AdSense policies don't allow ads on screens without content of their own, and ads there would sit next to buttons people tap in a hurry.
 
 Every slot currently uses the **"Standard"** responsive display unit (`2945530362`). To give a slot its own unit (for separate reporting, or another format), create it in AdSense under **Ads > By ad unit** and put its `data-ad-slot` number next to the slot in `ads.js`. A slot set to `""` stays hidden, and a slot whose ad doesn't load takes up no space.
 

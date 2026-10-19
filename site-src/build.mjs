@@ -5,7 +5,7 @@
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SITE, PAGES, GUIDES } from "./content.mjs";
+import { SITE, PAGES, GUIDES, TOPICS } from "./content.mjs";
 import { safeUrl } from "./safe-url.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -31,6 +31,9 @@ function blocks(list) {
     if (b.ul) return `<ul>${b.ul.map((x) => `<li>${inline(x)}</li>`).join("")}</ul>`;
     if (b.ol) return `<ol>${b.ol.map((x) => `<li>${inline(x)}</li>`).join("")}</ol>`;
     if (b.tip) return `<aside class="tip"><p>${inline(b.tip)}</p></aside>`;
+    // a message to copy into a group chat
+    if (b.msg) return `<blockquote class="msg"><p>${inline(b.msg)}</p></blockquote>`;
+    if (b.table) return `<div class="table-wrap"><table><thead><tr>${b.table.head.map((x) => `<th scope="col">${inline(x)}</th>`).join("")}</tr></thead><tbody>${b.table.rows.map((r) => `<tr>${r.map((x, i) => (i ? `<td>${inline(x)}</td>` : `<th scope="row">${inline(x)}</th>`)).join("")}</tr>`).join("")}</tbody></table></div>`;
     if (b.faq) return `<div class="faq-list">${b.faq.map(([q, a]) => `<details class="faq"><summary><span>${inline(q)}</span><span class="faq-sign" aria-hidden="true"></span></summary>${(Array.isArray(a) ? a : [a]).map((x) => `<p>${inline(x)}</p>`).join("")}</details>`).join("")}</div>`;
     if (b.cta) return `<p class="cta"><a class="btn btn-primary" href="/#/new">${inline(b.cta)}</a></p>`;
     if (b.ad) return `<div class="ad-slot" data-slot="${esc(b.ad)}"></div>`;
@@ -61,7 +64,7 @@ function layout({ path, title, description, body, updated, jsonld }) {
 <link rel="stylesheet" href="/guides.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}" crossorigin="anonymous"></script>
 <script src="/ads.js" defer></script>
-${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>\n` : ""}</head>
+${jsonld ? [].concat(jsonld).map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>\n`).join("") : ""}</head>
 <body>
 <header class="site-head">
   <div class="wrap head-row">
@@ -83,6 +86,7 @@ ${updated ? `<p class="updated">Last checked ${esc(updated)}. Ticket rules can c
       <a href="/guides/">Guides</a>
       <a href="/faq/">FAQ</a>
       <a href="/about/">About</a>
+      <a href="/updates/">Updates</a>
       <a href="/contact/">Contact</a>
       <a href="/privacy/">Privacy and cookies</a>
       <a href="/terms/">Terms</a>
@@ -102,11 +106,13 @@ function write(rel, html) {
 }
 
 // Clean only what this script generates. Never the tool's own index.html.
-for (const d of ["guides", "faq", "about", "contact", "privacy", "terms"]) if (existsSync(join(OUT, d))) rmSync(join(OUT, d), { recursive: true });
+for (const d of ["guides", "faq", "about", "contact", "privacy", "terms", "updates"]) if (existsSync(join(OUT, d))) rmSync(join(OUT, d), { recursive: true });
 for (const f of ["404.html", "sitemap.xml", "robots.txt"]) if (existsSync(join(OUT, f))) rmSync(join(OUT, f));
 for (const p of PAGES) if (p.file === "index.html") throw new Error("index.html is the tool; content pages can't use it");
 
-const urls = ["/"];
+// [path, last modified date or null]
+const urls = [["/", null]];
+for (const g of GUIDES) if (!TOPICS.some(([id]) => id === g.topic)) throw new Error(`guide ${g.slug} has unknown topic ${g.topic}`);
 for (const p of PAGES) {
   const jsonld = p.faqSchema ? {
     "@context": "https://schema.org", "@type": "FAQPage",
@@ -114,31 +120,42 @@ for (const p of PAGES) {
   } : null;
   const body = `<article class="page">\n<h1>${inline(p.h1 || p.title)}</h1>\n${p.lead ? `<p class="lead">${inline(p.lead)}</p>\n` : ""}${blocks(p.body)}\n</article>`;
   write(p.file, layout({ path: p.path, title: p.title, description: p.description, body, updated: p.updated, jsonld }));
-  if (p.path !== "/404") urls.push(p.path);
+  if (p.path !== "/404") urls.push([p.path, null]);
 }
 for (const g of GUIDES) {
   const path = `/guides/${g.slug}/`;
-  const jsonld = { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, dateModified: g.isoDate, author: { "@type": "Person", name: "The Glasto Quick Copy maker" }, publisher: { "@type": "Organization", name: SITE.name } };
-  const related = GUIDES.filter((x) => x.slug !== g.slug).slice(0, 3);
+  const [, topicName] = TOPICS.find(([id]) => id === g.topic);
+  const jsonld = [
+    { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, dateModified: g.isoDate, mainEntityOfPage: `${URL_}${path}`, author: { "@type": "Person", name: "The Glasto Quick Copy maker", url: `${URL_}/about/` }, publisher: { "@type": "Organization", name: SITE.name, url: URL_ } },
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Guides", item: `${URL_}/guides/` },
+      { "@type": "ListItem", position: 2, name: topicName, item: `${URL_}/guides/#${g.topic}` },
+      { "@type": "ListItem", position: 3, name: g.title, item: `${URL_}${path}` },
+    ] },
+  ];
+  // related: the other guides on the same topic first, then the next guides in the list
+  const others = GUIDES.filter((x) => x.slug !== g.slug);
+  const related = [...others.filter((x) => x.topic === g.topic), ...others.slice(GUIDES.indexOf(g)), ...others].filter((x, i, a) => a.indexOf(x) === i).slice(0, 3);
   // ads: after the intro, before the heading nearest the middle, and before the related guides
   const heads = g.body.map((b, i) => (b && b.h2 ? i : -1)).filter(i => i > 0);
   const mid = heads.length ? heads.reduce((a, i) => (Math.abs(i - g.body.length / 2) < Math.abs(a - g.body.length / 2) ? i : a)) : -1;
   const withAds = mid > 0 ? [...g.body.slice(0, mid), { ad: "guide-mid" }, ...g.body.slice(mid)] : g.body;
   const body = `<article class="page guide">
-<p class="crumbs"><a href="/guides/">Guides</a></p>
+<p class="crumbs"><a href="/guides/">Guides</a> <span aria-hidden="true">›</span> <a href="/guides/#${g.topic}">${esc(topicName)}</a></p>
 <h1>${inline(g.title)}</h1>
 <p class="lead">${inline(g.summary)}</p>
+<p class="byline">By the maker of Glasto Quick Copy (<a href="/about/">about us</a>). Facts checked ${esc(g.updated)}.</p>
 ${blocks([{ ad: "guide-top" }, ...withAds])}
 ${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${esc(safeUrl(u))}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
 ${blocks([{ ad: "guide-end" }])}
 <aside class="related"><h2>Related guides</h2>${blocks([{ cards: related }])}</aside>
 </article>`;
   write(`guides/${g.slug}/index.html`, layout({ path, title: g.title, description: g.summary, body, updated: g.updated, jsonld }));
-  urls.push(path);
+  urls.push([path, g.isoDate]);
 }
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${URL_}${u}</loc></url>`).join("\n")}
+${urls.map(([u, d]) => `  <url><loc>${URL_}${u}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`).join("\n")}
 </urlset>
 `);
 write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${URL_}/sitemap.xml\n`);
