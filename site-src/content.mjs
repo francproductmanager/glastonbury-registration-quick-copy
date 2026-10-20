@@ -365,7 +365,7 @@ export const GUIDES = [
       ] },
       { h2: "A week before: a practice run" },
       "Do a short dry run. Open your group's page, tap a box, and paste it into a notes app or a message to yourself. Check it pastes all ten digits with no spaces missing. On a phone, practise switching between the ticket site and your group's page, because that's the move you'll make six times in a row on the day.",
-      "If you've never used the tool, the [practice demo](/demo.html) uses made-up people and saves nothing, so you can try it without entering anyone's details.",
+      "If you've never used the tool, the [practice demo](/demo) uses made-up people and saves nothing, so you can try it without entering anyone's details.",
       { h2: "The night before" },
       { ul: [
         "Charge your phone and laptop, and check your internet connection.",
@@ -899,7 +899,7 @@ export const GUIDES = [
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "Glasto Quick Copy is a free tool that puts your whole group's registration numbers and postcodes on one page, so on ticket day you can tap to copy each one and paste it straight into the booking form.",
-      "You don't need an account or an app. It works in the browser on your phone or laptop. You can try it first with made-up people in the [practice demo](/demo.html).",
+      "You don't need an account or an app. It works in the browser on your phone or laptop. You can try it first with made-up people in the [practice demo](/demo).",
       { h2: "1. Paste your group chat" },
       "Open the tool and choose **Set up your group**. Paste the messages where your friends sent their details, then choose **Review details**. The tool picks out names, registration numbers and postcodes for you.",
       "It understands messages copied from WhatsApp on iPhone and Android, including the date, time and sender at the start of each line, and it ignores chat like \"thanks\" or \"done\". It works best when each person's details are on one line, for example **Alex 1029384756 BS1 4DJ** (made-up details).",

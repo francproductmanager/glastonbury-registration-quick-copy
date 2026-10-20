@@ -283,7 +283,9 @@ await test("All internal links resolve (guides, info pages and the tool's links)
   assert(hrefs.length > 100, "too few links found");
   for (const [from, href] of hrefs) {
     if (href.startsWith("/fonts/") || href === "/guides.css") continue;
-    const target = join(ROOT, href.endsWith("/") ? href + "index.html" : href);
+    // Netlify serves /demo.html at /demo too, and rewrites links to .html pages that way, so write them without .html
+    const target = join(ROOT, href.endsWith("/") ? href + "index.html" : extname(href) ? href : href + ".html");
+    assert(!href.endsWith(".html"), `${from} links to ${href}: Netlify rewrites .html links, so the live page would differ from the repo`);
     assert(existsSync(target), `${from} links to missing ${href}`);
   }
 });
