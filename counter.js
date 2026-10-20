@@ -3,6 +3,9 @@
 // It sends no data: no cookies, no referrer, and nothing about anyone's group. The first
 // home page view in a browser session counts as a visit; later views only read the total.
 (() => {
+  // Show the total on the home page? Visits are counted either way; the total can be read at
+  // /api/visits. Hidden while the site is new and the number is small.
+  const SHOW_TOTAL = false;
   let total = null, pending = null;
   function load() {
     if (pending) return pending;
@@ -18,7 +21,7 @@
   function fill(root) {
     if (!(root || document).querySelector(".visit-count")) return;
     load().then(() => {
-      if (total == null) return; // no number rather than a wrong one
+      if (total == null || !SHOW_TOTAL) return; // no number rather than a wrong one
       for (const el of document.querySelectorAll(".visit-count")) el.textContent = `${total.toLocaleString("en-GB")} ${total === 1 ? "visit" : "visits"}`;
     });
   }

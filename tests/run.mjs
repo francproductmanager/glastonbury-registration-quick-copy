@@ -283,7 +283,9 @@ await test("All internal links resolve (guides, info pages and the tool's links)
   assert(hrefs.length > 100, "too few links found");
   for (const [from, href] of hrefs) {
     if (href.startsWith("/fonts/") || href === "/guides.css") continue;
-    const target = join(ROOT, href.endsWith("/") ? href + "index.html" : href);
+    // Netlify serves /demo.html at /demo too, and rewrites links to .html pages that way, so write them without .html
+    const target = join(ROOT, href.endsWith("/") ? href + "index.html" : extname(href) ? href : href + ".html");
+    assert(!href.endsWith(".html"), `${from} links to ${href}: Netlify rewrites .html links, so the live page would differ from the repo`);
     assert(existsSync(target), `${from} links to missing ${href}`);
   }
 });
@@ -514,18 +516,18 @@ await test("Home: one main action, how it works, questions, footer with commit a
   assert(await p.locator(".guides-links a[href^='/guides/']").count() >= 4, "guide links on home");
   noErrors(p); await p.context().close();
 });
-await test("Visit counter: shown at the bottom of home, one count per session, sends nothing", async () => {
+await test("Visit counter: counts once per session, sends nothing, and keeps the total off the page", async () => {
   const ctx = await context(); const calls = [];
   await ctx.route("**/api/visits", r => { const q = r.request(); calls.push({ method: q.method(), body: q.postData(), cookie: q.headers().cookie, referer: q.headers().referer }); r.fulfill({ contentType: "application/json", body: JSON.stringify({ count: 12345 }) }); });
   const p = await page(ctx); await seed(p, GROUP);
-  await waitText(p, ".visit-count", "12,345 visits");
+  await p.waitForFunction(() => window.GQCVisits); await p.waitForTimeout(300);
+  eq(await p.textContent(".visit-count"), "", "the total isn't shown (SHOW_TOTAL is off in counter.js)");
   assert(await p.evaluate(() => document.querySelector(".v-home").lastElementChild.classList.contains("visit-count")), "at the very bottom");
   eq(calls.map(c => c.method), ["POST"], "first view counts a visit");
   assert(calls.every(c => !c.body && !c.cookie && !c.referer), "no body, cookies or referrer");
-  await p.goto(B + "#/p/g1"); await p.goto(B + "#/data"); await p.goto(B + "#/");
-  await waitText(p, ".visit-count", "12,345 visits");
+  await p.goto(B + "#/p/g1"); await p.goto(B + "#/data"); await p.goto(B + "#/"); await p.waitForTimeout(300);
   eq(calls.length, 1, "other screens never call it; coming back home doesn't count again");
-  await p.reload(); await waitText(p, ".visit-count", "12,345 visits");
+  await p.reload(); await p.waitForTimeout(300);
   eq(calls.map(c => c.method), ["POST", "GET"], "a reload in the same session only reads the total");
   noErrors(p); await ctx.close();
   // If the counter can't be reached, the page shows no number and nothing breaks
