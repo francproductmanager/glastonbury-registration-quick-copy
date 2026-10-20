@@ -114,16 +114,20 @@ await test("Security policy allows Google ads but keeps every other protection",
   for (const h of toolHtml) assert(!/http-equiv="Content-Security-Policy"/.test(h), "the Netlify header is the only policy; no <meta> copy to drift");
   assert(/Referrer-Policy = "strict-origin-when-cross-origin"/.test(toml), "referrer policy");
 });
-await test("The tool's code makes no network requests; pages load only Google's ad loader", () => {
+await test("The tool's code makes no network requests; pages load only Google's ad loader, through ads.js", () => {
   for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
-    const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO);
+    const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO)
+      // ads.js adds Google's ad loader (and checks whether it's already there); nothing else may
+      .filter(u => !(name === "ads.js" && ["https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=", "https://pagead2.googlesyndication.com/"].includes(u)));
     assert(!urls.length, `${name} references ${urls.join(", ")}`);
   }
+  assert(adsSrc.includes('"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + CLIENT') && adsSrc.includes('const CLIENT = "ca-pub-2229524942259780"'), "ads.js loads Google's ad loader for this site");
   const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780";
   for (const h of [...toolHtml, ...sitePages.map(f => readFileSync(f, "utf8"))]) {
     const srcs = [...h.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map(m => m[1]);
     for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || (h === toolHtml[0] && /^counter\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
-    assert(srcs.includes(LOADER), "AdSense loader missing");
+    assert(!srcs.includes(LOADER), "Google's ad loader is added by ads.js after the page loads, not in the page");
+    assert(srcs.some(u => /^\/?ads\.js(\?v=\d+)?$/.test(u)), "ads.js missing");
     assert(!/<link[^>]+href="https?:/.test(h.replace(/<link rel="canonical"[^>]+>/, "")), "external stylesheet or font");
   }
 });
@@ -268,7 +272,7 @@ await test("Every page has the AdSense tag, title, description, canonical and fo
   assert(sitePages.length >= 15, `only ${sitePages.length} pages`);
   for (const f of sitePages) {
     const h = readFileSync(f, "utf8"), rel = relative(ROOT, f);
-    assert(h.includes('src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780"'), `${rel}: AdSense script`);
+    assert(/<script src="\/ads\.js" defer><\/script>/.test(h), `${rel}: ads.js, which loads the AdSense script`);
     assert(h.includes('name="google-adsense-account" content="ca-pub-2229524942259780"'), `${rel}: AdSense meta`);
     assert(/<title>[^<]{10,}<\/title>/.test(h) && /name="description" content="[^"]{40,}"/.test(h), `${rel}: title/description`);
     assert(h.includes(`rel="canonical" href="${SITE_URL}/`), `${rel}: canonical`);
@@ -541,7 +545,7 @@ await test("Home lists saved groups newest first and updates when another tab ch
   const tryIt = p.locator(".v-home .card[aria-label='Try it']");
   eq(await tryIt.count(), 1, "practice demo shown with no groups saved");
   await p.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.now() - 1000, people: [{ name: "Old", reg: "1", postcode: "E1 6AN" }] }, b2: { created: Date.now(), people: [{ name: "New", reg: "2", postcode: "E1 6AN" }] } })));
-  await p.reload();
+  await p.reload(); await p.waitForSelector(".saved");
   eq(await p.locator(".saved .names").allTextContents(), ["New", "Old"], "order"); eq(await p.locator(".saved-empty").count(), 0, "no empty state with groups");
   eq(await tryIt.count(), 0, "practice demo hidden once a group is saved");
   const q = await page(ctx); await q.goto(B);

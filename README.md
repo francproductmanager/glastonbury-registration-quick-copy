@@ -90,6 +90,8 @@ They also run on every pull request.
 
 Ads only appear in **named slots** that we place page by page. Google never places ads anywhere else, so keep **Auto ads switched off** in AdSense for this site.
 
+**Loading:** pages don't include Google's ad script directly. `ads.js` adds it once the page has loaded and been painted, and then when the visitor first scrolls, taps, moves the mouse or presses a key (or after 5 seconds). This keeps the pages at 100 for performance in PageSpeed Insights: Google's ad code is about 220 KB and busy when it starts. Site ownership is confirmed by the `google-adsense-account` meta tag on every page.
+
 | Slot | Where |
 |---|---|
 | `home-end` | Home: after the questions and the explanation of the tool |

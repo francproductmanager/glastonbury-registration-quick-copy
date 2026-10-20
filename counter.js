@@ -17,10 +17,12 @@
       .catch(() => {});
     return pending;
   }
+  // Counting waits until the page has loaded, so it never competes with the page itself
+  const loaded = new Promise((r) => (document.readyState === "complete" ? r() : addEventListener("load", r, { once: true })));
   // app.js calls this after drawing a screen; only the home page has a .visit-count
   function fill(root) {
     if (!(root || document).querySelector(".visit-count")) return;
-    load().then(() => {
+    loaded.then(load).then(() => {
       if (total == null || !SHOW_TOTAL) return; // no number rather than a wrong one
       for (const el of document.querySelectorAll(".visit-count")) el.textContent = `${total.toLocaleString("en-GB")} ${total === 1 ? "visit" : "visits"}`;
     });
