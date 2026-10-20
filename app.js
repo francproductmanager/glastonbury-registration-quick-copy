@@ -974,6 +974,7 @@
   });
   // Opening the home page, its top is already on screen from index.html: let the browser paint
   // that first, then draw the rest, so the heading shows as early as possible
-  if (staticHome && !location.hash.replace(/^#\/?/, "")) afterPaint(render);
+  // (seasonal clearing still runs straight away: loadAll does it)
+  if (staticHome && !location.hash.replace(/^#\/?/, "")) { loadAll(); afterPaint(render); }
   else render();
 })();
