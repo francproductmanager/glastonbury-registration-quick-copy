@@ -158,7 +158,7 @@ footer a { color: var(--muted); }
 .foot-links a { min-height: 32px; display: inline-flex; align-items: center; }
 .visit-count { font: 400 12.5px/1.4 var(--mono); color: var(--muted); text-align: center; }
 .visit-count:empty { margin-top: calc(-1 * var(--gap)); } /* no gap until there's a number */
-.home-info p, .home-info li { font-size: 15px; }
+.home-info p, .home-info li { font-size: 15px; text-wrap: wrap; } /* "pretty" wrapping costs layout time on long text */
 .home-info ul, .home-info ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
 .guides-links ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .guides-links a { color: var(--accent-ink); }

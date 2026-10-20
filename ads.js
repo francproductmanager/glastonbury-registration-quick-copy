@@ -4,6 +4,8 @@
 // Ads > By ad unit, create a unit, and paste its data-ad-slot number here. 2945530362 is the
 // "Standard" responsive display unit. A slot whose ad doesn't load (ad blocker, no ad to show)
 // takes up no space; it's only drawn, labelled, once Google fills it (see .ad-slot in the CSS).
+// Google's ad script (LOADER) is added by this file once the page has loaded and been drawn, so
+// the ads never slow down the page itself. Ads queued before it arrives are filled when it does.
 (() => {
   const CLIENT = "ca-pub-2229524942259780";
   const SLOTS = {
@@ -51,6 +53,41 @@
     check();
     if (typeof MutationObserver === "function") new MutationObserver(check).observe(ins, { attributes: true, attributeFilter: ["data-ad-status", "data-adsbygoogle-status"] });
   }
+  const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + CLIENT;
+  function loadGoogle() {
+    if (document.querySelector('script[src^="https://pagead2.googlesyndication.com/"]')) return;
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = LOADER;
+    s.crossOrigin = "anonymous";
+    document.head.append(s);
+  }
+  // Google's script is large and busy when it starts, so it waits until the page has loaded and
+  // been painted, and then until the visitor first scrolls, taps, moves the mouse or presses a
+  // key, or 5 seconds have passed. Until then the page responds to them at full speed.
+  function afterPaint(cb) {
+    let done = false;
+    const go = () => { if (!done) { done = true; setTimeout(cb, 0); } };
+    const types = (typeof PerformanceObserver === "function" && PerformanceObserver.supportedEntryTypes) || [];
+    if (!types.includes("largest-contentful-paint")) return go();
+    try { new PerformanceObserver((list, obs) => { obs.disconnect(); go(); }).observe({ type: "largest-contentful-paint", buffered: true }); } catch { go(); }
+    setTimeout(go, 3000); // never wait longer than this
+  }
+  function whenActiveOrSoon(cb) {
+    const events = ["scroll", "pointerdown", "pointermove", "keydown", "touchstart", "wheel"];
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      for (const e of events) removeEventListener(e, go, { passive: true });
+      cb();
+    };
+    for (const e of events) addEventListener(e, go, { passive: true });
+    setTimeout(go, 5000);
+  }
+  const start = () => afterPaint(() => whenActiveOrSoon(loadGoogle));
+  if (document.readyState === "complete") start();
+  else addEventListener("load", start, { once: true });
   window.GQCAds = { fill };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => fill());
   else fill();

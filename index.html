@@ -11,16 +11,22 @@
 <title>Glasto Quick Copy: Glastonbury ticket guides and a free group copy tool</title>
 <link rel="canonical" href="https://glastobolt.co.uk/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%8B%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="fonts/newsreader-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=18">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <main id="app">
-<!-- Written into the page itself, so it's there before (and without) the script. app.js moves it into the home screen. -->
-<article class="section home-info" id="home-info">
+<!-- The top of the home screen and the explanation below it are written into the page itself, so
+     they show straight away (and without the script). app.js keeps these elements where they are
+     and adds the rest of the home screen around them, so the heading is never drawn twice. -->
+<div class="view v-home" id="home">
+<div class="topbar"><span class="wordmark">Glasto Quick Copy</span><span>Free and unofficial</span></div>
 <h1 class="display">Get your group's Glastonbury details ready before ticket day.</h1>
-<p class="lead">Glasto Quick Copy is a free, unofficial helper for the Glastonbury ticket sale. It puts everyone's registration number and postcode on one page, so when you get through the queue you can tap to copy each one and paste it into the booking form.</p>
+<p class="lead">Save everyone's registration number and postcode on one page. On the day, tap to copy each one.</p>
+<article class="section home-info" id="home-info">
+<h2>What this is</h2>
+<p>Glasto Quick Copy is a free, unofficial helper for the Glastonbury ticket sale. It puts everyone's registration number and postcode on one page, so when you get through the queue you can tap to copy each one and paste it into the booking form.</p>
 
 <h2>Why this exists</h2>
 <p>When you get through the Glastonbury queue, the lead booker has to enter a registration number and registered postcode for every person in the booking, up to six people. That's sixty digits and six postcodes, typed under pressure, usually while scrolling a group chat to find who sent what three weeks ago. One wrong digit and that friend isn't added.</p>
@@ -52,10 +58,11 @@
 </ol>
 <p>New to the sale? Start with <a href="/guides/how-the-ticket-queue-works/">how the ticket queue works</a>, read the <a href="/guides/">full guides</a> or the <a href="/faq/">FAQ</a>. Not affiliated with Glastonbury Festival or See Tickets.</p>
 </article>
+</div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="ads.js?v=18"></script>
-<script src="counter.js?v=18"></script>
-<script src="app.js?v=18"></script>
+<script src="ads.js?v=19" defer></script>
+<script src="counter.js?v=19" defer></script>
+<script src="app.js?v=19" defer></script>
 </body>
 </html>

@@ -11,12 +11,14 @@
   const MAX_REG_DIGITS = 12;
   const app = document.getElementById("app");
   const toastEl = document.getElementById("toast");
-  // index.html ships a longer explanation of the tool inside #app, so it's readable before (and
-  // without) this script. Keep it for the home screen, minus its heading and intro, which the
-  // home screen has its own versions of.
   const HOME_TITLE = document.title;
+  // index.html ships the top of the home screen (title bar, heading, intro) and a longer
+  // explanation of the tool, so they show before (and without) this script. The home screen
+  // reuses those elements rather than drawing new ones: the heading is the largest thing on the
+  // screen, and redrawing it would make the page count as loaded only once this script has run.
+  const staticHome = app.querySelector("#home");
+  // (it stays on screen until the home screen is drawn around it; homeScreen moves it into place)
   const homeInfo = app.querySelector("#home-info");
-  if (homeInfo) { for (const el of homeInfo.querySelectorAll("h1, .lead")) el.remove(); homeInfo.remove(); }
 
   // ---------- storage ----------
   let demoStore = Object.assign(Object.create(null), {
@@ -466,10 +468,7 @@
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
-    return h("div", { class: "view v-home" },
-      h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
-      h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
-      h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."),
+    return homeScreen(
       // Starting from home always begins a fresh setup
       h("a", { class: "btn btn-primary", href: "#/new", onclick: () => { draft = null; } }, "Set up your group"),
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
@@ -495,6 +494,20 @@
       footer(),
       // filled by counter.js with the site's visit total when SHOW_TOTAL is on; otherwise stays empty
       h("p", { class: "visit-count" }));
+  }
+  // The home screen's container with its fixed top (title bar, heading, intro), then `rest`.
+  // On the real site the top comes from index.html and is never removed; the demo page has none,
+  // so it's built here.
+  let homeEl = null;
+  function homeScreen(...rest) {
+    if (!homeEl) homeEl = staticHome || h("div", { class: "view v-home" },
+      h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
+      h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
+      h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."));
+    const lead = homeEl.querySelector(":scope > .lead");
+    while (lead.nextSibling) lead.nextSibling.remove();
+    homeEl.append(...rest.flat().filter((x) => x != null && x !== false));
+    return homeEl;
   }
   const firstNames = (people) => shareNames(people).filter(Boolean).join(", ");
 
@@ -938,16 +951,29 @@
     else if (view === "data") node = viewData();
     else node = viewHome();
     if (!node) return; // the view redirected
-    app.replaceChildren(node);
+    // Leave the home screen in place if it's already showing (see homeScreen)
+    if (node.parentNode !== app) app.replaceChildren(node);
+    else for (const c of [...app.childNodes]) if (c !== node) c.remove();
     if (window.GQCAds) window.GQCAds.fill(app);
     if (window.GQCVisits) window.GQCVisits.fill(app);
     document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : DEMO ? "Demo | Glasto Quick Copy" : HOME_TITLE;
     window.scrollTo(0, 0);
+  }
+  function afterPaint(cb) {
+    let done = false;
+    const go = () => { if (!done) { done = true; setTimeout(cb, 0); } };
+    const types = (typeof PerformanceObserver === "function" && PerformanceObserver.supportedEntryTypes) || [];
+    if (!types.includes("paint")) return go();
+    try { new PerformanceObserver((list, obs) => { obs.disconnect(); go(); }).observe({ type: "paint", buffered: true }); } catch { go(); }
+    setTimeout(go, 3000); // never wait longer than this
   }
   window.addEventListener("hashchange", render);
   // Keep other open tabs in sync, but never wipe a form someone is typing in
   window.addEventListener("storage", (e) => {
     if (e.key === KEY && !/^#\/(new|add|edit\/)/.test(location.hash)) render();
   });
-  render();
+  // Opening the home page, its top is already on screen from index.html: let the browser paint
+  // that first, then draw the rest, so the heading shows as early as possible
+  if (staticHome && !location.hash.replace(/^#\/?/, "")) afterPaint(render);
+  else render();
 })();
