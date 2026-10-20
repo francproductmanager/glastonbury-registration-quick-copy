@@ -933,7 +933,9 @@
   }
 
   // ---------- router ----------
+  let rendered = false;
   function render() {
+    rendered = true;
     wakeStop();
     // Seasonal clearing runs on every screen, including expired and broken link screens that
     // otherwise never read the saved groups (loadAll does the clearing)
@@ -975,6 +977,7 @@
   // Opening the home page, its top is already on screen from index.html: let the browser paint
   // that first, then draw the rest, so the heading shows as early as possible
   // (seasonal clearing still runs straight away: loadAll does it)
-  if (staticHome && !location.hash.replace(/^#\/?/, "")) { loadAll(); afterPaint(render); }
+  // (unless something else has been drawn by then, like a screen opened in the meantime)
+  if (staticHome && !location.hash.replace(/^#\/?/, "")) { loadAll(); afterPaint(() => { if (!rendered) render(); }); }
   else render();
 })();

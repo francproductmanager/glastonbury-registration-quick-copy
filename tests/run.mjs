@@ -545,7 +545,7 @@ await test("Home lists saved groups newest first and updates when another tab ch
   const tryIt = p.locator(".v-home .card[aria-label='Try it']");
   eq(await tryIt.count(), 1, "practice demo shown with no groups saved");
   await p.evaluate(() => localStorage.setItem("tdqc:pages:v1", JSON.stringify({ a1: { created: Date.now() - 1000, people: [{ name: "Old", reg: "1", postcode: "E1 6AN" }] }, b2: { created: Date.now(), people: [{ name: "New", reg: "2", postcode: "E1 6AN" }] } })));
-  await p.reload();
+  await p.reload(); await p.waitForSelector(".saved");
   eq(await p.locator(".saved .names").allTextContents(), ["New", "Old"], "order"); eq(await p.locator(".saved-empty").count(), 0, "no empty state with groups");
   eq(await tryIt.count(), 0, "practice demo hidden once a group is saved");
   const q = await page(ctx); await q.goto(B);
