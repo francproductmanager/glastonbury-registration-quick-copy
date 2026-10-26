@@ -10,13 +10,10 @@ export const SITE = {
 };
 
 // The date every fact on the site was last checked against the sources listed with it
-const UPDATED = "20 October 2026";
+const UPDATED = "26 October 2026";
 const CHECKED = UPDATED;
 // When the guides were last edited, for search engines (sitemap and article data)
-const MODIFIED = "2026-10-20";
-// The same two dates for the guides added on 26 October 2026
-const CHECKED_OCT26 = "26 October 2026";
-const MODIFIED_OCT26 = "2026-10-26";
+const MODIFIED = "2026-10-26";
 
 const OFFICIAL = {
   tickets: ["Glastonbury Festival: ticket information", "https://www.glastonburyfestivals.co.uk/information/tickets/"],
@@ -32,6 +29,7 @@ const OFFICIAL = {
 // News reports, used for things the festival doesn't publish itself, like how fast a sale sold out
 const NEWS = {
   nme2027: ["NME: Glastonbury 2027 general tickets sell out in 42 minutes", "https://www.nme.com/news/music/fans-react-glastonbury-2027-general-tickets-sell-out-42-minutes-3972068"],
+  gff2024price: ["Glasto Fest Feed: 2024 ticket sale dates and prices", "https://www.glastofestfeed.com/news/information/glastonbury-2024-ticket-sale-dates-cost/"],
   gff2024: ["Glasto Fest Feed: 2024 general tickets sell out in 57 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-general-tickets-sell-out-57-minutes/"],
   gff2024coach: ["Glasto Fest Feed: 2024 coach tickets sell out in 25 minutes", "https://www.glastofestfeed.com/news/glastonbury-2024-coach-tickets-sell-out-26-minutes/"],
   gff2024resale: ["Glasto Fest Feed: 2024 resale tickets sold out in 22 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-resale-tickets-sold-out-22-minutes/"],
@@ -41,6 +39,7 @@ const NEWS = {
   timeout2027other: ["Time Out: Glastonbury 2027 resale and volunteering guide", "https://www.timeout.com/uk/news/glastonbury-2027-ticket-resale-volunteering-guide-100526"],
   actionfraud: ["Action Fraud: report fraud and cyber crime", "https://www.actionfraud.police.uk/"],
   timeout2027queue: ["Time Out: Glastonbury 2027 sale time, prices and the new queue system", "https://www.timeout.com/uk/news/glastonbury-tickets-this-weekend-sale-time-prices-queue-guide-100226"],
+  indy2025: ["The Independent via AOL: Glastonbury 2025 ticket sale as it happened", "https://aol.com/glastonbury-2025-live-festival-coach-122539691.html"],
   itv2027: ["ITV News: Glastonbury 2027 tickets sell out in less than 45 minutes", "https://www.itv.com/news/2026-10-04/tickets-for-glastonbury-festival-2027-sell-out-in-less-than-45-minutes"],
 };
 // Help pages from the companies that make the phones and apps, for the device and WhatsApp guides
@@ -129,7 +128,7 @@ export const GUIDES = [
       { table: {
         head: ["Festival", "Sale", "Ticket price", "Deposit", "Sold out in"],
         rows: [
-          ["2024", "Sunday 19 November 2023, 9am", "£355", "Not recorded here", "About 57 minutes"],
+          ["2024", "Sunday 19 November 2023, 9am", "£360", "£75", "About 57 minutes"],
           ["2025", "Sunday 17 November 2024, 9am", "£378.50", "£75", "About 35 minutes"],
           ["2026", "No festival (fallow year)", "", "", ""],
           ["2027", "Sunday 4 October 2026, 9am", "£408", "£100", "About 42 minutes"],
@@ -148,8 +147,8 @@ export const GUIDES = [
       { h2: "Spring resales" },
       "The resale is much smaller than the main sale, because it only offers tickets that weren't paid for or were returned. It also tends to go faster: the 2024 general admission resale sold out in about 22 minutes and the 2025 one in about 19 minutes.",
       { h2: "What the numbers tell us" },
-      { h3: "The price is rising by about 7% a sale" },
-      "From £355 to £378.50 is a rise of about 6.6%. From £378.50 to £408 is about 7.8%. The deposit went up by a third, from £75 to £100, so the lead booker for a group of six now needs £600 available on ticket day, up from £450.",
+      { h3: "The price is rising by 5% to 8% a sale" },
+      "From £360 to £378.50 is a rise of about 5.1%. From £378.50 to £408 is about 7.8%. The deposit went up by a third, from £75 to £100, so the lead booker for a group of six now needs £600 available on ticket day, up from £450.",
       { h3: "The window is short and getting no longer" },
       "Somewhere between 20 and 60 minutes is all there is. For 2027, a buyer on the fan subreddit reported completing a purchase at 9.04am, the queue page showed over half the tickets gone by 9.26am, and See Tickets confirmed the sell-out at 9.42am. A booking that takes an extra three minutes because someone is hunting for a friend's number is a real cost.",
       { h3: "The queue keeps changing" },
@@ -157,13 +156,13 @@ export const GUIDES = [
       { h2: "What this means for your group" },
       { ul: [
         "**Nothing you do changes your place in the queue.** Preparation is about the minutes after it.",
-        "**In 2025 you had 10 minutes at the front** to enter everyone's details and pay. Six registration numbers and postcodes fit comfortably in that if they're ready to paste, and not if they're buried in a chat.",
+        "**In 2025 you had 10 minutes at the front** to complete the page where you enter everyone's registration details, and reports said the payment page then had its own, shorter timer. Six registration numbers and postcodes fit comfortably in that if they're ready to paste, and not if they're buried in a chat.",
         "**More people queueing gives more chances.** Every member of your group with their own registration can try, as long as you've agreed who books whom.",
         "**Budget for the deposit early**, because it has gone up and could again.",
       ] },
       { cta: "Get your group ready for the next sale" },
     ],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.nme2027, NEWS.gff2024, NEWS.gff2024coach, NEWS.wiki2024],
+    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.indy2025, NEWS.nme2027, NEWS.gff2024price, NEWS.gff2024, NEWS.gff2024coach, NEWS.wiki2024],
   },
   {
     slug: "how-glastonbury-registration-works",
@@ -364,7 +363,7 @@ export const GUIDES = [
     topic: "before",
     title: "Your first go at Glastonbury tickets: what ticket morning is like",
     summary: "A plain walk through a Glastonbury sale for first timers, from registering weeks before to the confirmation page, with what you'll see and how long each part took in 2027.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
       "If you've never tried for Glastonbury tickets, the stories from friends can make ticket morning sound like chaos: crashing pages, endless refreshing, a group chat in meltdown. In reality it's a handful of steps, most of which happen weeks before the sale. This guide walks through them in order, using the 2027 sale as the example, so you know what to expect and what's normal.",
       { h2: "Weeks before: everyone registers" },
@@ -393,7 +392,7 @@ export const GUIDES = [
       "Mostly, nothing happens. You'll watch a page that moves slowly or seems not to move at all, sometimes for a long time. That's normal, and it doesn't mean the site has crashed or you've lost your place. The official advice is not to refresh and not to open more tabs or devices, because that can lose your place or disrupt your booking.",
       "Opening a second phone or browser with the same registration doesn't help either. In 2027, reports said it just brought up the same place. The only way to have more chances is more people, each with their own registration.",
       { h2: "What happens at the front" },
-      "If you get through, the booking page opens and the clock starts. The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't yours until payment has gone through. You'll enter your own details and each friend's registration number and postcode, check that the names shown are the people you expect, then pay a deposit for each ticket: **£100 per ticket** for 2027.",
+      "If you get through, the booking page opens and the clock starts. The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't yours until payment has gone through. In recent sales the payment page has had its own, shorter timer too. You'll enter your own details and each friend's registration number and postcode, check that the names shown are the people you expect, then pay a deposit for each ticket: **£100 per ticket** for 2027.",
       "When the confirmation page appears, screenshot it and tell your group straight away, so nobody else books the same people. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/) for the checkout in detail.",
       { h2: "How it usually ends" },
       "Be ready for this: **most people who try don't get a ticket.** Demand is many times the number of tickets, and every recent sale has sold out in under an hour. If you see \"SOLD OUT\", every ticket in that sale has gone, and there's nothing you did wrong. Close the page, and turn your attention to the spring resale.",
@@ -417,7 +416,7 @@ export const GUIDES = [
     topic: "before",
     title: "Collecting your group's registration numbers from WhatsApp",
     summary: "How to ask for details so the replies are easy to use, how to copy them out of WhatsApp on iPhone and Android, and how Glasto Quick Copy turns them into one page.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
       "For most groups, the registration numbers live in a WhatsApp chat: sent at different times, in different formats, between memes and holiday plans. On ticket day that's the worst place to look for them. This guide shows how to collect them so they're easy to use, and how to get them out of WhatsApp and onto one page in a couple of minutes.",
       "All the examples below use made-up details. Never post real registration numbers anywhere public.",
@@ -477,13 +476,13 @@ export const GUIDES = [
     topic: "ticketday",
     title: "How to get Glastonbury tickets: giving your group the best chance",
     summary: "What really improves your chances under the queue used for the 2027 sale, what doesn't, and a simple plan for a group across the coach sale, the general sale and the resale.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
       "There's no trick that gets you to the front of the Glastonbury queue. Demand is many times the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked.",
       { h2: "What changed in 2027" },
       "For the 2027 sales, buyers passed a security check and then entered their registration details **before** joining the queue. Each registration got one place. Reports from the sale said a second phone, another browser or a different connection with the same registration number brought up the same place, not a new one.",
       "The festival's advice was to be in the waiting room at glastonbury.seetickets.com **at least 10 minutes before the sale**, because anyone arriving after the start went to the back. Not refreshing, and not using several tabs or devices, was part of the official advice too.",
-      "Time Out noted that the old approach, where friends each ran as many devices as they could, was likely to be far less successful under the new system. Buyers who did get through said it felt fairer than ever.",
+      "Time Out noted that the old approach, where friends each ran as many devices as they could, was likely to be far less successful under the new system. Time Out also said the new queue made the sale fairer.",
       { h2: "The one thing that really raises your odds" },
       "If each registration gets one place, then the number of chances your group has is simply **the number of people with their own registration who queue**. Six friends queueing on one device each have six places. One person with six devices has one.",
       "Whoever gets through first can book up to six people, so every extra person queueing is an extra chance for the whole group, not just for themselves. That changes what's worth doing weeks before the sale:",
@@ -504,7 +503,7 @@ export const GUIDES = [
       } },
       "Many groups try the coach sale first, then general admission if it doesn't work, then the resale. Agree the rules beforehand: a coach package means travelling on a booked coach from one departure town, and if some of you get coach tickets, nobody should then book the same people in the general sale. See [coach tickets](/guides/glastonbury-coach-tickets/) and [how the spring resale works](/guides/resale-and-coach-tickets/).",
       { h2: "Don't waste a place once you get one" },
-      "Getting through the queue is luck. What happens next isn't. The 2027 sale FAQ said you'd have 10 minutes on the booking page, and tickets aren't allocated until payment goes through. Places are lost at this stage to things that are all fixable in advance:",
+      "Getting through the queue is luck. What happens next isn't. The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't allocated until payment goes through. Places are lost at this stage to things that are all fixable in advance:",
       { ul: [
         "**Numbers that aren't ready to paste.** Scrolling a chat for six ten digit numbers is slow and error prone. Put them on one page with [Glasto Quick Copy](/#/new).",
         "**The wrong postcode.** It must be the one on the registration, not where someone lives now.",
@@ -583,7 +582,7 @@ export const GUIDES = [
         "Close anything that might pop up over the page or slow your device down, like big downloads or video calls.",
       ] },
       { h2: "When you get through" },
-      "The clock is running from here: in 2025 buyers had 10 minutes to enter everyone's details and pay. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/) for the checkout in detail.",
+      "The clock is running from here: in 2025 buyers had 10 minutes to complete the page with everyone's registration details, and reports said the payment page had its own, shorter timer. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/) for the checkout in detail.",
       { ol: [
         "Tell the group straight away with one short message, so nobody books the same people.",
         "Enter the lead booker's details, then each person's registration number and registered postcode.",
@@ -602,7 +601,7 @@ export const GUIDES = [
       ] },
       { cta: "Get your group ready now" },
     ],
-    sources: [OFFICIAL.tickets, OFFICIAL.info, OFFICIAL.sale2027],
+    sources: [OFFICIAL.tickets, OFFICIAL.info, OFFICIAL.sale2027, OFFICIAL.sale2025, NEWS.indy2025],
   },
   {
     slug: "how-the-ticket-queue-works",
@@ -614,7 +613,7 @@ export const GUIDES = [
       "Demand for Glastonbury tickets is many times the number available, so the sale runs through an online waiting room. Here's how it has worked in recent years, what that means for you, and how a group can use it sensibly.",
       { h2: "Joining the queue" },
       "In the 2027 sale, buyers passed a security check and then had to **enter their registration details before joining the queue**. One registration meant one place in the queue, and progress was shown as rows of blocks that turned green as you moved forward, rather than a numbered position.",
-      "In earlier sales, everyone already on the page when the sale opened was placed in the queue at random, and anyone arriving later joined the back. Either way, being on the page early matters: the 2027 sale FAQ said to be in the waiting room at least 10 minutes before the start. Refreshing doesn't help.",
+      "When the sale opens, everyone already waiting is given a place in the queue at random, and anyone arriving later joins the back. So being on the page early matters: the 2027 sale FAQ said to be in the waiting room at least 10 minutes before the start. Refreshing doesn't help.",
       "Linking the queue to registrations means opening more tabs, browsers or devices with the same registration number gives you the same place, not a second chance. Several people in your group can each try with their own registration number, though, and whoever gets through first books for everyone.",
       { h2: "What you can and can't control" },
       "It helps to be clear about this, because ticket morning is stressful and it's easy to waste energy on the wrong things.",
@@ -644,7 +643,7 @@ export const GUIDES = [
         "Keep the group chat quiet. A stream of \"still waiting\" messages makes the one that matters easy to miss.",
       ] },
       { h2: "At the front: the 10 minute clock" },
-      "In 2025, reaching the front gave you **10 minutes** to enter the registration numbers and postcodes, pay and finish. Tickets weren't allocated until payment went through, and details couldn't be changed once you moved on. That's why having everyone's details ready to paste matters: it turns the most stressful part of the morning into a minute's work. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/).",
+      "In 2025, reaching the front gave you **10 minutes** to complete the page where you enter the registration numbers and postcodes. Tickets weren't allocated at that point, only once payment went through, and reports said the payment page had its own, shorter timer. Details couldn't be changed once you moved on. That's why having everyone's details ready to paste matters: it turns the most stressful part of the morning into a minute's work. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/).",
       { h2: "If someone in your group gets through" },
       "They should book for everyone they've agreed to cover, up to six people. As soon as the booking is confirmed, they should tell the group, so nobody else spends their turn booking the same people.",
       "If a booking fails part way through, they should say so straight away too. Someone else further back in the queue may still be able to book.",
@@ -658,7 +657,7 @@ export const GUIDES = [
       ] },
       { tip: "The queue can't be beaten, but the minute after it can be slowed down by missing numbers. Have them ready." },
     ],
-    sources: [OFFICIAL.tickets, OFFICIAL.info, OFFICIAL.sale2027],
+    sources: [OFFICIAL.tickets, OFFICIAL.info, OFFICIAL.sale2027, OFFICIAL.sale2025, NEWS.indy2025],
   },
   {
     slug: "paying-for-glastonbury-tickets",
@@ -669,14 +668,14 @@ export const GUIDES = [
     body: [
       "Getting to the front of the queue doesn't secure a ticket. Tickets are only allocated once payment has gone through, and there's a time limit. This guide covers the checkout part of ticket day, which is where well prepared groups win time and unprepared ones lose it.",
       { h2: "The clock starts at the front" },
-      "In the 2025 sale, once you reached the front you had **10 minutes** to enter the lead booker's and up to five other people's registration numbers and postcodes, choose any options, enter payment details and complete checkout. Tickets weren't allocated until payment was processed. If the timer ran out, the transaction failed.",
-      "Ten minutes is plenty if everything is ready, and not much if you're scrolling a chat for numbers or looking for your card. The details you enter also **can't be changed once you move on**, so check them before you continue.",
+      "In the 2025 sale, once you reached the front you had **10 minutes** to complete the page where you enter the lead booker's and up to five other people's registration numbers and postcodes, before the session expired. Tickets weren't allocated at that point, only once payment was processed. Reports said that once you reached the payment page, you had **five minutes** to submit your payment details. If a timer ran out, the transaction failed.",
+      "That's plenty if everything is ready, and not much if you're scrolling a chat for numbers or looking for your card. The details you enter also **can't be changed once you move on**, so check them before you continue.",
       { h2: "Before the day" },
       { ul: [
         "**Know which card you'll use**, and that it has enough available for a deposit per person. For 2027 that was £100 a ticket, so £600 for six.",
         "**Have a second card** ready in case the first is declined.",
         "**Set up Apple Pay or Google Pay in advance** if you want to use them. In 2025 they could appear as options depending on your device, but only if they were already set up.",
-        "**Know the payee name.** In 2025 the payee could show as \"The Way Ahead Group\" rather than Glastonbury or See Tickets. Don't be alarmed by it, and don't let your bank's fraud check put you off.",
+        "**Know the payee name.** In 2025 the payee could show as \"The Way Ahead Group\" rather than Glastonbury or See Tickets, for example when paying with Apple Pay or Google Pay. Don't be alarmed by it, and don't let your bank's fraud check put you off.",
         "**Keep your phone to hand** for bank security checks, even if you're booking on a laptop. Many banks ask you to approve a payment in their app.",
       ] },
       { h2: "Which cards work" },
@@ -695,14 +694,14 @@ export const GUIDES = [
         "**A plain holding page.** Under heavy traffic a reduced, minimal page can appear. In 2025 the festival said this didn't mean the site had crashed.",
         "**\"All available tickets have now been allocated\".** In 2025 this meant no new booking pages were available, but orders that failed could be released. The official advice was to refresh the page.",
         "**\"SOLD OUT\".** All purchases have been processed and no more tickets will be released in that sale.",
-        "**A locked registration.** In 2025, registration numbers could be locked for up to 10 minutes after errors, duplicate attempts or a timeout.",
+        "**A locked registration.** In the 2025 resale, registration numbers could be locked for up to 10 minutes after errors, duplicate attempts or a timeout.",
       ] },
       "If something goes wrong at checkout, see [what to do if your booking fails](/guides/glastonbury-booking-problems/).",
       { h2: "In the resale" },
       "Resale tickets are paid **in full** at the time of booking, not with a deposit. That's a much bigger payment for a group: for four people at the 2027 price it would be over £1,600. Check your card limit beforehand and tell your bank if it usually flags large payments.",
       { cta: "Get your group's details ready" },
     ],
-    sources: [OFFICIAL.sale2025, OFFICIAL.resale, OFFICIAL.y2027],
+    sources: [OFFICIAL.sale2025, OFFICIAL.resale, OFFICIAL.y2027, NEWS.indy2025],
   },
   {
     slug: "ticket-day-mistakes",
@@ -751,7 +750,7 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Setting up your phone or laptop for Glastonbury ticket day",
     summary: "The settings to change before the sale on iPhone, Android and laptops, so your screen doesn't lock, your battery doesn't run out and nothing pops up over the queue.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
       "A phone that locks, dims or runs out of battery in the queue is one of the few ticket day problems that's entirely in your hands. Setting it up takes about five minutes, and the best time is the evening before the sale, not the morning of it.",
       "The steps below follow Apple's and Google's own help pages. Menu names vary a little between models, brands and software versions, so if you can't find a setting, type its name into the search bar at the top of your Settings app.",
@@ -761,7 +760,7 @@ export const GUIDES = [
       { h2: "On an iPhone" },
       { ul: [
         "**Stop the screen locking.** Open Settings, tap **Display & Brightness**, then **Auto-Lock**, and choose a longer time. Apple notes this uses more battery, so plug in too.",
-        "**Turn off Low Power Mode.** Open Settings and tap **Battery** (then **Power Mode** on iPhone 15 and later). Apple says Low Power Mode limits features including Auto-Lock, so leave it off while you queue and charge instead. If it switches itself on when the battery is low, that's another reason to stay plugged in.",
+        "**Turn off Low Power Mode.** Open Settings and tap **Battery**. On some newer iPhones the switch is one step further in, under **Power Mode**. Apple says Low Power Mode limits features including Auto-Lock, so leave it off while you queue and charge instead. If it switches itself on when the battery is low, that's another reason to stay plugged in.",
         "**Silence everything else.** Open Control Centre, tap **Focus**, then **Do Not Disturb**. If you want the group chat to come through, you can allow chosen people or apps in the Focus settings.",
         "**Practise switching apps.** On an iPhone without a Home button, swipe right along the bottom edge of the screen to jump back to the app you were just using. With a Home button, double-click it to see your recent apps.",
       ] },
@@ -810,7 +809,7 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Glastonbury booking gone wrong? What to do if checkout fails",
     summary: "What to do when a name doesn't come up, a registration is locked, the timer runs out, a card is declined or the confirmation doesn't arrive, based on the official sale FAQs.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
       "Getting through the queue and then watching the booking go wrong is the worst feeling of ticket day. It happens to some people every year, and most problems have a sensible next step if you know what you're looking at. This guide goes through them one at a time. Where the rules come from a particular year's official FAQ, we say which.",
       { h2: "First, tell your group" },
@@ -822,18 +821,18 @@ export const GUIDES = [
         "**The wrong postcode**: their current one instead of the one on their registration.",
         "**An old number** from an earlier registration or an old email.",
       ] },
-      "Don't keep retrying the same pair. In 2025, registration numbers could be **locked for up to 10 minutes** after errors or repeated attempts, which would leave that person stuck for the rest of your time. Carry on with the others, ask about that person in the group chat, and come back to them last if there's time.",
+      "Don't keep retrying the same pair. In the 2025 resale, registration numbers could be **locked for up to 10 minutes** after errors or repeated attempts, which would leave that person stuck for the rest of your time. Carry on with the others, ask about that person in the group chat, and come back to them last if there's time.",
       "If you can't fix it before the clock runs out, finish the booking for everyone else. Completing a booking for five is far better than losing all six. Whoever gets through next can try to book the person who was left out.",
       { h2: "A registration is locked" },
-      "In 2025, the official FAQ said registrations could be locked for up to 10 minutes after errors, duplicate attempts or a timeout. If one of your group's registrations is locked, the most likely reasons are that someone else is already booking that person, or that their details were entered wrongly several times. Check the chat before trying again.",
+      "The festival's 2025 resale FAQ said registrations could be locked for up to 10 minutes after errors, duplicate attempts or a timeout. If one of your group's registrations is locked, the most likely reasons are that someone else is already booking that person, or that their details were entered wrongly several times. Check the chat before trying again.",
       { h2: "The timer runs out" },
-      "The 2027 sale FAQ said you'd have 10 minutes on the booking page, and tickets aren't allocated until payment has gone through. If the timer ends first, the transaction fails and nothing is booked. Follow the instructions on screen. For the 2025 resale, the advice when a page hung was to press back once, and if that didn't work, to close the browser and start again.",
+      "The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't allocated until payment has gone through. In recent sales the payment page has had its own, shorter timer too. If a timer ends first, the transaction fails and nothing is booked. Follow the instructions on screen. For the 2025 resale, the advice when a page hung was to press back once, and if that didn't work, to close the browser and start again.",
       "The best protection is speed in the first place: every number and postcode ready to paste, and a card to hand. See [using Glasto Quick Copy at the front of the queue](/guides/glasto-quick-copy-on-ticket-day/).",
       { h2: "The card is declined" },
       { ul: [
         "**Try your second card.** A lead booker paying six deposits is making a bigger payment than usual, and some banks query it.",
         "**Check your bank's app.** Many banks ask you to approve the payment there. If you don't see the request, open the app yourself.",
-        "**Don't be put off by the name.** In 2025 the payee could show as \"The Way Ahead Group\" rather than Glastonbury or See Tickets.",
+        "**Don't be put off by the name.** In 2025 the payee could show as \"The Way Ahead Group\" rather than Glastonbury or See Tickets, for example when paying with Apple Pay or Google Pay.",
         "**Check the card type.** For the 2025 resale, American Express wasn't accepted, and international buyers could only use Visa or Mastercard credit cards.",
         "**Stay on the page.** In 2025 the official advice was not to minimise the browser or open new tabs during checkout, as the session could expire.",
       ] },
@@ -875,7 +874,7 @@ export const GUIDES = [
       { h2: "Over the winter" },
       { ul: [
         "**Check the card you'll pay the balance with** won't expire before April. If it was the card you paid the deposit with, that matters for refunds too.",
-        "**Start putting money aside.** The 2027 balance is £308 per ticket plus postage. From October to April that's roughly £50 a month.",
+        "**Start putting money aside.** The 2027 balance is £308 per ticket plus postage. From October to early April that's about six months, or roughly £52 a month.",
         "**Decide how you're getting there.** If you're driving, agree who's buying the parking pass, which is sold during the balance window. If you're thinking about the coach, note that coach places come as ticket and coach packages in their own sale, not as add-ons to a general admission ticket. See [coach tickets](/guides/glastonbury-coach-tickets/).",
         "**Keep your email address working.** Reminders and updates go to the email on your booking and registration.",
       ] },
@@ -886,7 +885,7 @@ export const GUIDES = [
       "If a balance isn't paid by the end of the window, that ticket is cancelled. In 2025 the deposit was refunded to the original card minus a £25 administration fee. The ticket then goes into the spring resale. See [deposits and balance payments](/guides/deposits-and-balance-payments/).",
       { tip: "Ask each person to reply in the group chat with \"PAID\" once their balance is done. The lead booker can then see at a glance who still needs reminding before the 7th." },
       { h2: "If someone can't go" },
-      "Tickets carry the holder's photo and can't be transferred, so a friend can't take someone's place. The person who can't go should look at the cancellation terms for their year: in recent years tickets could be cancelled for a refund minus an administration fee until a cut-off in early May, after which they became non-refundable. Their friend's best route is the spring resale, with their own registration.",
+      "Tickets carry the holder's photo and can't be transferred, so a friend can't take someone's place. The person who can't go should look at the cancellation terms for their year: tickets have been refundable, minus an administration fee, up to a cut-off date set for each festival, and non-refundable after it. Their friend's best route is the spring resale, with their own registration.",
       { h2: "In the spring" },
       { ul: [
         "If some of your group still need tickets, get ready for the [resale](/guides/resale-and-coach-tickets/).",
@@ -920,7 +919,7 @@ export const GUIDES = [
         "**Postage and packing:** £11.25 per order, paid with the balance",
       ] },
       "For a lead booker buying six tickets, that's £600 on ticket day, then six balances of £308 and one postage charge in the spring: £1,859.25 in the April window for the whole booking.",
-      "If ticket day is in the autumn and the balance is due in early April, that's roughly five months. Putting aside around £62 a month covers a £308 balance. It's a small habit that saves a stressful week in March.",
+      "With the 2027 sale in October and the balance due in early April, that's about six months. Putting aside around £52 a month covers a £308 balance. It's a small habit that saves a stressful week in March.",
       { h2: "Who pays what in a group" },
       "However your group handles it, write it down once in the group chat after booking: who paid the deposits, who owes whom, and the balance dates. A message like this is enough:",
       { ul: [
@@ -933,7 +932,7 @@ export const GUIDES = [
       "If a balance isn't paid by the end of the window, that ticket is cancelled and goes back on sale in the spring resale. In 2025 the deposit was refunded automatically to the card it was paid with, minus a £25 administration fee: £50 back from a £75 deposit, within about seven working days of the window closing. If the card had changed, people had to contact See Tickets to arrange the refund.",
       "This is the most painful mistake on this page, because it happens months after the hard part. A card that's expired since ticket day, a missed email or a holiday in the payment week are the usual causes. Calendar reminders for everyone in the group, not just the lead booker, guard against all three.",
       { h2: "If you can't go" },
-      "Tickets can't be transferred to anyone else. In recent years, tickets could be cancelled for a refund minus a £25 administration fee per ticket until a cut-off in early May, after which they became non-refundable. Booking fees and postage weren't refunded. Check the terms for your year with See Tickets.",
+      "Tickets can't be transferred to anyone else. Tickets have been refundable, minus a £25 administration fee per ticket, up to a cut-off date set for each festival, and non-refundable after it. Booking fees and postage weren't refunded. Check the terms for your year with See Tickets.",
       "If someone in your group drops out, they can't hand their ticket to a friend. The friend's best route is the resale, with their own registration.",
       { h2: "Extras" },
       "For 2027, car parking passes and cancellation protection can be added during the balance payment window. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none.",
@@ -976,7 +975,7 @@ export const GUIDES = [
       { ul: [
         "Everyone already on the page when the sale opened was placed in the queue at random. Anyone arriving later went to the back.",
         "A progress bar showed your position. The advice was not to refresh, and not to use several devices or tabs.",
-        "At the front, you had **10 minutes** to enter details and pay. Tickets weren't allocated until payment went through.",
+        "At the front, you had **10 minutes** to complete the page with everyone's registration details. Tickets weren't allocated until payment went through, and reports said the payment page had its own, shorter timer.",
         "Registration numbers could be locked for up to 10 minutes after errors, duplicate attempts or a timeout.",
         "If the page hung, the advice was to press back once, and if that didn't work, close the browser and start again.",
       ] },
@@ -994,7 +993,7 @@ export const GUIDES = [
       "Glastonbury tickets carry the holder's photo and are strictly non-transferable. The official resale through See Tickets is the only legitimate way to get a returned ticket. Anyone selling tickets elsewhere is either mistaken or a scam. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
       { tip: "Keep your registration photo up to date between sales, so you're ready if a resale comes round." },
     ],
-    sources: [OFFICIAL.resale, OFFICIAL.y2027, NEWS.nme2027, NEWS.gff2024resale],
+    sources: [OFFICIAL.resale, OFFICIAL.y2027, NEWS.nme2027, NEWS.gff2024resale, NEWS.indy2025],
   },
   {
     slug: "other-ways-to-get-to-glastonbury",
@@ -1242,9 +1241,9 @@ export const GUIDES = [
     topic: "tool",
     title: "Using Glasto Quick Copy at the front of the queue",
     summary: "How to get from \"you're through\" to a paid booking quickly with Glasto Quick Copy: getting every queuer the page, switching between screens, pasting on a phone and a timed practice run.",
-    updated: CHECKED_OCT26, isoDate: MODIFIED_OCT26,
+    updated: CHECKED, isoDate: MODIFIED,
     body: [
-      "When you reach the front of the Glastonbury queue, the clock starts. The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't allocated until payment has gone through. Entering six registration numbers and six postcodes is the part of that time you can make fast.",
+      "When you reach the front of the Glastonbury queue, the clock starts. The 2027 sale FAQ said you'd have 10 minutes on the page where you enter the registration details, and tickets aren't allocated until payment has gone through. In recent sales the payment page has had its own, shorter timer too. Entering six registration numbers and six postcodes is the part of that time you can make fast.",
       "This guide is about those few minutes: getting up to six people's details from your group's page into the booking form without a typo. Setting the page up in the first place is covered in [how to use Glasto Quick Copy](/guides/how-to-use-glasto-quick-copy/).",
       { h2: "Before the day: every queuer needs the page" },
       "Whoever gets through first does the booking, and you can't know in advance who that will be. So everyone who's queueing for your group needs the same page, on the device they'll queue on.",
@@ -1316,7 +1315,7 @@ const FAQ_ITEMS = [
   ["Can I change my registration photo after booking?", "Not while a booking is linked to your registration, so update an old photo before ticket day."],
   ["Do extra tabs or devices help in the queue?", "In recent sales, no. For 2027 you entered your registration details before joining the queue, and one registration meant one place, so extra tabs on the same registration gave the same place. The official advice is also not to refresh or use several devices. See [how the queue works](/guides/how-the-ticket-queue-works/)."],
   ["Is there a trick to getting Glastonbury tickets?", "No. Since the 2027 sale, each registration gets one place in the queue, so extra tabs and devices don't help. What does help is more people in your group queueing with their own registration, and everyone's details ready to paste so a place isn't wasted. See [how to get Glastonbury tickets](/guides/how-to-get-glastonbury-tickets/)."],
-  ["How long do I have once I'm through the queue?", "In the 2025 sale it was 10 minutes to enter everyone's details and pay. Tickets weren't allocated until payment went through, so have every registration number and postcode ready to paste. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/)."],
+  ["How long do I have once I'm through the queue?", "In the 2025 sale it was 10 minutes to complete the page with everyone's registration details, and reports said the payment page then had its own, shorter timer. Tickets weren't allocated until payment went through, so have every registration number and postcode ready to paste. See [paying for Glastonbury tickets](/guides/paying-for-glastonbury-tickets/)."],
   ["How fast do Glastonbury tickets sell out?", "In under an hour every recent year: about 57 minutes for 2024, 35 for 2025 and 42 for 2027. See [recent sales compared](/guides/glastonbury-ticket-sale-history/)."],
   ["How much is the deposit?", "In the 2027 sale it was £100 per ticket, on a £408 ticket. The £308 balance, plus postage, is due between 1 and 7 April 2027. See [deposits and balances](/guides/deposits-and-balance-payments/)."],
   ["What if someone in my group can't pay the balance?", "If the balance isn't paid by the end of the window, that ticket is cancelled and goes into the spring resale. In 2025 the deposit was refunded to the original card minus a £25 administration fee."],
@@ -1455,6 +1454,8 @@ export const PAGES = [
         "**Six new guides with tips for the current ticket system:** [how to get Glastonbury tickets](/guides/how-to-get-glastonbury-tickets/), [your first go at Glastonbury tickets](/guides/first-time-glastonbury-ticket-day/), [setting up your phone or laptop](/guides/set-up-your-phone-for-ticket-day/), [what to do if checkout fails](/guides/glastonbury-booking-problems/), [collecting registration numbers from WhatsApp](/guides/collect-registration-numbers-from-whatsapp/) and [using Glasto Quick Copy at the front of the queue](/guides/glasto-quick-copy-on-ticket-day/).",
         "**Updated:** the [ticket day checklist](/guides/ticket-day-checklist/) and [how the queue works](/guides/how-the-ticket-queue-works/) now follow the official 2027 sale FAQ: be in the waiting room at least 10 minutes before the sale, not just a few minutes.",
         "**A new FAQ answer** on whether there's a trick to getting tickets.",
+        "**Corrections after a full fact check of every guide:** 2024 tickets cost £360 including the booking fee, with a £75 deposit (we had £355), so the 2024 to 2025 price rise was about 5%, not 7%. The 10 minutes at the front of recent sales was for the page where you enter registration details; payment has had its own, shorter timer. The rule that registrations could be locked for 10 minutes comes from the 2025 resale. Random places in the queue still apply when a sale opens, not just in earlier sales. The guides now say the payee name \"The Way Ahead Group\" can appear when paying with Apple Pay or Google Pay. The savings tip is now the same in every guide (about £52 a month), and the cancellation cut-off no longer gives a date we couldn't confirm.",
+        "**Every guide rechecked** against its sources on 26 October 2026.",
       ] },
       { h2: "20 October 2026" },
       { ul: [
