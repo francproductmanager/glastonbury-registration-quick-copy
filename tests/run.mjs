@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
-const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "updates", "404.html", "sitemap.xml", "robots.txt"];
+const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "updates", "calendar", "downloads", "404.html", "sitemap.xml", "robots.txt"];
 const SITE_URL = "https://glastobolt.co.uk";
 const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
 const TYPES = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".txt": "text/plain", ".woff2": "font/woff2", ".xml": "application/xml" };
@@ -106,6 +106,7 @@ const toolHtml = ["index.html", "demo.html"].map(f => readFileSync(join(ROOT, f)
 const sitePages = GENERATED.flatMap(g => { const f = join(ROOT, g); return !existsSync(f) ? [] : statSync(f).isDirectory() ? walk(f) : [f]; }).filter(f => f.endsWith(".html"));
 const adsSrc = readFileSync(join(ROOT, "ads.js"), "utf8");
 const counterSrc = readFileSync(join(ROOT, "counter.js"), "utf8");
+const guidesSrc = readFileSync(join(ROOT, "guides.js"), "utf8");
 
 console.log("\nStatic checks");
 await test("Security policy allows Google ads but keeps every other protection", () => {
@@ -115,7 +116,7 @@ await test("Security policy allows Google ads but keeps every other protection",
   assert(/Referrer-Policy = "strict-origin-when-cross-origin"/.test(toml), "referrer policy");
 });
 await test("The tool's code makes no network requests; pages load only Google's ad loader, through ads.js", () => {
-  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
+  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["guides.js", guidesSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
     const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO)
       // ads.js adds Google's ad loader (and checks whether it's already there); nothing else may
       .filter(u => !(name === "ads.js" && ["https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=", "https://pagead2.googlesyndication.com/"].includes(u)));
@@ -125,7 +126,7 @@ await test("The tool's code makes no network requests; pages load only Google's 
   const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780";
   for (const h of [...toolHtml, ...sitePages.map(f => readFileSync(f, "utf8"))]) {
     const srcs = [...h.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map(m => m[1]);
-    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || (h === toolHtml[0] && /^counter\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
+    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || u === "/guides.js" || (h === toolHtml[0] && /^counter\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
     assert(!srcs.includes(LOADER), "Google's ad loader is added by ads.js after the page loads, not in the page");
     assert(srcs.some(u => /^\/?ads\.js(\?v=\d+)?$/.test(u)), "ads.js missing");
     assert(!/<link[^>]+href="https?:/.test(h.replace(/<link rel="canonical"[^>]+>/, "")), "external stylesheet or font");
@@ -300,6 +301,39 @@ await test("Sitemap and robots.txt use the real address and list every page", ()
   assert(locs.every(u => u.startsWith(SITE_URL + "/")), "sitemap address");
   assert(readFileSync(join(ROOT, "robots.txt"), "utf8").includes(`Sitemap: ${SITE_URL}/sitemap.xml`), "robots.txt sitemap");
 });
+await test("Titles fit in search results: 60 characters or fewer, site name never twice", () => {
+  for (const [rel, h] of [...sitePages.map(f => [relative(ROOT, f), readFileSync(f, "utf8")]), ["index.html", toolHtml[0]]]) {
+    const t = h.match(/<title>([^<]+)<\/title>/)[1].replace(/&amp;/g, "&").replace(/&#39;/g, "'");
+    assert(t.length <= 60, `${rel}: title is ${t.length} characters: ${t}`);
+    assert(t.split("Glasto Quick Copy").length <= 2, `${rel}: site name twice in ${t}`);
+  }
+});
+await test("Moved and merged guides redirect permanently to pages that exist, and nothing links to the old addresses", () => {
+  const rules = [...toml.matchAll(/\[\[redirects\]\]\s+from = "([^"]+)"\s+to = "([^"]+)"\s+status = (\d+)/g)].filter(m => m[3] === "301");
+  assert(rules.length >= 4, `only ${rules.length} redirects`);
+  const sm = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
+  const all = sitePages.map(f => readFileSync(f, "utf8")).join("\n") + appSrc + toolHtml.join("\n");
+  for (const [, from, to] of rules) {
+    assert(existsSync(join(ROOT, to, "index.html")), `${from} redirects to missing ${to}`);
+    assert(!existsSync(join(ROOT, from)), `${from} still exists, so it would be served instead of redirected`);
+    assert(!sm.includes(SITE_URL + from), `${from} is still in the sitemap`);
+    assert(!all.includes(`href="${from}`) && !all.includes(`"${from}/"`), `something still links to ${from}`);
+  }
+});
+await test("Calendar files are valid iCalendar and the spreadsheet template is a plain CSV", () => {
+  const cals = readdirSync(join(ROOT, "calendar"));
+  assert(cals.length >= 2, "calendar files");
+  for (const f of cals) {
+    const t = readFileSync(join(ROOT, "calendar", f), "utf8");
+    assert(t.startsWith("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n") && t.endsWith("END:VCALENDAR\r\n"), `${f}: not a calendar`);
+    assert(/\r\nDTSTART[;:][^\r]+\r\nDTEND[;:]/.test(t) && /\r\nSUMMARY:/.test(t), `${f}: missing event fields`);
+    assert(t.split("\r\n").every(l => l.length <= 75), `${f}: a line is too long`);
+  }
+  for (const f of readdirSync(join(ROOT, "downloads"))) {
+    const rows = readFileSync(join(ROOT, "downloads", f), "utf8").trim().split("\r\n");
+    assert(rows.length >= 2 && rows.every(r => r.split(",").length === rows[0].split(",").length), `${f}: uneven rows`);
+  }
+});
 await test("Privacy policy has the disclosures AdSense requires, and is honest about the tool", () => {
   const h = readFileSync(join(ROOT, "privacy", "index.html"), "utf8").replace(/&#39;/g, "'");
   for (const s of ["Third-party vendors, including Google, use cookies to serve ads based on your prior visits", "Google's use of advertising cookies", "adssettings.google.com", "aboutads.info", "policies.google.com/technologies/partner-sites", "consent", "Netlify", "shows Google ads on its home page, guides and information pages", "working screens, where you set up, edit and copy your group, show no ads"])
@@ -335,6 +369,15 @@ await test("Guides pages render without errors (ads blocked in tests)", async ()
     assert((await p.textContent("h1")).length > 3, `${u}: no h1`);
     eq(await p.locator(".ad-slot:visible").count(), 0, `${u}: empty slots stay hidden`);
   }
+  await p.goto(B + "guides/group-chat-messages/");
+  const msgs = await p.locator("blockquote.msg").count();
+  assert(msgs >= 5, "messages"); eq(await p.locator(".msg-copy").count(), msgs, "a copy button per message");
+  await p.locator(".msg-copy").first().click();
+  eq(await p.evaluate(() => navigator.clipboard.readText()), await p.locator("blockquote.msg p").first().textContent(), "copies the message's own words");
+  eq(await p.locator(".msg-copy").first().textContent(), "Copied", "says so");
+  await p.goto(B + "guides/ticket-day-checklist/");
+  assert(await p.locator(".checks input[type=checkbox]").count() >= 10, "tickable checklist");
+  eq(await p.locator(".print-btn").count(), 1, "one print button");
   await p.goto(B + "faq/");
   await p.locator(".faq summary").first().click();
   assert(await p.locator(".faq").first().evaluate(d => d.open), "FAQ item didn't open");
@@ -362,6 +405,7 @@ console.log("\nImport parser");
     eq((await parse("Dan 2718281828 W1A 1AA\r\nEve 1414213562 LS1 5DL\r\n")).map(x => x.name), ["Dan", "Eve"], "CRLF");
     eq((await parse("my reg number is 2718281828 and postcode e2 8fp")), [{ name: "Person 1", reg: "2718281828", postcode: "E2 8FP" }], "only stopwords -> Person N");
     eq((await parse("JORDAN 173205080 SW1A 2AA"))[0].name, "Jordan", "title-cased");
+    eq((await parse("here's mine! Sam 5647382910 BS1 4DJ"))[0].name, "Sam", "\"here's mine\" is filler");
   });
   await test("WhatsApp messages with name, reg number and postcode on separate lines (iPhone copy)", async () => {
     // Made-up people, in the exact shape of a copied WhatsApp chat

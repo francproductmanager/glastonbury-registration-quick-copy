@@ -458,13 +458,14 @@
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
   const GUIDE_LINKS = [
-    ["/guides/how-to-get-glastonbury-tickets/", "How to get Glastonbury tickets"],
+    ["/guides/buying-tickets-for-a-group/", "Glastonbury syndicate: buying as a group"],
+    ["/guides/how-to-get-glastonbury-tickets/", "Glastonbury ticket tips 2027"],
+    ["/guides/glastonbury-2027-resale/", "Glastonbury 2027 resale"],
     ["/guides/glastonbury-2027-key-dates/", "Glastonbury 2027 key dates and prices"],
-    ["/guides/resale-and-coach-tickets/", "How the spring resale works"],
     ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
     ["/guides/how-the-ticket-queue-works/", "How the ticket queue works"],
     ["/guides/ticket-day-checklist/", "Ticket day checklist"],
-    ["/guides/buying-tickets-for-a-group/", "Buying tickets for a group"],
+    ["/guides/glastonbury-ticket-spreadsheet-template/", "Free group spreadsheet template"],
   ];
   function viewHome() {
     const all = loadAll();
@@ -503,7 +504,7 @@
   function homeScreen(...rest) {
     if (!homeEl) homeEl = staticHome || h("div", { class: "view v-home" },
       h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
-      h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
+      h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
       h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."));
     const lead = homeEl.querySelector(":scope > .lead");
     while (lead.nextSibling) lead.nextSibling.remove();
@@ -514,7 +515,7 @@
 
   // ---------- import parser ----------
   // Runs locally on what's pasted; the raw text is never stored.
-  const STOPWORDS = new Set(["reg", "registration", "here", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey",
+  const STOPWORDS = new Set(["reg", "registration", "here", "here's", "heres", "here’s", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey",
     "name", "post", "code", "ref", "it", "this", "that", "for", "me", "you", "your", "our", "his", "her", "their", "of", "to", "at", "on", "in", "a", "an",
     "thanks", "thank", "cheers", "ok", "okay", "yes", "yeah", "lol", "great", "sure", "nice", "done", "same", "as", "too", "also", "please", "pls", "booked", "ticket", "tickets"]);
   const TITLES = new Set(["mr", "mrs", "ms", "miss", "mx", "dr"]);

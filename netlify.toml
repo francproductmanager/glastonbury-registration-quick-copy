@@ -31,6 +31,15 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 [[headers]]
+  for = "/calendar/*"
+  [headers.values]
+    Content-Type = "text/calendar; charset=utf-8"
+[[headers]]
+  for = "/downloads/*"
+  [headers.values]
+    Content-Type = "text/csv; charset=utf-8"
+    Content-Disposition = "attachment"
+[[headers]]
   for = "/ads.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
@@ -59,4 +68,26 @@
   from = "/netlify/*"
   to = "/404.html"
   status = 404
+  force = true
+
+# Guides that were merged or moved. Permanent redirects keep old links and search results working.
+[[redirects]]
+  from = "/guides/glastonbury-booking-problems"
+  to = "/guides/paying-for-glastonbury-tickets/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/guides/ticket-day-mistakes"
+  to = "/guides/ticket-day-checklist/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/guides/glasto-quick-copy-on-ticket-day"
+  to = "/guides/how-to-use-glasto-quick-copy/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/guides/resale-and-coach-tickets"
+  to = "/guides/glastonbury-2027-resale/"
+  status = 301
   force = true

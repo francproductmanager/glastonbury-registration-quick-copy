@@ -38,6 +38,7 @@ export function findPersonalData(text) {
   const clean = String(text)
     .replace(/data:[^"')]+/g, " ")              // inline images (the favicon's viewBox digits)
     .replace(/\b\d{4}-\d{2}-\d{2}\b/g, " ")   // ISO dates
+    .replace(/;VALUE=DATE:\d{8}\b/g, " ")       // all-day dates in calendar files
     .replace(/#[0-9a-fA-F]{3,8}\b/g, " ");      // colours
   const found = new Set();
   for (const m of clean.matchAll(REG)) {
