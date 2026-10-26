@@ -96,22 +96,27 @@ function atom(page) {
 <link href="${URL_}${page.path}"/>
 <id>${URL_}${page.path}</id>
 <updated>${iso(entries[0].title)}</updated>
-<author><name>${esc(SITE.name)}</name></author>
+<author><name>${esc(SITE.author.name)}</name></author>
 ${entries.map((e) => `<entry><title>${esc(e.title)}</title><id>${URL_}${page.path}#${e.id}</id><link href="${URL_}${page.path}#${e.id}"/><updated>${iso(e.title)}</updated><content type="html">${esc(abs(`<ul>${e.items.map((x) => `<li>${inline(x)}</li>`).join("")}</ul>`))}</content></entry>`).join("\n")}
 </feed>
 `;
 }
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-// Search results show about 60 characters of a title, so the site name is added only when it
-// fits, and never twice. A page can give a shorter seoTitle for the <title> than its heading.
+// Search results show about 60 characters of a title. One rule for the site name: guides never
+// carry it, so all 60 go on the search the guide answers; the site's own pages (the guides list,
+// FAQ, about, updates and the legal pages) always do, because their titles mean little without it.
+// A page can give a shorter seoTitle for the <title> than its heading.
 const SUFFIX = ` | ${SITE.name}`;
-function pageTitle(title) {
+function pageTitle(title, isGuide) {
   if (title.length > 60) throw new Error(`title over 60 characters, give it a shorter seoTitle: ${title}`);
-  return title.includes(SITE.name) || title.length + SUFFIX.length > 60 ? title : title + SUFFIX;
+  if (isGuide || title.includes(SITE.name)) return title;
+  if (title.length + SUFFIX.length > 60) throw new Error(`site page title too long for the site name, shorten it: ${title}`);
+  return title + SUFFIX;
 }
 function layout({ path, title, seoTitle, description, body, updated, jsonld }) {
-  const full = pageTitle(seoTitle || title);
+  const isGuide = path.startsWith("/guides/") && path !== "/guides/";
+  const full = pageTitle(seoTitle || title, isGuide);
   return `<!doctype html>
 <html lang="en-GB">
 <head>
@@ -122,7 +127,7 @@ function layout({ path, title, seoTitle, description, body, updated, jsonld }) {
 <link rel="canonical" href="${URL_}${path}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:type" content="${path.startsWith("/guides/") && path !== "/guides/" ? "article" : "website"}">
+<meta property="og:type" content="${isGuide ? "article" : "website"}">
 <meta property="og:url" content="${URL_}${path}">
 <meta name="theme-color" content="#fbfaf6">
 <meta name="google-adsense-account" content="${SITE.adsenseClient}">
@@ -192,7 +197,7 @@ for (const g of GUIDES) {
   const path = `/guides/${g.slug}/`;
   const [, topicName] = TOPICS.find(([id]) => id === g.topic);
   const jsonld = [
-    { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, dateModified: g.isoDate, mainEntityOfPage: `${URL_}${path}`, author: { "@type": "Person", name: "The Glasto Quick Copy maker", url: `${URL_}/about/` }, publisher: { "@type": "Organization", name: SITE.name, url: URL_ } },
+    { "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.summary, dateModified: g.isoDate, mainEntityOfPage: `${URL_}${path}`, author: { "@type": "Person", name: SITE.author.name, description: SITE.author.bio, url: `${URL_}/about/#author` }, publisher: { "@type": "Organization", name: SITE.name, url: URL_ } },
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Guides", item: `${URL_}/guides/` },
       { "@type": "ListItem", position: 2, name: topicName, item: `${URL_}/guides/#${g.topic}` },
@@ -212,7 +217,7 @@ for (const g of GUIDES) {
 <p class="crumbs"><a href="/guides/">Guides</a> <span aria-hidden="true">›</span> <a href="/guides/#${g.topic}">${esc(topicName)}</a></p>
 <h1>${inline(g.title)}</h1>
 <p class="lead">${inline(g.summary)}</p>
-<p class="byline">By the maker of Glasto Quick Copy (<a href="/about/">about us</a>). Facts checked ${esc(g.updated)}.</p>
+<p class="byline">By <a href="/about/#author">${esc(SITE.author.name)}</a>, ${esc(SITE.author.byline)}. Facts checked ${esc(g.updated)}.</p>
 ${blocks([{ ad: "guide-top" }, ...withAds])}
 ${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${esc(safeUrl(u))}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
 ${blocks([{ ad: "guide-end" }])}
