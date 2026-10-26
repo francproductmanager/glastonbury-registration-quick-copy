@@ -8,6 +8,9 @@
   const DEMO = document.body.hasAttribute("data-demo");
   const KEY = "tdqc:pages:v1";
   const MAX_PEOPLE = 6;
+  // The spring resale has allowed fewer people per booking than the main sale (4 in 2025)
+  const RESALE_MAX = 4;
+  const RESALE_NOTE = `Booking in the spring resale? Bookings there have been limited to ${RESALE_MAX} people, so split bigger groups for it.`;
   const MAX_REG_DIGITS = 12;
   const app = document.getElementById("app");
   const toastEl = document.getElementById("toast");
@@ -334,7 +337,7 @@
       h("nav", { class: "foot-links", "aria-label": "Site" },
         [["/guides/", "Guides"], ["/faq/", "FAQ"], ["/about/", "About"], ["/privacy/", "Privacy and cookies"], ["/terms/", "Terms"], ["/contact/", "Contact"]]
           .map(([href, t]) => h("a", { href }, t))),
-      h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."));
+      h("p", null, "Glasto Quick Copy, at glastobolt.co.uk. Not affiliated with Glastonbury Festival or See Tickets."));
   }
   const back = (href, text) => h("a", { class: "back", href }, "‹ " + text);
 
@@ -632,12 +635,14 @@
     const list = h("div", { class: "section" });
     const banner = h("div", { class: "banner-ok", role: "status", hidden: true });
     const addBtn = h("button", { type: "button", class: "add-person", onclick: () => { addRow({}); changed(); } });
+    const resaleHint = h("p", { class: "help resale-note", hidden: true }, RESALE_NOTE);
     const backLink = id ? back("#/p/" + id, "Back") : setup.edited ? back("#/", "Back") : back("#/new", "Back to messages");
 
     function renumber() {
       rows.forEach((r, i) => { r.title.textContent = `Person ${i + 1}`; });
       addBtn.disabled = rows.length >= MAX_PEOPLE;
       addBtn.textContent = rows.length >= MAX_PEOPLE ? `${MAX_PEOPLE} people max per booking` : "+ Add someone";
+      resaleHint.hidden = rows.length <= RESALE_MAX;
     }
     // Keep the setup's rows in step with the screen. After the first change, going back to the
     // messages is no longer offered (the phone's back button lands here again, see viewCreate).
@@ -702,7 +707,7 @@
       backLink,
       h("h1", null, id ? "Edit group" : "Check your group's details"),
       id ? null : h("p", { class: "help" }, "Correct anything that needs changing, or add people manually."),
-      list, addBtn, banner, save].filter(Boolean));
+      list, addBtn, resaleHint, banner, save].filter(Boolean));
     return wrap;
   }
 
@@ -806,7 +811,8 @@
       DEMO ? h("div", { class: "demo-banner" }, "Demo with made-up people. Nothing is saved.") : null,
       savedNote,
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
-      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form.")),
+      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form."),
+        people.length > RESALE_MAX ? h("p", { class: "help resale-note" }, RESALE_NOTE) : null),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
       cards,
       finish,

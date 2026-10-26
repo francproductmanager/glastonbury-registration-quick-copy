@@ -29,7 +29,7 @@ export const APPROVED_POSTCODES = new Set([
   "BS14DJ", "M41HN", "NM41HN", "LS15DL", "E28FP", "E16AN",
 ]);
 
-const SKIP = /(^|\/)(package-lock\.json|LICENSE[^/]*)$|\.(woff2|png|jpe?g|gif|ico|pdf)$/;
+const SKIP = /(^|\/)(package-lock\.json|LICENSE[^/]*)$|\.(woff2|png|jpe?g|gif|ico|pdf|mp4)$/;
 const REG = /(?<![0-9A-Za-z])\d(?:[ -]?\d){7,11}(?![0-9A-Za-z])/g;
 const POSTCODE = /(?<![0-9A-Za-z])([A-Za-z]{1,2}\d[A-Za-z\d]?) ?(\d[A-Za-z]{2})(?![0-9A-Za-z])/g;
 

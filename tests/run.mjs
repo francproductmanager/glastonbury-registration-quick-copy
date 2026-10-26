@@ -195,7 +195,7 @@ await test("No middle dots, em dashes or en dashes anywhere we write", () => {
   const bad = [];
   for (const f of walk(ROOT)) {
     const rel = relative(ROOT, f);
-    if (/\.(woff2|png|ico)$/.test(f) || /LICENSE-|package-lock\.json$/.test(rel)) continue;
+    if (/\.(woff2|png|ico|mp4)$/.test(f) || /LICENSE-|package-lock\.json$/.test(rel)) continue;
     const text = readFileSync(f, "utf8");
     const m = text.match(/[\u00b7\u2013\u2014]/);
     if (m) bad.push(`${rel} (${JSON.stringify(m[0])})`);
@@ -206,7 +206,7 @@ await test("No real registration numbers or postcodes: only approved made-up val
   const { findPersonalData } = await import(join(ROOT, "scripts", "check-personal-data.mjs"));
   const bad = [];
   for (const f of execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean)) {
-    if (/package-lock\.json$|LICENSE|\.(woff2|png|ico)$/.test(f) || !existsSync(join(ROOT, f))) continue;
+    if (/package-lock\.json$|LICENSE|\.(woff2|png|ico|mp4)$/.test(f) || !existsSync(join(ROOT, f))) continue;
     for (const x of findPersonalData(readFileSync(join(ROOT, f), "utf8"))) bad.push(`${f}: ${x}`);
   }
   assert(!bad.length, bad.join("; "));
@@ -242,8 +242,8 @@ await test("Generated pages are up to date with site-src, and the tool's index.h
 });
 await test("Content links: only https:, mailto:, /paths and #anchors; anything else stops the build", async () => {
   const { safeUrl } = await import(new URL("../site-src/safe-url.mjs", import.meta.url));
-  for (const u of ["https://example.com/a?b=1", "mailto:hello@example.com", "/guides/", "/#/new", "#sources"]) eq(safeUrl(u), u, u);
-  for (const u of ["javascript:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)", "data:text/html,x", "vbscript:x", "http://example.com", "//evil.example", "guides/x"]) {
+  for (const u of ["https://example.com/a?b=1", "mailto:hello@example.com", "/guides/", "/#/new", "#sources", "webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics"]) eq(safeUrl(u), u, u);
+  for (const u of ["webcal://other.example/calendar/x.ics", "webcal://glastobolt.co.uk.evil.example/calendar/", "javascript:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)", "data:text/html,x", "vbscript:x", "http://example.com", "//evil.example", "guides/x"]) {
     let threw = false; try { safeUrl(u); } catch { threw = true; }
     assert(threw, `accepted ${JSON.stringify(u)}`);
   }
@@ -320,9 +320,24 @@ await test("Moved and merged guides redirect permanently to pages that exist, an
     assert(!all.includes(`href="${from}`) && !all.includes(`"${from}/"`), `something still links to ${from}`);
   }
 });
+await test("Draft guides stay unpublished: no page, no sitemap entry, no card, no link", async () => {
+  const { GUIDES } = await import(new URL("../site-src/content.mjs", import.meta.url));
+  const drafts = GUIDES.filter(g => g.draft).map(g => g.slug);
+  const all = sitePages.map(f => readFileSync(f, "utf8")).join("\n") + readFileSync(join(ROOT, "sitemap.xml"), "utf8");
+  for (const d of drafts) {
+    assert(!existsSync(join(ROOT, "guides", d)), `draft ${d} was published`);
+    assert(!all.includes(`/guides/${d}/`), `something links to the draft ${d}`);
+  }
+});
 await test("Calendar files are valid iCalendar and the spreadsheet template is a plain CSV", () => {
   const cals = readdirSync(join(ROOT, "calendar"));
-  assert(cals.length >= 2, "calendar files");
+  assert(cals.length >= 3, "calendar files");
+  const feed = readFileSync(join(ROOT, "calendar", "glastonbury-2027.ics"), "utf8");
+  eq(feed.split("BEGIN:VEVENT").length - 1, cals.length - 1, "the subscription feed holds every date");
+  assert(feed.includes("X-WR-CALNAME:") && feed.includes("REFRESH-INTERVAL;VALUE=DURATION:P1D"), "the feed asks calendar apps to check it daily");
+  const atom = readFileSync(join(ROOT, "updates", "feed.xml"), "utf8");
+  assert(atom.startsWith('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">') && (atom.match(/<entry>/g) || []).length >= 4, "updates feed");
+  assert(!/href=&quot;\//.test(atom), "links in the feed are absolute");
   for (const f of cals) {
     const t = readFileSync(join(ROOT, "calendar", f), "utf8");
     assert(t.startsWith("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n") && t.endsWith("END:VCALENDAR\r\n"), `${f}: not a calendar`);
@@ -704,6 +719,18 @@ await test("A group deleted in another tab isn't re-created by a stale editor", 
 
 // ---------- ticket day ----------
 console.log("\nTicket day");
+await test("Groups of five or six get a note that resale bookings have been smaller", async () => {
+  const five = [...GROUP, { name: "Priya", reg: "1618033988", postcode: "SE1 7PB" }, { name: "Dev", reg: "2718281828", postcode: "M4 1HN" }];
+  const p = await page(await context()); await seed(p, five); await p.goto(B + "#/p/g1");
+  assert(await p.locator(".v-day .resale-note").isVisible(), "note on the ticket day screen");
+  assert((await p.textContent(".v-day .resale-note")).includes("limited to 4 people"), "says the limit");
+  await p.goto(B + "#/edit/g1");
+  assert(await p.locator(".v-edit .resale-note").isVisible(), "note on the edit screen");
+  await p.locator(".v-edit .ehead .textbtn", { hasText: "Remove" }).first().click();
+  await p.locator(".v-edit .ehead .textbtn", { hasText: "Remove" }).first().click();
+  assert(!(await p.locator(".v-edit .resale-note").isVisible()), "gone once the group is down to three");
+  noErrors(p); await p.context().close();
+});
 await test("Up next, progress, per-person status, clipboard, all done, clear ticks", async () => {
   const p = await page(await context()); await seed(p, GROUP); await p.goto(B + "#/p/g1");
   const boxes = p.locator(".v-day .copy");
@@ -711,6 +738,7 @@ await test("Up next, progress, per-person status, clipboard, all done, clear tic
   eq(await boxes.evaluateAll(bs => bs.map(b => b.className.includes("is-next"))), [true, false, false, false, false, false], "first is up next");
   eq(await p.textContent(".stat .v"), "0 of 6 copied", "progress");
   eq(await p.textContent(".subtitle"), "Tap a number or postcode to copy it, then paste it into the ticket form.", "instruction");
+  eq(await p.locator(".resale-note").count(), 0, "a group of three fits a resale booking, so no resale note");
   await boxes.nth(1).click(); eq(await clip(p), "BS1 4DJ", "clipboard");
   await waitText(p, "#toast", "Postcode copied: BS1 4DJ");
   eq(await boxes.nth(0).evaluate(b => b.className.includes("is-next")), true, "still up next (reading order)");

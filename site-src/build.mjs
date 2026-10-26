@@ -5,9 +5,12 @@
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SITE, PAGES, GUIDES, TOPICS, CALENDAR, DOWNLOADS, LASTMOD } from "./content.mjs";
+import { SITE, PAGES, GUIDES as ALL_GUIDES, TOPICS, CALENDAR, CALENDAR_FEED, DOWNLOADS, LASTMOD } from "./content.mjs";
 import { safeUrl } from "./safe-url.mjs";
 
+// A guide marked draft: true is kept in content.mjs but not published, so it can wait for the
+// festival's own announcement and go live by deleting one line.
+const GUIDES = ALL_GUIDES.filter((g) => !g.draft);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = ROOT;
 const URL_ = SITE.url;
@@ -37,6 +40,8 @@ function blocks(list) {
     if (b.checks) return `<ul class="checks">${b.checks.map((x) => `<li><label><input type="checkbox"> <span>${inline(x)}</span></label></li>`).join("")}</ul>`;
     if (b.img) return `<figure class="shot"><img src="${esc(safeUrl(b.img.src))}" width="${+b.img.width}" height="${+b.img.height}" alt="${esc(b.img.alt)}" loading="lazy"><figcaption>${inline(b.img.caption)}</figcaption></figure>`;
     if (b.chart) return chart(b.chart);
+    // a short silent clip of the tool; the caption says what it shows for anyone who can't watch it
+    if (b.video) return `<figure class="shot"><video src="${esc(safeUrl(b.video.src))}" poster="${esc(safeUrl(b.video.poster))}" width="${+b.video.width}" height="${+b.video.height}" controls muted playsinline preload="none"></video><figcaption>${inline(b.video.caption)}</figcaption></figure>`;
     // links to the calendar files built from CALENDAR
     if (b.calendar) return `<ul class="cal-links">${b.calendar.map((id) => { const e = CALENDAR.find((c) => c.id === id); if (!e) throw new Error("unknown calendar entry " + id); return `<li><a href="/calendar/${e.id}.ics" download>Add to calendar: ${esc(e.title)}</a></li>`; }).join("")}</ul>`;
     if (b.table) return `<div class="table-wrap"><table><thead><tr>${b.table.head.map((x) => `<th scope="col">${inline(x)}</th>`).join("")}</tr></thead><tbody>${b.table.rows.map((r) => `<tr>${r.map((x, i) => (i ? `<td>${inline(x)}</td>` : `<th scope="row">${inline(x)}</th>`)).join("")}</tr>`).join("")}</tbody></table></div>`;
@@ -58,16 +63,43 @@ function chart({ title, unit, rows, note }) {
   }).join("");
   return `<figure class="chart"><svg viewBox="0,0,${W},${H}" role="img" aria-label="${esc(title)}: ${esc(rows.map(([n, v, shown]) => `${n}, ${shown || `${v} ${unit}`}`).join("; "))}">${bars}</svg><figcaption>${inline(title)}${note ? `. ${inline(note)}` : ""}</figcaption></figure>`;
 }
-// One iCalendar file per date in CALENDAR, so readers can put a deadline in their own calendar
-function ics({ id, title, start, end, allDay, description }) {
-  const fold = (line) => line.match(/.{1,74}/g).join("\r\n ");
-  const text = (s) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+// iCalendar files: one per date in CALENDAR, so readers can add a deadline to their own calendar,
+// and one feed with every date, which calendar apps that subscribe to it check for new dates.
+const icsText = (s) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+function vevent({ id, title, start, end, allDay, description }) {
   // timed entries are given in UTC (a trailing Z), so no time zone block is needed
   const when = allDay ? [`DTSTART;VALUE=DATE:${start.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${end.replace(/-/g, "")}`] : [`DTSTART:${start}`, `DTEND:${end}`];
-  return ["BEGIN:VCALENDAR", "VERSION:2.0", `PRODID:-//${SITE.name}//Glastonbury dates//EN`, "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
-    `UID:${id}@${URL_.replace(/^https:\/\//, "")}`, `DTSTAMP:${LASTMOD.replace(/-/g, "")}T000000Z`, ...when,
-    `SUMMARY:${text(title)}`, `DESCRIPTION:${text(description)}`, `URL:${URL_}/guides/glastonbury-2027-key-dates/`,
-    "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", `DESCRIPTION:${text(title)}`, "END:VALARM", "END:VEVENT", "END:VCALENDAR"].map(fold).join("\r\n") + "\r\n";
+  return ["BEGIN:VEVENT", `UID:${id}@${URL_.replace(/^https:\/\//, "")}`, `DTSTAMP:${LASTMOD.replace(/-/g, "")}T000000Z`, ...when,
+    `SUMMARY:${icsText(title)}`, `DESCRIPTION:${icsText(description)}`, `URL:${URL_}/guides/glastonbury-2027-key-dates/`,
+    "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", `DESCRIPTION:${icsText(title)}`, "END:VALARM", "END:VEVENT"];
+}
+function ics(events, name) {
+  const fold = (line) => line.match(/.{1,74}/g).join("\r\n ");
+  const head = ["BEGIN:VCALENDAR", "VERSION:2.0", `PRODID:-//${SITE.name}//Glastonbury dates//EN`, "CALSCALE:GREGORIAN"];
+  if (name) head.push(`X-WR-CALNAME:${icsText(name)}`, "REFRESH-INTERVAL;VALUE=DURATION:P1D", "X-PUBLISHED-TTL:P1D");
+  return [...head, ...events.flatMap(vevent), "END:VCALENDAR"].map(fold).join("\r\n") + "\r\n";
+}
+// An Atom feed of the updates page, for anyone who follows sites in a feed reader
+function atom(page) {
+  const entries = [];
+  for (const b of page.body) {
+    if (b.h2) entries.push({ title: b.h2, id: slug(b.h2), items: [] });
+    else if (b.ul && entries.length) entries[entries.length - 1].items.push(...b.ul);
+  }
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const iso = (t) => { const [d, m, y] = t.split(" "); return `${y}-${String(MONTHS.indexOf(m) + 1).padStart(2, "0")}-${d.padStart(2, "0")}T00:00:00Z`; };
+  const abs = (html) => html.replace(/href="\//g, `href="${URL_}/`);
+  return `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>${esc(SITE.name)}: site updates</title>
+<link href="${URL_}${page.path}feed.xml" rel="self"/>
+<link href="${URL_}${page.path}"/>
+<id>${URL_}${page.path}</id>
+<updated>${iso(entries[0].title)}</updated>
+<author><name>${esc(SITE.name)}</name></author>
+${entries.map((e) => `<entry><title>${esc(e.title)}</title><id>${URL_}${page.path}#${e.id}</id><link href="${URL_}${page.path}#${e.id}"/><updated>${iso(e.title)}</updated><content type="html">${esc(abs(`<ul>${e.items.map((x) => `<li>${inline(x)}</li>`).join("")}</ul>`))}</content></entry>`).join("\n")}
+</feed>
+`;
 }
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -98,7 +130,7 @@ function layout({ path, title, seoTitle, description, body, updated, jsonld }) {
 <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/guides.css">
 <script src="/ads.js" defer></script>
-${/class="(msg|checks)"/.test(body) ? '<script src="/guides.js" defer></script>\n' : ""}${jsonld ? [].concat(jsonld).map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>\n`).join("") : ""}</head>
+${path === "/updates/" ? `<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)} updates" href="/updates/feed.xml">\n` : ""}${/class="(msg|checks)"/.test(body) ? '<script src="/guides.js" defer></script>\n' : ""}${jsonld ? [].concat(jsonld).map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>\n`).join("") : ""}</head>
 <body>
 <header class="site-head">
   <div class="wrap head-row">
@@ -189,7 +221,10 @@ ${blocks([{ ad: "guide-end" }])}
   write(`guides/${g.slug}/index.html`, layout({ path, title: g.title, seoTitle: g.seoTitle, description: g.summary, body, updated: g.updated, jsonld }));
   urls.push([path, g.isoDate]);
 }
-for (const e of CALENDAR) write(`calendar/${e.id}.ics`, ics(e));
+for (const e of CALENDAR) write(`calendar/${e.id}.ics`, ics([e]));
+write(`calendar/${CALENDAR_FEED.file}`, ics(CALENDAR, CALENDAR_FEED.name));
+const updatesPage = PAGES.find((p) => p.path === "/updates/");
+write("updates/feed.xml", atom(updatesPage));
 for (const d of DOWNLOADS) write(`downloads/${d.file}`, d.content);
 urls[0][1] = LASTMOD;
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
@@ -198,4 +233,5 @@ ${urls.map(([u, d]) => `  <url><loc>${URL_}${u}</loc>${d ? `<lastmod>${d}</lastm
 </urlset>
 `);
 write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${URL_}/sitemap.xml\n`);
-console.log(`Built ${PAGES.length} pages and ${GUIDES.length} guides into the site root`);
+const drafts = ALL_GUIDES.filter((g) => g.draft).map((g) => g.slug);
+console.log(`Built ${PAGES.length} pages and ${GUIDES.length} guides into the site root${drafts.length ? ` (held back as drafts: ${drafts.join(", ")})` : ""}`);

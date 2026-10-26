@@ -35,6 +35,10 @@
   [headers.values]
     Content-Type = "text/calendar; charset=utf-8"
 [[headers]]
+  for = "/updates/feed.xml"
+  [headers.values]
+    Content-Type = "application/atom+xml; charset=utf-8"
+[[headers]]
   for = "/downloads/*"
   [headers.values]
     Content-Type = "text/csv; charset=utf-8"

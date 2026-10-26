@@ -1,0 +1,40 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Glasto Quick Copy//Glastonbury dates//EN
+CALSCALE:GREGORIAN
+X-WR-CALNAME:Glastonbury 2027 dates
+REFRESH-INTERVAL;VALUE=DURATION:P1D
+X-PUBLISHED-TTL:P1D
+BEGIN:VEVENT
+UID:glastonbury-2027-balance@glastobolt.co.uk
+DTSTAMP:20261026T000000Z
+DTSTART:20270401T080000Z
+DTEND:20270407T225900Z
+SUMMARY:Glastonbury 2027 balance payment window
+DESCRIPTION:Pay the balance for every ticket on glastonbury.seetickets.com
+  between 9am on Thursday 1 April and 11.59pm on Wednesday 7 April 2027\, U
+ K time. Tickets not paid for by then are cancelled. Details: glastobolt.co
+ .uk/guides/deposits-and-balance-payments/
+URL:https://glastobolt.co.uk/guides/glastonbury-2027-key-dates/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Glastonbury 2027 balance payment window
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:glastonbury-2027-festival@glastobolt.co.uk
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20270623
+DTEND;VALUE=DATE:20270628
+SUMMARY:Glastonbury Festival 2027
+DESCRIPTION:Glastonbury Festival runs from Wednesday 23 to Sunday 27 June 
+ 2027. Remember your ticket: it carries your own photo.
+URL:https://glastobolt.co.uk/guides/glastonbury-2027-key-dates/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Glastonbury Festival 2027
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -87,7 +87,7 @@ main { padding-top: 28px; padding-bottom: 40px; }
 .print-btn { min-height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); font: 600 15px var(--sans); cursor: pointer; }
 /* screenshots of the tool, and charts drawn as inline SVG */
 .shot { margin: 16px 0 22px; text-align: center; }
-.shot img { max-width: min(100%, 360px); height: auto; border: 1px solid var(--border); border-radius: 16px; }
+.shot img, .shot video { max-width: min(100%, 360px); height: auto; border: 1px solid var(--border); border-radius: 16px; }
 .shot figcaption, .chart figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; text-align: left; }
 .chart { margin: 12px 0 22px; padding: 14px 12px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
 .chart svg { width: 100%; height: auto; display: block; }

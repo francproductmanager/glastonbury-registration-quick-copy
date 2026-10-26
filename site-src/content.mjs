@@ -26,6 +26,8 @@ const OFFICIAL = {
   resale: ["Glastonbury Festival: 2025 ticket resale FAQ", "https://www.glastonburyfestivals.co.uk/news/2025-ticket-resale-faq/"],
   customer: ["See Tickets: Glastonbury customer service", "https://glastonbury.seetickets.com/customerservice"],
   sunday2025: ["Glastonbury Festival: Sunday ticket terms and conditions 2025 (PDF)", "https://glastonburyfestivals.co.uk/wp-content/uploads/2024/11/Sunday-Ticket-Terms-and-Conditions-2025.pdf"],
+  accom2024: ["Glastonbury Festival: accommodation goes on sale Thursday 28 November (for 2025)", "https://glastonburyfestivals.co.uk/news/accommodation-goes-on-sale-thursday-28th-november/"],
+  accom2023: ["Glastonbury Festival: accommodation goes on sale Friday 1 December (for 2024)", "https://www.glastonburyfestivals.co.uk/news/accommodation-goes-on-sale-friday-1st-december/"],
   dispatch: ["Glastonbury Festival: ticket dispatch information (an earlier festival)", "https://glastonburyfestivals.co.uk/news/ticket-dispatch-information/"],
 };
 // The festival's partner charities, for the volunteering guide
@@ -50,6 +52,8 @@ const NEWS = {
   actionfraud: ["Action Fraud: report fraud and cyber crime", "https://www.actionfraud.police.uk/"],
   timeout2027queue: ["Time Out: Glastonbury 2027 sale time, prices and the new queue system", "https://www.timeout.com/uk/news/glastonbury-tickets-this-weekend-sale-time-prices-queue-guide-100226"],
   indy2025: ["The Independent via AOL: Glastonbury 2025 ticket sale as it happened", "https://aol.com/glastonbury-2025-live-festival-coach-122539691.html"],
+  nationwide2025: ["Nationwide: 1 in 4 snared by ticket scams ahead of the Glastonbury resale (April 2025)", "https://www.nationwide.co.uk/media/news/1-in-4-snared-by-ticket-scams-as-peak-fomo-sets-in-due-to-imminent-glastonbury-resale"],
+  lloydsTickets: ["Lloyds Bank: ticket scams", "https://www.lloydsbank.com/help-guidance/protecting-yourself-from-fraud/ticket-scams.html"],
   radioxTips: ["Radio X: the best tips to buy Glastonbury tickets", "https://radiox.co.uk/festivals/glastonbury/how-to-get-glastonbury-tickets-best-tips-tricks"],
   itv2027: ["ITV News: Glastonbury 2027 tickets sell out in less than 45 minutes", "https://www.itv.com/news/2026-10-04/tickets-for-glastonbury-festival-2027-sell-out-in-less-than-45-minutes"],
 };
@@ -77,6 +81,11 @@ export const CALENDAR = [
   { id: "glastonbury-2027-festival", title: "Glastonbury Festival 2027", start: "2027-06-23", end: "2027-06-28", allDay: true,
     description: "Glastonbury Festival runs from Wednesday 23 to Sunday 27 June 2027. Remember your ticket: it carries your own photo." },
 ];
+
+// The same dates as one calendar to subscribe to: calendar apps check it daily, so a date we
+// add later (like the resale) appears in subscribers' calendars without them doing anything.
+export const CALENDAR_FEED = { file: "glastonbury-2027.ics", name: "Glastonbury 2027 dates" };
+const SUBSCRIBE = "[Subscribe to every Glastonbury 2027 date](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics) instead, and your calendar app checks for changes: new dates, like the resale, appear in your calendar on their own, and nobody needs your email address. On Google Calendar, choose **Other calendars**, then **From URL**, and paste https://glastobolt.co.uk/calendar/glastonbury-2027.ics.";
 
 // Files readers can download, built into /downloads/. CSV rows end in CRLF, as spreadsheets expect.
 const TEMPLATE_HEAD = ["Booking group", "Name", "Registration number", "Registered postcode", "Photo accepted", "Queueing on the day", "Deposit paid back"];
@@ -120,7 +129,7 @@ export const GUIDES = [
       } },
       "Put the two fixed dates straight into your phone's calendar. Each file opens in your calendar app, with a reminder the day before:",
       { calendar: ["glastonbury-2027-balance", "glastonbury-2027-festival"] },
-      "We'll add the resale to this list as soon as the festival announces its date.",
+      SUBSCRIBE,
       { h2: "What a ticket costs" },
       { table: {
         head: ["Item", "2027 price"],
@@ -202,6 +211,39 @@ export const GUIDES = [
     sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.indy2025, NEWS.nme2027, NEWS.gff2024price, NEWS.gff2024, NEWS.gff2024coach, NEWS.wiki2024],
   },
   {
+    // Held back until the festival says anything about 2028 tickets (usually the summer before)
+    draft: true,
+    slug: "glastonbury-2028-tickets",
+    topic: "now",
+    title: "Glastonbury 2028 tickets: when they go on sale and how to prepare",
+    seoTitle: "Glastonbury 2028 tickets: sale dates and how to prepare",
+    summary: "What's known about Glastonbury 2028 tickets, when recent sales have happened, and the steps to take now so your group is ready for the next sale.",
+    updated: CHECKED, isoDate: MODIFIED,
+    body: [
+      "The festival hasn't announced anything about 2028 tickets yet. This page sets out how recent sales have been timed, so you know roughly when to expect it, and what your group can do in advance. We'll update it the day the festival announces the dates.",
+      { h2: "When recent sales have happened" },
+      { table: {
+        head: ["Festival", "Coach sale", "General sale"],
+        rows: [
+          ["2025", "Thursday 14 November 2024", "Sunday 17 November 2024"],
+          ["2027", "Thursday 1 October 2026", "Sunday 4 October 2026"],
+          ["2028", "Not announced", "Not announced"],
+        ],
+      } },
+      "The 2027 sale came earlier in the autumn than the November sales before it. Registration has closed a week or so before each sale, so watch for that date as much as the sale itself. More history is in [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/).",
+      { h2: "What to do now" },
+      { ol: [
+        "**Check every registration** in your group, and update old photos while registration is open. See [how to register](/guides/how-glastonbury-registration-works/).",
+        "**Agree your syndicate**: who's going, who'll queue, and who books whom. See [the syndicate guide](/guides/buying-tickets-for-a-group/).",
+        "**Collect everyone's details** in one place. See [the spreadsheet template](/guides/glastonbury-ticket-spreadsheet-template/).",
+        "**Subscribe to the dates calendar** so the sale dates reach you as soon as we add them.",
+      ] },
+      { cta: "Get your group ready" },
+    ],
+    related: ["glastonbury-ticket-sale-history", "buying-tickets-for-a-group", "how-glastonbury-registration-works"],
+    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, OFFICIAL.tickets],
+  },
+  {
     slug: "how-glastonbury-registration-works",
     topic: "before",
     title: "How to register for Glastonbury: photo, number and deadlines",
@@ -250,16 +292,8 @@ export const GUIDES = [
       { h2: "When does registration reopen?" },
       "Registration is paused around each sale. For 2027, it closed at **5pm on Friday 25 September 2026**, and the festival said it would stay closed until after the autumn sales, with a chance to register again ahead of any resale in the spring. The reopening date hasn't been announced yet. We add it to [the 2027 key dates](/guides/glastonbury-2027-key-dates/) as soon as it is.",
       "If you already have a registration, you don't need a new one for the resale or for the next festival: it carries over. You only need to check that the photo still looks like you and that the details are right while registration is open.",
-      { h2: "Changing your details" },
-      { ul: [
-        "**Your photo:** use the link in your confirmation email, while registration is open. It can't be changed once a booking is linked to your registration.",
-        "**Your postcode:** if you've moved, either update it while registration is open or tell your lead booker the old one. What matters is that the postcode they type matches the registration.",
-        "**Your email address:** keep it one you check, because it's how you get your number back. In 2025, changing the email on a registration that already had a booking needed a request to See Tickets customer service.",
-        "**Deleting it:** the confirmation email also has a link to delete your registration if you no longer want it.",
-      ] },
-      { h2: "Lost your registration number?" },
-      "Use the official **registration lookup** on See Tickets. Enter the email address you registered with and you'll be sent your registration number again, along with the links to manage your details.",
-      "If the lookup finds nothing, try any other email address you might have used. Some people registered for an earlier festival with a work or university address they no longer check.",
+      { h2: "Lost your number, or need to change something?" },
+      "The official **registration lookup** on See Tickets sends your registration number to the email address you registered with, along with links to update your photo and details. What to do if it finds nothing, and how to change your photo, postcode or email, is in [finding or changing your registration](/guides/glastonbury-registration-number-lookup/).",
       { h2: "A five minute check for every friend" },
       "If you're the one organising, ask each person to forward you their latest confirmation email, or send you a screenshot of it. Then check four things:",
       { ol: [
@@ -276,6 +310,51 @@ export const GUIDES = [
     ],
     related: ["buying-tickets-for-a-group", "collect-registration-numbers-from-whatsapp", "glastonbury-2027-resale"],
     sources: [OFFICIAL.tickets, OFFICIAL.register, OFFICIAL.lookup, OFFICIAL.sale2027, OFFICIAL.customer],
+  },
+  {
+    slug: "glastonbury-registration-number-lookup",
+    topic: "before",
+    title: "Lost your Glastonbury registration number? Find or change it",
+    summary: "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, how to check a friend's number, and how to change your photo, postcode or email.",
+    updated: CHECKED, isoDate: MODIFIED,
+    body: [
+      "Your registration number is in the email See Tickets sent when your photo was accepted. If you can't find that email, you don't need to register again: the official **registration lookup** sends your number back to you. This page covers finding it, checking a friend's, and changing the details on your registration.",
+      { h2: "Find your number with the lookup" },
+      { ol: [
+        "Go to the **registration lookup** on glastonbury.seetickets.com. Start from the festival's own website if you want to be sure you're in the right place.",
+        "Enter the email address you registered with.",
+        "Open the email that comes back. It has your registration number, and links to view, edit or delete your registration and to update your photo.",
+        "Copy the number from that email and send it to whoever's organising your group, as text rather than a screenshot.",
+      ] },
+      "If nothing arrives within a few minutes, check your spam and promotions folders before trying again.",
+      { h2: "If the lookup finds nothing" },
+      { ul: [
+        "**Try every email address you might have used.** Many people registered for an earlier festival with a work, university or old personal address. A registration carries over between festivals, so the old one is still the one that counts.",
+        "**Check you were ever accepted.** If your photo was rejected and you didn't try again, there's no registration to find.",
+        "**Register again while registration is open.** For 2027, registration closed on 25 September 2026, and the festival said there would be a chance to register again before any spring resale. See [how to register](/guides/how-glastonbury-registration-works/).",
+      ] },
+      { h2: "Registered twice?" },
+      "If you've registered more than once, use the number from your most recent confirmation email, and make sure that's the one your group has. When organising a group, it's worth asking everyone to forward their latest email rather than retype a number they remember.",
+      { h2: "Checking a friend's number" },
+      "You can't look up someone else's registration: the lookup only emails the address on it. So ask each friend to run the lookup themselves if they're unsure, then send you the number and postcode from that email. On ticket day, the booking page shows each person's name once you enter their number and postcode, which is your final check. See [collecting registration numbers from WhatsApp](/guides/collect-registration-numbers-from-whatsapp/).",
+      { h2: "Changing your details" },
+      { table: {
+        head: ["What", "How", "When"],
+        rows: [
+          ["Your photo", "The update link in your confirmation email", "While registration is open, and only before a booking is linked to your registration"],
+          ["Your postcode", "The edit link in your confirmation email, or tell your lead booker the old one", "While registration is open. What matters is that the postcode typed matches the registration"],
+          ["Your email address", "The edit link in your confirmation email", "While registration is open. In 2025, changing it once a booking was linked needed a request to See Tickets customer service"],
+          ["Deleting your registration", "The delete link in your confirmation email", "Any time you no longer want it"],
+        ],
+      } },
+      "The festival's advice has been to check your registration at least a week before registration closes, so there's time to fix anything.",
+      { h2: "Once you're booked, your photo is fixed" },
+      "You can't change your photo while a booking is linked to your registration, and the photo is printed on your ticket. If your appearance changes a lot before June, contact See Tickets customer service for advice rather than assuming it'll be fine at the gate.",
+      { tip: "Keep your confirmation email in a folder you won't clear out. It's the quickest way to your number next time, and it has the links to change your details." },
+      { cta: "Put your group's numbers on one page" },
+    ],
+    related: ["how-glastonbury-registration-works", "collect-registration-numbers-from-whatsapp", "buying-tickets-for-a-group"],
+    sources: [OFFICIAL.lookup, OFFICIAL.register, OFFICIAL.tickets, OFFICIAL.sale2027, OFFICIAL.customer],
   },
   {
     slug: "buying-tickets-for-a-group",
@@ -983,6 +1062,7 @@ export const GUIDES = [
       { tip: "Ask each person to reply in the group chat with \"PAID\" once their balance is done. The lead booker can then see at a glance who still needs reminding before the 7th." },
       { h2: "Parking and protection" },
       "For 2027, car park passes are sold during the balance window, for general admission ticket holders only. The festival lists them at **£60**, plus £3 postage and packing where bought separately. They can't be added to a ticket and coach booking. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none.",
+      "Campervan pitches, Worthy View and tipis are sold separately: see [campervans, camping and parking](/guides/glastonbury-2027-campervans-and-camping/).",
       "Cancellation protection can also be added while you pay. Read what it covers before buying it: it refunds in certain circumstances, not for any change of plan.",
       { h2: "Straight after booking" },
       { ul: [
@@ -1014,6 +1094,34 @@ export const GUIDES = [
     ],
     related: ["deposits-and-balance-payments", "glastonbury-2027-cost", "glastonbury-2027-key-dates"],
     sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.sale2025, OFFICIAL.dispatch, OFFICIAL.customer, NEWS.radiox2025balance],
+  },
+  {
+    // Held back until the festival announces 2027 dispatch dates (usually in late spring)
+    draft: true,
+    slug: "when-do-glastonbury-tickets-arrive",
+    topic: "after",
+    title: "When do Glastonbury 2027 tickets arrive?",
+    summary: "When Glastonbury 2027 tickets are posted, how coach tickets are handed out, how to check your delivery address, and what to do if your tickets haven't arrived.",
+    updated: CHECKED, isoDate: MODIFIED,
+    body: [
+      "Glastonbury tickets aren't sent when you book. General admission tickets are posted to the address on your booking in the weeks before the festival, and ticket and coach passengers are given their tickets on the coach. The festival hasn't announced 2027 delivery dates yet.",
+      { h2: "General admission tickets" },
+      "For an earlier festival, See Tickets said to expect tickets at least 14 days before the festival started, sent by Royal Mail with a tracking reference you could look up from your See Tickets order. Each ticket carries its holder's photo from their registration, so it only works for that person.",
+      { h2: "Ticket and coach packages" },
+      "If you booked a ticket and coach package, your festival ticket is handed to you on the coach. You won't get one in the post. See [coach tickets](/guides/glastonbury-coach-tickets/).",
+      { h2: "Check your delivery address" },
+      "In 2025, the balance payment page let people change the delivery address for their tickets. If you've moved since booking, sort it out then rather than in June. See [paying the 2027 balance](/guides/got-a-glastonbury-ticket-what-next/).",
+      { h2: "If your tickets haven't arrived" },
+      { ol: [
+        "Check the tracking reference on your See Tickets order, if one has been given.",
+        "Check with anyone at the delivery address who might have taken the post in.",
+        "Contact See Tickets customer service with your order reference.",
+      ] },
+      { h2: "Getting tickets to each person" },
+      "The lead booker usually receives every ticket in the booking. Agree before June how each person will get theirs, and remember you can't swap tickets: each one shows its holder's photo.",
+    ],
+    related: ["got-a-glastonbury-ticket-what-next", "glastonbury-coach-tickets", "deposits-and-balance-payments"],
+    sources: [OFFICIAL.dispatch, OFFICIAL.sale2025, OFFICIAL.customer],
   },
   {
     slug: "deposits-and-balance-payments",
@@ -1079,6 +1187,7 @@ export const GUIDES = [
           ["Ticket and coach package", "The ticket plus a coach fare that depends on the departure town", "Ticket deposit plus the fare in October"],
         ],
       } },
+      "More on each extra, and when they go on sale, is in [campervans, camping and parking](/guides/glastonbury-2027-campervans-and-camping/).",
       "Children who'll be 12 or under when the gates open don't need a ticket, though they do need a coach seat if you travel by coach. See [taking children to Glastonbury](/guides/glastonbury-with-children/).",
       { h2: "A worked example: four friends driving" },
       "Four friends book in one order and share one car. Using the 2027 prices:",
@@ -1139,7 +1248,7 @@ export const GUIDES = [
           ["Where", "Only glastonbury.seetickets.com"],
         ],
       } },
-      "Until the festival publishes the 2027 details, the 2025 resale below is the best guide to how it will run.",
+      "Until the festival publishes the 2027 details, the 2025 resale below is the best guide to how it will run. To have the date land in your calendar the moment we add it, [subscribe to the 2027 dates calendar](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics). It needs no sign-up and no email address.",
       { h2: "Where resale tickets come from" },
       "After the April balance payment window closes, any ticket whose balance wasn't paid is cancelled. Those tickets, plus tickets that were cancelled or returned since the main sale, go back on sale. The festival doesn't say in advance how many there will be, and demand is always far higher than supply.",
       { h2: "When it happens" },
@@ -1296,6 +1405,9 @@ export const GUIDES = [
         "**Returned tickets go back into the official resale**, not to a buyer the original holder chooses.",
       ] },
       "So a ticket bought from a person, a reseller site or a social media post won't get you in, however real it looks.",
+      { h2: "How common ticket scams are" },
+      "Common enough to plan for. In research published just before the 2025 Glastonbury resale, Nationwide found that **1 in 4** people it surveyed had fallen victim to a ticket scam, losing **£82** on average, and that over half would consider buying tickets from questionable sources. Its survey of more than 2,000 people was run by Censuswide in March 2025.",
+      "Banks see the same pattern around every big sell-out. Lloyds Bank says most of the ticket scams reported to it start with fake adverts, posts or listings on social media, that genuine ticket sellers never ask to be paid by bank transfer, and that paying by card gives you more protection if something goes wrong.",
       { h2: "Common scams" },
       { ul: [
         "**\"I can't go, you can have my ticket.\"** Even if the ticket is real, it has someone else's photo on it.",
@@ -1329,7 +1441,7 @@ export const GUIDES = [
       { tip: "If in doubt, start from the official Glastonbury website and follow its links to See Tickets. Never follow a ticket link from a message or an ad." },
     ],
     related: ["glastonbury-2027-resale", "other-ways-to-get-to-glastonbury", "buying-tickets-for-a-group"],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.actionfraud],
+    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.nationwide2025, NEWS.lloydsTickets, NEWS.actionfraud],
   },
   {
     slug: "glastonbury-coach-tickets",
@@ -1454,6 +1566,57 @@ export const GUIDES = [
     sources: [OFFICIAL.y2027, OFFICIAL.sale2025],
   },
   {
+    slug: "glastonbury-2027-campervans-and-camping",
+    topic: "travel",
+    title: "Glastonbury 2027 campervans, Worthy View, tipis and parking",
+    summary: "The extra places to stay and park at Glastonbury 2027: campervan pitches, Worthy View, tipis and car park passes, with 2027 prices where they're published, who can book, and when they've gone on sale.",
+    updated: CHECKED, isoDate: MODIFIED,
+    body: [
+      "A Glastonbury ticket includes camping in the general fields: you bring a tent and pitch it. Everything on this page is an extra, bought separately through See Tickets, and **every option needs a festival ticket first**. Most of them sell out, so it's worth knowing the prices and the rules before they go on sale.",
+      { h2: "The options at a glance" },
+      { table: {
+        head: ["Option", "2027 price", "Who can book", "On sale"],
+        rows: [
+          ["Car park pass", "£60, plus £3 postage where bought separately", "General admission ticket holders, not ticket and coach bookings", "During the balance window, 1 to 7 April 2027"],
+          ["Campervan or caravan pitch", "£225 standard, £350 large (vehicles 8m or longer)", "General admission ticket holders", "Later in the autumn; date not announced yet"],
+          ["Worthy View", "Not published yet", "Holders of a 2027 festival ticket", "Not announced yet"],
+          ["Tipi", "£2,000 for five nights, up to six adults", "Holders of 2027 festival tickets; the price doesn't include them", "Not announced yet"],
+        ],
+      } },
+      "Prices are the festival's own for 2027, from its information page. We'll add the sale dates as soon as they're announced.",
+      { h2: "Campervans and caravans" },
+      "Live-in vehicles go in their own fields, with a **standard pitch at £225** for vehicles under 8m and a **large pitch at £350** for vehicles 8m or longer. Campervan tickets are only for general admission ticket holders: if you booked a ticket and coach package, you can't bring a campervan.",
+      "The festival said 2027 campervan and caravan tickets would go on sale later in the autumn. They have sold out quickly in recent years, so if you're planning one, agree as a group who's booking it and have their card ready before the date is announced.",
+      "There's also an accessible campervan field, which in 2025 had sold out by the time of the spring resale. See [going to Glastonbury with access requirements](/guides/glastonbury-access-requirements/).",
+      { h2: "Worthy View" },
+      "Worthy View is the festival's own campsite on **Pennard Hill, south of the main site**, with tents already put up for you when you arrive, so you only bring your bags. Bedding isn't provided. It's booked only through See Tickets, and you need a valid 2027 festival ticket to book. The 2027 price hasn't been published yet.",
+      { h2: "Tipis" },
+      "For 2027 the festival lists tipis at **£2,000 for five nights**, from Wednesday 23 to Sunday 27 June, for up to six adults. The price doesn't include festival tickets, so everyone staying in a tipi needs their own.",
+      { h2: "Car park passes" },
+      "A car park pass is **£60**, plus £3 postage where it's bought separately, and it's sold during the balance window from 1 to 7 April 2027. It's only for general admission ticket holders. One pass covers one car, so a group sharing a car needs only one. See [paying the 2027 balance](/guides/got-a-glastonbury-ticket-what-next/).",
+      { h2: "When accommodation goes on sale" },
+      "The festival hasn't announced 2027 dates yet. In recent years, its accommodation went on sale in late November or early December, a few weeks after the main ticket sale:",
+      { table: {
+        head: ["Festival", "Accommodation sale"],
+        rows: [
+          ["2024", "Friday 1 December 2023"],
+          ["2025", "Thursday 28 November 2024"],
+          ["2027", "Not announced yet"],
+        ],
+      } },
+      "To hear about new dates without giving anyone your email address, [subscribe to the 2027 dates calendar](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics): we add each date as it's announced, and your calendar app picks it up.",
+      { h2: "Booking as a group" },
+      { ul: [
+        "**Decide who books what** before the sale: one person for the campervan, one for the car park pass. Two people booking the same thing is easy to do and slow to undo.",
+        "**Check everyone has a ticket first.** None of these options gets anyone into the festival on its own.",
+        "**Split the cost per head.** A £60 car park pass shared four ways is £15 each. See [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
+        "**Book the festival's own options through See Tickets.** Be wary of anyone else offering a pitch in the festival's own fields or a car park pass. See [ticket scams](/guides/glastonbury-ticket-scams/).",
+      ] },
+    ],
+    related: ["glastonbury-2027-cost", "glastonbury-coach-tickets", "glastonbury-access-requirements"],
+    sources: [OFFICIAL.info, OFFICIAL.y2027, OFFICIAL.accom2024, OFFICIAL.accom2023, OFFICIAL.resale],
+  },
+  {
     slug: "how-to-use-glasto-quick-copy",
     topic: "tool",
     title: "How to use Glasto Quick Copy, from setup to ticket day",
@@ -1462,6 +1625,7 @@ export const GUIDES = [
     body: [
       "Glasto Quick Copy is a free tool that puts your whole group's registration numbers and postcodes on one page, so when you get through the Glastonbury queue you can tap to copy each one and paste it straight into the booking form.",
       "You don't need an account or an app. It works in the browser on your phone or laptop. You can try it first with made-up people in the [practice demo](/demo). This guide covers everything: setting up, sharing, the booking itself and what to do if something goes wrong.",
+      { video: { src: "/images/guides/tool-demo.mp4", poster: "/images/guides/tool-demo-poster.png", width: 390, height: 700, caption: "The whole thing in 18 seconds, with made-up details: WhatsApp messages pasted in, the details checked, the group saved, then four boxes copied one tap at a time while the progress bar fills." } },
       { h2: "1. Paste your group chat" },
       "Open the tool and choose **Set up your group**. Paste the messages where your friends sent their details, then choose **Review details**. The tool picks out names, registration numbers and postcodes for you.",
       "It understands messages copied from WhatsApp on iPhone and Android, including the date, time and sender at the start of each line, and it ignores chat like \"thanks\" or \"done\". It also reads rows copied from a spreadsheet. It works best when each person's details are together, for example **Alex 1029384756 BS1 4DJ** (made-up details). For how to collect the details in the first place, see [collecting registration numbers from WhatsApp](/guides/collect-registration-numbers-from-whatsapp/).",
@@ -1560,7 +1724,7 @@ export const PAGES = [
     description: "Guides to Glastonbury registration, ticket day, the online queue, buying for a group, deposits, balance payments, resale and coach tickets.",
     lead: "Everything you need to know before, during and after the Glastonbury ticket sale, in plain English. Every guide is checked against official sources and dated.",
     body: [
-      ...TOPICS.flatMap(([id, name, blurb]) => [{ h2: name, id }, blurb, { cards: GUIDES.filter((g) => g.topic === id) }]),
+      ...TOPICS.flatMap(([id, name, blurb]) => [{ h2: name, id }, blurb, { cards: GUIDES.filter((g) => g.topic === id && !g.draft) }]),
       { cta: "Set up your group" },
       { ad: "guides-end" },
     ],
@@ -1682,6 +1846,9 @@ export const PAGES = [
         "**New:** a [free spreadsheet template](/guides/glastonbury-ticket-spreadsheet-template/), [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/) and [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
         "**Expanded:** [registration](/guides/how-glastonbury-registration-works/) now has step by step instructions, when registration reopens and how to change your details; [the queue guide](/guides/how-the-ticket-queue-works/) explains the queue's screens and errors.",
         "**Easier to use:** calendar files for the balance window and the festival, a chart of sell-out times, a tickable and printable checklist, a copy button on every ready-made message, and screenshots of the tool.",
+        "**Also new:** [finding or changing your registration](/guides/glastonbury-registration-number-lookup/), [campervans, camping and parking](/guides/glastonbury-2027-campervans-and-camping/), how common ticket scams are in [the scams guide](/guides/glastonbury-ticket-scams/), and a short video in [the tool guide](/guides/how-to-use-glasto-quick-copy/).",
+        "**Hear about new dates without signing up:** subscribe to [the 2027 dates calendar](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics) and new dates, like the resale, appear in your calendar app. Or follow this page in a feed reader with [its feed](/updates/feed.xml).",
+        "**In the tool:** groups of five or six now show a note that resale bookings have been limited to four people, and a message like \"here's mine! Sam...\" now picks out Sam.",
         "**Six new guides with tips for the current ticket system:** [how to get Glastonbury tickets](/guides/how-to-get-glastonbury-tickets/), [your first go at Glastonbury tickets](/guides/first-time-glastonbury-ticket-day/), [setting up your phone or laptop](/guides/set-up-your-phone-for-ticket-day/), [what to do if checkout fails](/guides/paying-for-glastonbury-tickets/#problems), [collecting registration numbers from WhatsApp](/guides/collect-registration-numbers-from-whatsapp/) and [using Glasto Quick Copy at the front of the queue](/guides/how-to-use-glasto-quick-copy/#ticket-day).",
         "**Updated:** the [ticket day checklist](/guides/ticket-day-checklist/) and [how the queue works](/guides/how-the-ticket-queue-works/) now follow the official 2027 sale FAQ: be in the waiting room at least 10 minutes before the sale, not just a few minutes.",
         "**A new FAQ answer** on whether there's a trick to getting tickets.",
