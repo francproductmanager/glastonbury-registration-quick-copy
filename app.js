@@ -458,6 +458,7 @@
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
   const GUIDE_LINKS = [
+    ["/guides/how-to-get-glastonbury-tickets/", "How to get Glastonbury tickets"],
     ["/guides/glastonbury-2027-key-dates/", "Glastonbury 2027 key dates and prices"],
     ["/guides/resale-and-coach-tickets/", "How the spring resale works"],
     ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
