@@ -8,6 +8,9 @@
   const DEMO = document.body.hasAttribute("data-demo");
   const KEY = "tdqc:pages:v1";
   const MAX_PEOPLE = 6;
+  // The spring resale has allowed fewer people per booking than the main sale (4 in 2025)
+  const RESALE_MAX = 4;
+  const RESALE_NOTE = `Booking in the spring resale? Bookings there have been limited to ${RESALE_MAX} people, so split bigger groups for it.`;
   const MAX_REG_DIGITS = 12;
   const app = document.getElementById("app");
   const toastEl = document.getElementById("toast");
@@ -334,7 +337,7 @@
       h("nav", { class: "foot-links", "aria-label": "Site" },
         [["/guides/", "Guides"], ["/faq/", "FAQ"], ["/about/", "About"], ["/privacy/", "Privacy and cookies"], ["/terms/", "Terms"], ["/contact/", "Contact"]]
           .map(([href, t]) => h("a", { href }, t))),
-      h("p", null, "Not affiliated with Glastonbury Festival or See Tickets."));
+      h("p", null, "Glasto Quick Copy, at glastobolt.co.uk. Not affiliated with Glastonbury Festival or See Tickets."));
   }
   const back = (href, text) => h("a", { class: "back", href }, "‹ " + text);
 
@@ -458,13 +461,14 @@
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
   const GUIDE_LINKS = [
-    ["/guides/how-to-get-glastonbury-tickets/", "How to get Glastonbury tickets"],
+    ["/guides/buying-tickets-for-a-group/", "Glastonbury syndicate: buying as a group"],
+    ["/guides/how-to-get-glastonbury-tickets/", "Glastonbury ticket tips 2027"],
+    ["/guides/glastonbury-2027-resale/", "Glastonbury 2027 resale"],
     ["/guides/glastonbury-2027-key-dates/", "Glastonbury 2027 key dates and prices"],
-    ["/guides/resale-and-coach-tickets/", "How the spring resale works"],
     ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
     ["/guides/how-the-ticket-queue-works/", "How the ticket queue works"],
     ["/guides/ticket-day-checklist/", "Ticket day checklist"],
-    ["/guides/buying-tickets-for-a-group/", "Buying tickets for a group"],
+    ["/guides/glastonbury-ticket-spreadsheet-template/", "Free group spreadsheet template"],
   ];
   function viewHome() {
     const all = loadAll();
@@ -503,7 +507,7 @@
   function homeScreen(...rest) {
     if (!homeEl) homeEl = staticHome || h("div", { class: "view v-home" },
       h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
-      h("h1", { class: "display" }, "Get your group's details ready before ticket day."),
+      h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
       h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."));
     const lead = homeEl.querySelector(":scope > .lead");
     while (lead.nextSibling) lead.nextSibling.remove();
@@ -514,7 +518,7 @@
 
   // ---------- import parser ----------
   // Runs locally on what's pasted; the raw text is never stored.
-  const STOPWORDS = new Set(["reg", "registration", "here", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey",
+  const STOPWORDS = new Set(["reg", "registration", "here", "here's", "heres", "here’s", "is", "my", "number", "no", "num", "postcode", "pc", "and", "the", "its", "mine", "it's", "im", "i'm", "hi", "hey",
     "name", "post", "code", "ref", "it", "this", "that", "for", "me", "you", "your", "our", "his", "her", "their", "of", "to", "at", "on", "in", "a", "an",
     "thanks", "thank", "cheers", "ok", "okay", "yes", "yeah", "lol", "great", "sure", "nice", "done", "same", "as", "too", "also", "please", "pls", "booked", "ticket", "tickets"]);
   const TITLES = new Set(["mr", "mrs", "ms", "miss", "mx", "dr"]);
@@ -631,12 +635,14 @@
     const list = h("div", { class: "section" });
     const banner = h("div", { class: "banner-ok", role: "status", hidden: true });
     const addBtn = h("button", { type: "button", class: "add-person", onclick: () => { addRow({}); changed(); } });
+    const resaleHint = h("p", { class: "help resale-note", hidden: true }, RESALE_NOTE);
     const backLink = id ? back("#/p/" + id, "Back") : setup.edited ? back("#/", "Back") : back("#/new", "Back to messages");
 
     function renumber() {
       rows.forEach((r, i) => { r.title.textContent = `Person ${i + 1}`; });
       addBtn.disabled = rows.length >= MAX_PEOPLE;
       addBtn.textContent = rows.length >= MAX_PEOPLE ? `${MAX_PEOPLE} people max per booking` : "+ Add someone";
+      resaleHint.hidden = rows.length <= RESALE_MAX;
     }
     // Keep the setup's rows in step with the screen. After the first change, going back to the
     // messages is no longer offered (the phone's back button lands here again, see viewCreate).
@@ -701,7 +707,7 @@
       backLink,
       h("h1", null, id ? "Edit group" : "Check your group's details"),
       id ? null : h("p", { class: "help" }, "Correct anything that needs changing, or add people manually."),
-      list, addBtn, banner, save].filter(Boolean));
+      list, addBtn, resaleHint, banner, save].filter(Boolean));
     return wrap;
   }
 
@@ -805,7 +811,8 @@
       DEMO ? h("div", { class: "demo-banner" }, "Demo with made-up people. Nothing is saved.") : null,
       savedNote,
       back(DEMO ? "./" : "#/", DEMO ? "Make your own" : "All groups"),
-      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form.")),
+      h("div", null, h("h1", { class: "day" }, firstNames(people)), h("p", { class: "subtitle" }, "Tap a number or postcode to copy it, then paste it into the ticket form."),
+        people.length > RESALE_MAX ? h("p", { class: "help resale-note" }, RESALE_NOTE) : null),
       h("div", { class: "stats" + (wakeCard ? "" : " single") }, progress, wakeCard),
       cards,
       finish,

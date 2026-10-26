@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Glasto Quick Copy//Glastonbury dates//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:glastonbury-2027-festival@glastobolt.co.uk
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20270623
+DTEND;VALUE=DATE:20270628
+SUMMARY:Glastonbury Festival 2027
+DESCRIPTION:Glastonbury Festival runs from Wednesday 23 to Sunday 27 June 
+ 2027. Remember your ticket: it carries your own photo.
+URL:https://glastobolt.co.uk/guides/glastonbury-2027-key-dates/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Glastonbury Festival 2027
+END:VALARM
+END:VEVENT
+END:VCALENDAR
