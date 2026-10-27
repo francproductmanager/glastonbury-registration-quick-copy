@@ -366,6 +366,27 @@ await test("Guides have real depth: 18 or more articles of 700+ words with sourc
     assert(/Last checked \d+ \w+ \d{4}/.test(text), `${relative(ROOT, f)}: no date`);
   }
 });
+// The weekly SEO agents (site-src/SEO-AUDITOR.md) add guides; these keep new ones distinct and substantial
+const FIRST_GUIDES = ["glastonbury-2027-key-dates", "glastonbury-ticket-sale-history", "next-glastonbury-ticket-sale", "how-glastonbury-registration-works", "glastonbury-registration-number-lookup", "buying-tickets-for-a-group", "glastonbury-ticket-spreadsheet-template", "group-chat-messages", "glastonbury-ticket-glossary", "first-time-glastonbury-ticket-day", "collect-registration-numbers-from-whatsapp", "how-to-get-glastonbury-tickets", "ticket-day-checklist", "how-the-ticket-queue-works", "paying-for-glastonbury-tickets", "set-up-your-phone-for-ticket-day", "got-a-glastonbury-ticket-what-next", "when-do-glastonbury-tickets-arrive", "deposits-and-balance-payments", "glastonbury-2027-cost", "glastonbury-2027-resale", "other-ways-to-get-to-glastonbury", "glastonbury-volunteering-2027", "glastonbury-ticket-scams", "glastonbury-coach-tickets", "glastonbury-access-requirements", "glastonbury-with-children", "glastonbury-2027-campervans-and-camping", "how-to-use-glasto-quick-copy"];
+await test("Every guide targets its own search phrase; guides added since launch have 900+ words", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const seen = new Map();
+  for (const g of GUIDES) {
+    const t = String(g.target || "").trim().toLowerCase().replace(/\s+/g, " ");
+    assert(t, `${g.slug}: no target search phrase`);
+    assert(!seen.has(t), `${g.slug} and ${seen.get(t)} both target "${t}"`);
+    seen.set(t, g.slug);
+    if (FIRST_GUIDES.includes(g.slug) || g.draft) continue;
+    const text = readFileSync(join(ROOT, "guides", g.slug, "index.html"), "utf8").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
+    const words = text.split(/\s+/).filter(Boolean).length;
+    assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
+  }
+});
+await test("SEO audit backlog items each cite a source", () => {
+  const audit = readFileSync(join(ROOT, "site-src", "seo-audit.md"), "utf8").replace(/\r/g, "");
+  const backlog = (audit.split(/^## Backlog$/m)[1] || "").split(/^## /m)[0];
+  for (const item of backlog.split("\n").filter(l => /^\d+\.\s/.test(l))) assert(/Source: https:\/\/\S+/.test(item), `backlog item without "Source: https://...": ${item.slice(0, 80)}`);
+});
 await test("Ad slots sit where we chose: 3 per guide, none on privacy, terms, contact or 404", () => {
   const slots = f => [...readFileSync(join(ROOT, f), "utf8").matchAll(/data-slot="([a-z-]+)"/g)].map(m => m[1]);
   for (const f of sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(ROOT, f).replace(/\\/g, "/")))) eq(slots(relative(ROOT, f)), ["guide-top", "guide-mid", "guide-end"], relative(ROOT, f));
