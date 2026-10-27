@@ -47,6 +47,13 @@ function gate(pr) {
   if (pr.head.repo?.full_name !== REPO) stop("from a fork, never merged");
   if ((author === BOT) !== (role.author === BOT)) stop(`opened by ${author}, never merged (a canary, or not the expected agent)`);
   if (pr.draft) stop("still a draft");
+  // GitHub holds test runs on pull requests GitHub Actions opened (the search data) for approval, and a
+  // held run blocks the merge even after the gate's own test run passes: approve them, then decide next time
+  if (author === BOT) {
+    const held = api(`${R}/actions/runs?head_sha=${head}&status=action_required`).workflow_runs;
+    for (const r of held) run("gh", ["api", "-X", "POST", `${R}/actions/runs/${r.id}/approve`]);
+    if (held.length) stop(`approved ${held.length} held test run(s); merging once they pass`);
+  }
 
   const checks = api(`${R}/commits/${head}/check-runs?check_name=test`).check_runs.map((c) => c.conclusion);
   if (!checks.length || !checks.every((c) => c === "success")) stop(`the test check hasn't passed on ${head}`);
