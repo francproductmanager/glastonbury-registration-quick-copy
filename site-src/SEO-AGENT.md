@@ -6,7 +6,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 ## Before you start (both runs)
 
-1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` in full. The reviewers check your work against all of them.
+1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` and `site-src/facts.mjs` in full. The reviewers check your work against all of them.
 2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit (statuses `seo-review/a` and `seo-review/b`), with their comments. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
 
 ## The fix run (3pm)
@@ -19,7 +19,12 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 1. If an open writer pull request failed review, fix it as the fix run would, and do nothing new this run.
 2. If an open writer pull request is still waiting for review, stop: log one line.
-3. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
+3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create the branch `seo-agent/<today>` from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
+4. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
+
+### Facts
+
+Every changeable date, price or age lives once in `site-src/facts.mjs`, with its source, when it was `checked` and when it must be rechecked (`recheckBy`). In the guides, write `{{fact:key}}` instead of typing the value: a test fails if a guide types one out. To change a fact, open its source, update `value` and set `checked` to today (and `recheckBy` if the source gives a new date), then fix any guide sentence built on it (sums like "four tickets at", or a sentence that has become past tense). A newly announced fact or ticket moment (resale dates, the access form) goes in `facts.mjs` with its source first. A test fails your work if any fact is past its `recheckBy` date.
 
 ### Refreshing and fixing guides
 
@@ -48,9 +53,9 @@ You never publish anything yourself. Two independent reviewers check your pull r
 2. `node scripts/check-personal-data.mjs`
 3. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
 4. If nothing changed, stop: no pull request.
-5. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers ignore pull requests whose latest commit is under 10 minutes old, and anything still a draft. Don't push to an open pull request again in the same run titled `SEO writer: <today>`, describing in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+5. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today>` and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
 6. Don't merge, don't label, don't set statuses.
 
 ## Files you may change
 
-`site-src/content.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `calendar/`, `downloads/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or code. Links may only go to sites listed in `tests/allowed-link-domains.txt` (a test checks). If the best source is on a site that isn't listed, don't use it: say in your log which site and why, and the owner can add it. Anything else and the merge workflow refuses it.
+`site-src/content.mjs`, `site-src/facts.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `calendar/`, `downloads/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or code. Links may only go to sites listed in `tests/allowed-link-domains.txt` (a test checks). If the best source is on a site that isn't listed, don't use it: say in your log which site and why, and the owner can add it. Anything else and the merge workflow refuses it.

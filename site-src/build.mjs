@@ -7,6 +7,16 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SITE, PAGES, GUIDES as ALL_GUIDES, TOPICS, CALENDAR, CALENDAR_FEED, DOWNLOADS, LASTMOD } from "./content.mjs";
 import { safeUrl } from "./safe-url.mjs";
+import { FACTS } from "./facts.mjs";
+
+// Changeable facts live once in facts.mjs; the content refers to them as {{fact:key}}
+function fillFacts(x) {
+  for (const k of Object.keys(x)) {
+    if (typeof x[k] === "string") x[k] = x[k].replace(/\{\{fact:(\w+)\}\}/g, (_, key) => { if (!FACTS[key]) throw new Error(`unknown fact "${key}" in site-src/content.mjs`); return FACTS[key].value; });
+    else if (x[k] && typeof x[k] === "object") fillFacts(x[k]);
+  }
+}
+for (const part of [ALL_GUIDES, PAGES, CALENDAR, DOWNLOADS]) fillFacts(part);
 
 // A guide marked draft: true is kept in content.mjs but not published, so it can wait for the
 // festival's own announcement and go live by deleting one line.

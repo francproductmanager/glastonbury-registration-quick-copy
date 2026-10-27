@@ -96,5 +96,9 @@ mkdirSync(join(OUT, "archive"), { recursive: true });
 writeFileSync(join(OUT, "scorecard.csv"), csv(rows));
 writeFileSync(join(OUT, "unmatched-queries.csv"), csv(unmatched) || "query,impressions_28d,clicks_28d,position_28d,flags\n");
 writeFileSync(join(OUT, "archive", `${day(0)}.csv`), csv(pageQueries.map((q) => ({ ...q, ctr: q.ctr.toFixed(4), position: q.position.toFixed(1) }))) || "page,query,clicks,impressions,ctr,position\n");
-writeFileSync(join(OUT, "meta.json"), JSON.stringify({ generated: day(0), period: { start, end }, previous: { start: prevStart, end: prevEnd }, property: PROPERTY, min_impressions_for_flags: MIN_IMPRESSIONS }, null, 2) + "\n");
+// The site's main measure: search clicks across every page (the site lives on ad views from search traffic)
+const sum = (list, k) => list.reduce((t, r) => t + r[k], 0);
+const traffic = { clicks_28d: sum(pages, "clicks"), impressions_28d: sum(pages, "impressions"), clicks_prev_28d: sum(prevPages, "clicks"), impressions_prev_28d: sum(prevPages, "impressions") };
+traffic.clicks_change_pct = traffic.clicks_prev_28d ? Math.round(((traffic.clicks_28d - traffic.clicks_prev_28d) / traffic.clicks_prev_28d) * 100) : null;
+writeFileSync(join(OUT, "meta.json"), JSON.stringify({ generated: day(0), period: { start, end }, previous: { start: prevStart, end: prevEnd }, property: PROPERTY, min_impressions_for_flags: MIN_IMPRESSIONS, traffic }, null, 2) + "\n");
 console.log(`Scorecard for ${rows.length} guides, ${unmatched.length} unmatched searches, ${start} to ${end}`);
