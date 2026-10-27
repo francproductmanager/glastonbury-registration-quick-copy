@@ -45,9 +45,12 @@ Mark every item pass or fail, with a reason.
 You never edit the branch: any commit would need reviewing again. Post one comment, then set one status.
 
 1. Comment on the pull request, starting with the line `SEO review <a or b>: PASS for <full sha>` (or `FAIL`), followed by the checklist. On a fail, say exactly what is wrong and what would fix it.
-2. Record the verdict on that exact commit:
-   `gh api repos/francproductmanager/glastonbury-registration-quick-copy/statuses/<sha> -f state=success -f context=seo-review/<a or b> -f description="Passed SEO review"`
-   (or `state=failure` with a short reason as the description).
+2. Record the verdict on that exact commit, signed. Your cloud environment holds a signing key in `REVIEW_SIGNING_KEY`; the writer's doesn't, which is how the merge gate knows a pass came from a reviewer. Never print the key or write it anywhere.
+   ```
+   sig=$(printf '%s' "seo-review/<a or b>:<sha>:success" | openssl dgst -sha256 -hmac "$REVIEW_SIGNING_KEY" | awk '{print $NF}')
+   gh api repos/francproductmanager/glastonbury-registration-quick-copy/statuses/<sha> -f state=success -f context=seo-review/<a or b> -f description="Passed SEO review sig=$sig"
+   ```
+   For a fail, use `failure` in both places and a short reason before `sig=`. If `REVIEW_SIGNING_KEY` is empty, record the status without `sig=` and say so in your final message.
 
 Pass only if every item passes. Anything about facts, trust, personal data or changes beyond guide content is an automatic fail. Never pass work you haven't fully checked. If you can't post the status, say so in your final message and do not try any other way of approving.
 

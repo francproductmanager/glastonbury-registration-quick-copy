@@ -5,14 +5,26 @@
 //   it only changes files that agent may touch
 //   writer work: reviewer a passed the reviewed commit (and reviewer b too if it adds a guide), and any
 //     commits since are only this gate's own merges of main with nothing else changed
-//   if SEO_REVIEWER_LOGIN is set, those passes were recorded by that account (the reviewers' own identity)
+//   if REQUIRE_SIGNED_REVIEWS is "true", each pass carries a signature made with REVIEW_SIGNING_KEY, which only
+//     the reviewers' own cloud environment holds: every agent acts on GitHub as the owner, so this is what
+//     stops the writer recording a pass for its own work
 //   it is up to date with main; if not, the gate merges main in, reruns the tests, and decides next time
 // It never merges a writer branch opened by GitHub Actions: that is the monthly reviewer canary.
 // With SHA set it checks the pull request at that commit; without, it sweeps every open agent pull
 // request (hourly), because tests started by a workflow don't send the signal that would wake it.
 import { execFileSync } from "node:child_process";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
-const REPO = process.env.REPO, R = `repos/${REPO}`, REVIEWER = process.env.SEO_REVIEWER_LOGIN || "";
+const REPO = process.env.REPO, R = `repos/${REPO}`;
+const SIGNED = process.env.REQUIRE_SIGNED_REVIEWS === "true", KEY = process.env.REVIEW_SIGNING_KEY || "";
+if (SIGNED && !KEY) throw new Error("REQUIRE_SIGNED_REVIEWS is on but the REVIEW_SIGNING_KEY secret is missing");
+// A reviewer signs "<context>:<commit sha>:<state>" and puts sig=<hex> in the status description
+const signedBy = (s, sha) => {
+  const sig = (s.description || "").match(/sig=([0-9a-f]{64})/)?.[1];
+  if (!sig) return false;
+  const want = createHmac("sha256", KEY).update(`${s.context}:${sha}:${s.state}`).digest();
+  return timingSafeEqual(Buffer.from(sig, "hex"), want);
+};
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8", maxBuffer: 64 << 20 }).trim();
 const api = (path, ...args) => JSON.parse(run("gh", ["api", path, ...args]) || "null");
 const all = (path) => JSON.parse(run("gh", ["api", "--paginate", "--slurp", path])).flat();
@@ -56,13 +68,13 @@ function gate(pr) {
     const reviewed = commits[i].sha;
     const need = ["seo-review/a"];
     if (files.some((f) => f.status === "added" && /^guides\/[^/]+\/index\.html$/.test(f.filename))) need.push("seo-review/b");
-    // Newest status first; with a reviewer identity configured, only its statuses count
+    // Newest status first; with signed reviews required, unsigned or forged statuses don't count
     const latest = {};
     for (const s of all(`${R}/commits/${reviewed}/statuses?per_page=100`)) {
-      if (REVIEWER && s.creator?.login !== REVIEWER) continue;
+      if (SIGNED && !signedBy(s, reviewed)) continue;
       latest[s.context] ??= s.state;
     }
-    for (const c of need) if (latest[c] !== "success") stop(`waiting for reviewer pass ${c} on ${reviewed}${REVIEWER ? ` from ${REVIEWER}` : ""}`);
+    for (const c of need) if (latest[c] !== "success") stop(`waiting for ${SIGNED ? "a signed " : ""}reviewer pass ${c} on ${reviewed}`);
     if (reviewed !== head) {
       // Only main merged in since the review: the change this pull request makes must be exactly what was reviewed
       const diff = (a, b) => run("git", ["diff", "-U0", "--no-color", a, b]).split("\n").filter((l) => !/^(index |@@)/.test(l)).join("\n");

@@ -42,5 +42,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           SHA: ${{ github.event.workflow_run.head_sha || github.event.sha }} # empty on the hourly sweep: check every open agent pull request
-          SEO_REVIEWER_LOGIN: ${{ vars.SEO_REVIEWER_LOGIN }} # when set, only that account's review passes count
+          REQUIRE_SIGNED_REVIEWS: ${{ vars.REQUIRE_SIGNED_REVIEWS }} # "true": review passes must be signed by the reviewers' own key
+          REVIEW_SIGNING_KEY: ${{ secrets.REVIEW_SIGNING_KEY }}
         run: node scripts/seo-merge-gate.mjs
