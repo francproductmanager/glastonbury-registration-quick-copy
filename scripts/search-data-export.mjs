@@ -1,10 +1,10 @@
 // Weekly Search Console export for the SEO agents (see site-src/SEO-AUDITOR.md).
 // Run by .github/workflows/search-data-export.yml. Plain code: the agents never hold Google credentials.
-//   GSC_SA_KEY   the service account's JSON key (a GitHub secret)
-//   GSC_SITE     the Search Console property, e.g. sc-domain:glastobolt.co.uk
+//   GSC_ACCESS_TOKEN  a short-lived read-only Google token for the gsc-reader service account, which the
+//                     workflow gets through Workload Identity Federation: no key file exists anywhere
+//   GSC_SITE          the Search Console property, e.g. sc-domain:glastobolt.co.uk
 // Writes site-src/data/scorecard.csv (one row per guide, with flags the auditor acts on),
 // unmatched-queries.csv, meta.json and archive/<date>.csv (Search Console only keeps 16 months).
-import { createSign } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
@@ -13,21 +13,10 @@ import { GUIDES, SITE } from "../site-src/content.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "site-src", "data");
-const KEY = JSON.parse(process.env.GSC_SA_KEY);
 const PROPERTY = process.env.GSC_SITE || "sc-domain:glastobolt.co.uk";
 const MIN_IMPRESSIONS = 100; // below this, numbers swing too much to judge
-
-const b64 = (s) => Buffer.from(s).toString("base64url");
-async function token() {
-  const now = Math.floor(Date.now() / 1000);
-  const claim = { iss: KEY.client_email, scope: "https://www.googleapis.com/auth/webmasters.readonly", aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 };
-  const unsigned = `${b64(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${b64(JSON.stringify(claim))}`;
-  const jwt = `${unsigned}.${createSign("RSA-SHA256").update(unsigned).sign(KEY.private_key, "base64url")}`;
-  const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion: jwt }) });
-  if (!r.ok) throw new Error(`Google sign in failed: ${r.status} ${await r.text()}`);
-  return (await r.json()).access_token;
-}
-const auth = await token();
+const auth = process.env.GSC_ACCESS_TOKEN;
+if (!auth) throw new Error("No Google token: GSC_ACCESS_TOKEN is empty");
 
 // Every row for the given dimensions and dates, following pages of 25,000
 async function query(dimensions, startDate, endDate) {
