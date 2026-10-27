@@ -382,6 +382,26 @@ await test("Every guide targets its own search phrase; guides added since launch
     assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
   }
 });
+await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
+  const src = readFileSync(join(ROOT, "site-src", "content.mjs"), "utf8");
+  for (const [re, what] of [[/<\s*(script|iframe|object|embed|form|style|link|meta)\b/i, "an HTML tag that runs or embeds something"], [/\bon[a-z]+\s*=/i, "an inline event handler"],
+    [/javascript:|vbscript:|data:[a-z]+\//i, "a script or data URL"], [/^\s*import\b|\bimport\s*\(|\brequire\s*\(|\beval\s*\(|new Function|\bfetch\s*\(|\bglobalThis\b|\b(?:process|document|window)\.[a-zA-Z]/m, "code that reaches outside the data"]]) {
+    const m = src.match(re);
+    assert(!m, `content.mjs contains ${what}: ${m && m[0]}`);
+  }
+  const exported = [...src.matchAll(/^export\s+const\s+(\w+)/gm)].map((m) => m[1]).sort();
+  eq(exported, ["CALENDAR", "CALENDAR_FEED", "DOWNLOADS", "GUIDES", "LASTMOD", "PAGES", "SITE", "TOPICS"], "content.mjs exports");
+  assert(!/^export\s+(?!const\s)/m.test(src), "content.mjs exports something other than data");
+  const allowed = readFileSync(join(ROOT, "tests", "allowed-link-domains.txt"), "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  const bad = [...new Set([...src.matchAll(/(?:https?|webcal):\/\/([^/\s"'`)\]]+)/gi)].map((m) => m[1].toLowerCase()))].filter((h) => !allowed.some((d) => h === d || h.endsWith("." + d)));
+  assert(!bad.length, `links to sites not in tests/allowed-link-domains.txt: ${bad.join(", ")}`);
+});
+await test("The SEO audit plans from fresh search data (once Search Console is connected)", () => {
+  const meta = join(ROOT, "site-src", "data", "meta.json");
+  if (!existsSync(meta) || !String(process.env.GITHUB_HEAD_REF || "").startsWith("seo-audit/")) return;
+  const days = (Date.now() - Date.parse(JSON.parse(readFileSync(meta, "utf8")).generated)) / 864e5;
+  assert(days <= 8, `search data missing: site-src/data was last exported ${Math.floor(days)} days ago`);
+});
 await test("SEO audit backlog items each cite a source", () => {
   const audit = readFileSync(join(ROOT, "site-src", "seo-audit.md"), "utf8").replace(/\r/g, "");
   const backlog = (audit.split(/^## Backlog$/m)[1] || "").split(/^## /m)[0];

@@ -1,0 +1,57 @@
+name: Search data export
+
+# Every Sunday morning, before the SEO auditor's 6pm run, this pulls real search numbers from Google
+# Search Console into site-src/data/ (scripts/search-data-export.mjs) and opens a pull request that the
+# merge gate publishes once the tests pass. Plain code: no agent ever holds the Google credential.
+# Does nothing until the owner adds the GSC_SA_KEY secret to the "search-data" environment.
+on:
+  schedule:
+    - cron: "0 5 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+  issues: write
+
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: search-data # the credential lives only in this environment
+    steps:
+      - name: Check Search Console is connected
+        id: ready
+        env:
+          KEY: ${{ secrets.GSC_SA_KEY }}
+        run: if [ -n "$KEY" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::Search Console isn't connected yet (no GSC_SA_KEY secret), so there is nothing to export."; fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.ready.outputs.ok == 'true'
+        with:
+          fetch-depth: 0 # first published dates come from git history
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.ready.outputs.ok == 'true'
+        with:
+          node-version: 22
+      - name: Export and open a pull request
+        if: steps.ready.outputs.ok == 'true'
+        env:
+          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+          GSC_SITE: ${{ vars.GSC_SITE }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/search-data-export.mjs
+          today=$(date -u +%Y-%m-%d); branch="seo-data/$today"
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"; git add site-src/data
+          git commit -q -m "Search data for the week to $today"
+          git push -q origin "$branch"
+          gh pr create --base main --head "$branch" --title "Search data: $today" --body "This week's Search Console numbers for the SEO auditor. Data files only."
+          # Pushes by this workflow don't start other workflows, so start the tests for the merge gate
+          gh workflow run test.yml --ref "$branch"
+      - name: Report a failed export
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --repo "${{ github.repository }}" --title "Search data export failed" --body "This week's Search Console export failed, so the SEO auditor would plan from old data. See ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

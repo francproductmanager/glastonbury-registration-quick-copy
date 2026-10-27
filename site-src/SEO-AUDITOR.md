@@ -10,12 +10,14 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | Monday, Wednesday, Saturday 11am and 8pm | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
 | When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs review a, plus review b if it adds a guide |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
+| Sunday 5am UTC | Search data export (not AI) | | `site-src/data/`: Search Console numbers per guide, once the owner has connected Search Console |
 
 Files the agents share:
 
 - `site-src/seo-owner-priorities.md`: the owner's own priorities. **No agent may change it.** The merge workflow refuses any pull request that does.
 - `site-src/seo-audit.md`: the audit, written only by the auditor. The writer works from its backlog.
 - `site-src/log/`: one file per run, named `<date>-<role>.md`, so runs never conflict.
+- `site-src/data/`: real search data from Google Search Console, written each Sunday morning by plain code (no agent ever holds Google credentials). `scorecard.csv` has one row per guide with clicks, impressions, click rate, position, trend, top searches and flags; `unmatched-queries.csv` lists searches that bring people to the site with no guide that answers them.
 
 ## Rules for every agent
 
@@ -37,7 +39,8 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
 
 ### Each run
 
-1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, every file in `site-src/log/` from the last 14 days, and `site-src/content.mjs` in full.
+1. If `site-src/data/scorecard.csv` exists, read it first, with `unmatched-queries.csv` and `meta.json`. Real search data outranks your judgement. If `meta.json` says the data is more than 8 days old, say "search data missing" at the top of the audit and your pull request.
+   Then read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, every file in `site-src/log/` from the last 14 days, and `site-src/content.mjs` in full.
 2. **Look back at the week.** Read the merged and open pull requests from `seo-agent/` branches (the last 20, with `state=all`) and the reviewers' comments on them. Move finished backlog items to Done, with the date and pull request. Turn every reviewer failure into a backlog item.
 3. **Recheck everything published this week** against its sources, by opening them. Anything wrong becomes an Urgent item at the top.
 4. **Audit every guide** and the FAQ, and update its row in the inventory:
@@ -53,6 +56,23 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
    `N. Type: what to do, and why it matters to searchers. Target: "phrase" (Missing items only). Source: https://...`
    Every item must cite a source that justifies it (a test checks). Owner priorities come first, in the owner's order, unless something is Urgent.
 7. Write your log to `site-src/log/<today>-auditor.md`: what you audited and the biggest findings.
+
+### Using the search data
+
+The export flags guides with enough data to judge (100+ impressions in 28 days, except where noted). Turn each flag into a backlog item that names the flag and the numbers behind it:
+
+| Flag | Meaning | Backlog item |
+|---|---|---|
+| LOW_CTR | Seen often but clicked far less than other guides at that position | Optimise: rewrite title and summary |
+| STRIKING_DISTANCE | Average position 8 to 20 | Change: strengthen the content and internal links |
+| DECLINING | Clicks down 30% or more on the previous 28 days | Change: refresh facts, check what now ranks above it |
+| CANNIBAL | Two guides get impressions for the same top search | Change: give each a clearly different focus, or merge them |
+| NO_TRACTION | 6 to 8 weeks old with under 50 impressions | Change: improve it, or recommend retiring it |
+| GAP (in `unmatched-queries.csv`) | A search that reaches the site with no guide answering it | Missing: a new guide candidate |
+
+After wrong facts and upcoming deadlines, order the backlog by the clicks each item could realistically gain.
+
+**Cadence:** if more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, write `New guides this week: 2` (or `1` if it was already 2) at the top of the backlog, and say why. Go back up one step a week once that share drops below half. With no line, the writer's target is three. The writer must not write more new guides in a week than this line allows.
 
 ### Priorities, in order
 

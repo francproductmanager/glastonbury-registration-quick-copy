@@ -1,0 +1,41 @@
+# Websites the guides may link to (site-src/content.mjs). A subdomain of a listed site is allowed too.
+# The SEO agents can't change this file; the owner adds a site here when an agent's log asks for one.
+
+# This site and the festival
+glastobolt.co.uk
+glastonburyfestivals.co.uk
+seetickets.com
+
+# News and festival coverage
+glastofestfeed.com
+nme.com
+radiox.co.uk
+timeout.com
+itv.com
+bbc.co.uk
+theguardian.com
+independent.co.uk
+standard.co.uk
+aol.com
+wikipedia.org
+criplife.co.uk
+
+# Charities, banks, fraud and official bodies
+oxfam.org.uk
+wateraid.org
+greenpeace.org.uk
+nationwide.co.uk
+lloydsbank.com
+actionfraud.police.uk
+ico.org.uk
+gov.uk
+nationalrail.co.uk
+
+# Help pages for phones, apps and the site's own services
+apple.com
+google.com
+whatsapp.com
+github.com
+netlify.com
+aboutads.info
+youronlinechoices.eu
