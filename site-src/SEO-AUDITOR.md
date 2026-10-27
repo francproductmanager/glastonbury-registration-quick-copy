@@ -24,6 +24,12 @@ Files the agents share:
 - UK English. **No middle dots, en dashes or em dashes**, anywhere. No real names, registration numbers or postcodes.
 - Get today's date with `date -u +%Y-%m-%d` and always start from the latest `main`.
 - If what your playbook needs isn't there (no pull request to review, nothing to fix), write one log line saying so and stop.
+- **GitHub in the cloud:** `gh pr ...` commands don't work there (GitHub's GraphQL API is blocked). Use the REST API through `gh api`, with `R=repos/francproductmanager/glastonbury-registration-quick-copy`:
+  - list pull requests: `gh api "$R/pulls?state=open&per_page=50" --jq '.[] | "(.number) (.head.ref) (.head.sha) (.draft)"'` (use `state=all` for recent history)
+  - open one: `gh api $R/pulls -f title="..." -f head=<branch> -f base=main -f body="..."`
+  - comment: `gh api $R/issues/<number>/comments -f body="..."`; read comments: `gh api $R/issues/<number>/comments`
+  - close one: `gh api -X PATCH $R/pulls/<number> -f state=closed`
+  - statuses on a commit: `gh api $R/commits/<sha>/status`
 
 ## The auditor
 
@@ -32,7 +38,7 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
 ### Each run
 
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, every file in `site-src/log/` from the last 14 days, and `site-src/content.mjs` in full.
-2. **Look back at the week.** Read the merged and open pull requests from `seo-agent/` branches (`gh pr list --state all --limit 20`) and the reviewers' comments on them. Move finished backlog items to Done, with the date and pull request. Turn every reviewer failure into a backlog item.
+2. **Look back at the week.** Read the merged and open pull requests from `seo-agent/` branches (the last 20, with `state=all`) and the reviewers' comments on them. Move finished backlog items to Done, with the date and pull request. Turn every reviewer failure into a backlog item.
 3. **Recheck everything published this week** against its sources, by opening them. Anything wrong becomes an Urgent item at the top.
 4. **Audit every guide** and the FAQ, and update its row in the inventory:
    - The target search phrase (the `target` field) and intent (know, do or decide). Flag guides whose intent overlaps another's, even if the phrases differ.
