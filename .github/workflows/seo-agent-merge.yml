@@ -55,7 +55,7 @@ jobs:
           case "$branch" in
             seo-audit/*) allowed='^(site-src/seo-audit\.md|site-src/log/[0-9]{4}-[0-9]{2}-[0-9]{2}-auditor\.md)$' ;;
             seo-agent/*)
-              allowed='^(site-src/content\.mjs|site-src/log/[0-9]{4}-[0-9]{2}-[0-9]{2}-writer[0-9a-z-]*\.md|(guides|faq|about|contact|privacy|terms|updates)/.+|404\.html|sitemap\.xml|robots\.txt)$'
+              allowed='^(site-src/content\.mjs|site-src/log/[0-9]{4}-[0-9]{2}-[0-9]{2}-writer[0-9a-z-]*\.md|(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\.html|sitemap\.xml|robots\.txt)$'
               need="seo-review/a"
               if printf '%s\n' "$files" | grep -Eq '^added guides/[^/]+/index\.html$'; then need="$need seo-review/b"; fi
               states=$(gh api "repos/$REPO/commits/$head/status" --jq '.statuses[] | "\(.context)=\(.state)"')

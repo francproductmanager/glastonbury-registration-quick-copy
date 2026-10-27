@@ -37,7 +37,8 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
 4. **Audit every guide** and the FAQ, and update its row in the inventory:
    - The target search phrase (the `target` field) and intent (know, do or decide). Flag guides whose intent overlaps another's, even if the phrases differ.
    - Word count, last checked date, internal links in and out.
-   - Title 65 characters or fewer, summary 110 to 165.
+   - Search title (`seoTitle`, or `title`) 65 characters or fewer, summary 110 to 165.
+   - Drafts (`draft: true`): note whether what they wait for has been announced. Only the owner publishes a draft, so put it in your pull request summary rather than the backlog.
    - Whether its facts are still current: check them against the official sources in `content.mjs` and the festival's news page. A source that is dead or now says something different makes every fact it supports Urgent.
    - UX: answers the question in the first paragraph, easy to scan on a phone, mentions the tool only where it helps.
    - Health: Good, Needs work or Urgent.

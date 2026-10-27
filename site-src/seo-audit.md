@@ -14,15 +14,11 @@ Types: Urgent (wrong facts), Missing (a guide the site needs), Change (substance
 
 ## Ideas to check
 
-Starter ideas, not yet checked against the existing guides or sourced. The auditor turns good ones into backlog items and removes the rest.
+Starter ideas, not yet checked against the existing guides or sourced. The auditor turns good ones into backlog items and removes the rest. (The site already covers registration photos, volunteering, costs, campervans and phone or laptop.)
 
-- Glastonbury registration photo: what makes a good one and how to update it.
 - What happens if someone in your group can't come: transfers, refunds and cancellation protection.
-- Car parking passes: when and how to buy, and what they cost.
-- Campervan and caravan tickets: how and when they're sold.
-- Volunteering for a ticket (Oxfam, WaterAid, Greenpeace and others).
-- The full cost of a Glastonbury weekend beyond the ticket.
-- Booking on a phone or a laptop on ticket day.
+- Car parking passes on their own: when and how to buy, and what they cost.
+- Glastonbury 2028 tickets: what is known so far (once anything is announced).
 
 ## Inventory
 

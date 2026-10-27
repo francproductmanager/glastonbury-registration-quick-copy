@@ -25,7 +25,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 - Fetch the official sources in `OFFICIAL` in `content.mjs` and the festival's news page (https://www.glastonburyfestivals.co.uk/news/) for anything announced since the guides were last checked. If something is confirmed, update every guide it affects and add the source to its `sources`.
 - Rewrite anything that has become past tense ("opens on 1 April" becomes "ran from 1 to 7 April").
-- Titles 65 characters or fewer; summaries 110 to 165; at least two internal links in and out; no dead links or dead sources.
+- Search titles (`seoTitle`, or `title` when there is none) 65 characters or fewer; summaries 110 to 165; at least two internal links in and out; no dead links or dead sources.
 - **Honest dates:** set a guide's own `updated` (like `"4 November 2026"`) and `isoDate` (like `"2026-11-04"`) to today only when you rechecked its facts or changed its substance. Never for a typo or link fix. Leave the shared `UPDATED`, `CHECKED` and `MODIFIED` constants alone.
 
 ### A new guide
@@ -34,7 +34,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 - Give it a `target`: the search phrase it answers, lower case, different from every other guide's (a test checks), and not the same question in other words.
 - **900 words or more** (a test checks) of genuinely useful text: answer the question in the first paragraph, then worked examples, steps, tables, and what to do if things go wrong. Short paragraphs that read well on a phone.
 - **Every fact from a source you opened and read**, listed in its `sources`, official sources first and reputable news second. If you can't source it, leave it out. Never present a past year's date or price as this year's: say which year every date and price is from.
-- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic.
+- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic. Never publish a guide marked `draft: true` and never remove that mark: drafts are held back on purpose.
 - Link to at least two existing guides, and add a natural link to it from at least two.
 
 ### Record it
@@ -53,4 +53,4 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 ## Files you may change
 
-`site-src/content.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or links to unusual sites. Anything else and the merge workflow refuses it.
+`site-src/content.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `calendar/`, `downloads/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or links to unusual sites. Anything else and the merge workflow refuses it.

@@ -27,7 +27,7 @@ Mark every item pass or fail, with a reason.
 
 **SEO**
 - A new guide's `target` is a genuinely different question from every other guide's, not a rewording.
-- Title 65 characters or fewer and says what the page answers; summary 110 to 165 and worth clicking.
+- Search title (`seoTitle`, or `title` when there is none) 65 characters or fewer and says what the page answers; summary 110 to 165 and worth clicking.
 - Headings follow the questions people actually ask; no keyword stuffing.
 - At least two links in and out, with natural link text.
 

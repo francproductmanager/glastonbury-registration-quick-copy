@@ -21,6 +21,7 @@ export const APPROVED_NUMBERS = new Set([
   "173205080", "0123456789", "1234567890", "10000000", "0222222222",
   "31536000", // one year in seconds (a cache header), not a reg number
   "2945530362", // the AdSense "Standard" ad unit ID in ads.js, not a reg number
+  "122539691", // the article ID in an AOL news link cited as a source, not a reg number
 ]);
 // Postcodes of famous public buildings, standard examples, and invalid ones. Never anyone's home.
 export const APPROVED_POSTCODES = new Set([
@@ -28,7 +29,7 @@ export const APPROVED_POSTCODES = new Set([
   "BS14DJ", "M41HN", "NM41HN", "LS15DL", "E28FP", "E16AN",
 ]);
 
-const SKIP = /(^|\/)(package-lock\.json|LICENSE[^/]*)$|\.(woff2|png|jpe?g|gif|ico|pdf)$/;
+const SKIP = /(^|\/)(package-lock\.json|LICENSE[^/]*)$|\.(woff2|png|jpe?g|gif|ico|pdf|mp4)$/;
 const REG = /(?<![0-9A-Za-z])\d(?:[ -]?\d){7,11}(?![0-9A-Za-z])/g;
 const POSTCODE = /(?<![0-9A-Za-z])([A-Za-z]{1,2}\d[A-Za-z\d]?) ?(\d[A-Za-z]{2})(?![0-9A-Za-z])/g;
 
@@ -37,6 +38,7 @@ export function findPersonalData(text) {
   const clean = String(text)
     .replace(/data:[^"')]+/g, " ")              // inline images (the favicon's viewBox digits)
     .replace(/\b\d{4}-\d{2}-\d{2}\b/g, " ")   // ISO dates
+    .replace(/;VALUE=DATE:\d{8}\b/g, " ")       // all-day dates in calendar files
     .replace(/#[0-9a-fA-F]{3,8}\b/g, " ");      // colours
   const found = new Set();
   for (const m of clean.matchAll(REG)) {

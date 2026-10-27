@@ -22,7 +22,7 @@ These keep the tool safe for everyone who types their friends' details into it. 
 6. **Never commit real registration numbers or postcodes**, not even in tests. Use made-up data. `scripts/check-personal-data.mjs` only allows the approved made-up values listed in it, and CI blocks anything else (in files, commits and PR descriptions). Run it yourself with `node scripts/check-personal-data.mjs`, or turn on the pre-commit hook once with `git config core.hooksPath .githooks`.
 7. **No em dashes, en dashes or middle dots** in anything we write. The tests check this.
 
-**The guides and info pages** (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `404.html`, `sitemap.xml`, `robots.txt`) are generated from `site-src/`. Edit `site-src/content.mjs`, run `node site-src/build.mjs` and commit both. Keep facts sourced and dated. **Ads** only go in named slots (`{ ad: "name" }` in content, `ad("name")` in `app.js`, listed in `ads.js`), and never next to the copy buttons.
+**The guides and info pages** (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `404.html`, `sitemap.xml`, `robots.txt`) are generated from `site-src/`. Edit `site-src/content.mjs`, run `node site-src/build.mjs` and commit both. Keep facts sourced and dated. A guide marked `draft: true` stays in `content.mjs` but isn't published, so it can wait for an official announcement; delete that line to publish it. New dates go in `CALENDAR`, which also updates the calendar people subscribe to. **Ads** only go in named slots (`{ ad: "name" }` in content, `ad("name")` in `app.js`, listed in `ads.js`), and never next to the copy buttons.
 
 The automated tests check several of these.
 
