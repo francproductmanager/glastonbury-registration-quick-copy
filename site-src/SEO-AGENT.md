@@ -7,7 +7,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 ## Before you start (both runs)
 
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` in full. The reviewers check your work against all of them.
-2. List open pull requests from `seo-agent/` branches (`gh pr list --state open --json number,headRefName,headRefOid`) and the reviewers' verdicts on each one's latest commit (`gh api repos/{owner}/{repo}/commits/<sha>/status`, contexts `seo-review/a` and `seo-review/b`), with their comments.
+2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit (statuses `seo-review/a` and `seo-review/b`), with their comments. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
 
 ## The fix run (3pm)
 
