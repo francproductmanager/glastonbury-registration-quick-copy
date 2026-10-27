@@ -1,0 +1,60 @@
+name: Merge SEO agent pull requests
+
+# Three scheduled agents look after the guides (see site-src/SEO-AUDITOR.md):
+#   seo-audit/ branches (auditor) merge once the Tests workflow passes; they only touch the audit and log.
+#   seo-agent/ branches (writer) also need the seo-reviewed label, which only the reviewer agent adds.
+# Either way it only merges a pull request from this repo that changes nothing but the files that
+# agent may touch, and only the exact commit the tests passed on, so the agents can never change the tool.
+on:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  merge:
+    if: >
+      (github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.head_repository.full_name == github.repository &&
+        (startsWith(github.event.workflow_run.head_branch, 'seo-agent/') || startsWith(github.event.workflow_run.head_branch, 'seo-audit/'))) ||
+      (github.event_name == 'pull_request' &&
+        github.event.label.name == 'seo-reviewed' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        startsWith(github.event.pull_request.head.ref, 'seo-agent/'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Merge if tests passed, it was reviewed where needed, and it only touches allowed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.workflow_run.head_branch || github.event.pull_request.head.ref }}
+        run: |
+          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --base main --state open --json number --jq '.[0].number')
+          if [ -z "$pr" ]; then echo "No open pull request for $BRANCH"; exit 0; fi
+          sha=$(gh pr view "$pr" --repo "$REPO" --json headRefOid --jq .headRefOid)
+          test=$(gh api "repos/$REPO/commits/$sha/check-runs?check_name=test" --jq '[.check_runs[].conclusion] | if length == 0 then "none" elif all(. == "success") then "success" else "not yet" end')
+          if [ "$test" != "success" ]; then echo "The test check hasn't passed on $sha yet ($test)"; exit 0; fi
+          case "$BRANCH" in
+            seo-audit/*) allowed='^site-src/(seo-audit|seo-log)\.md$' ;;
+            seo-agent/*)
+              allowed='^(site-src/content\.mjs|site-src/seo-log\.md|(guides|faq|about|contact|privacy|terms|updates)/.+|404\.html|sitemap\.xml|robots\.txt)$'
+              reviewed=$(gh pr view "$pr" --repo "$REPO" --json labels --jq '[.labels[].name] | index("seo-reviewed") != null')
+              if [ "$reviewed" != "true" ]; then echo "Waiting for the reviewer agent's seo-reviewed label"; exit 0; fi ;;
+          esac
+          other=$(gh pr view "$pr" --repo "$REPO" --json files --jq '.files[].path' | grep -Ev "$allowed" || true)
+          if [ -n "$other" ]; then
+            echo "Not merging: the pull request changes files this agent may not touch:"
+            echo "$other"
+            gh pr comment "$pr" --repo "$REPO" --body "Not merged automatically: this changes files outside what the agent may touch. Please review it by hand."
+            exit 0
+          fi
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$sha"
