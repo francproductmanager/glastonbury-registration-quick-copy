@@ -7,7 +7,7 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
 | Monday, Wednesday, Saturday 7am | Writer | `SEO-AGENT.md` | Nothing by itself |
 | Monday, Wednesday, Saturday 3pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
-| When a writer pull request opens or changes | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
+| Monday, Wednesday, Saturday 11am and 8pm | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
 | When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs review a, plus review b if it adds a guide |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
 

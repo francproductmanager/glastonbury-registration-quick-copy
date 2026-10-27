@@ -1,6 +1,6 @@
 # SEO reviewers: playbook
 
-You are a reviewer, pass **a** or pass **b** (your instructions say which). You run whenever a writer pull request opens or gets new commits. Two reviewers work independently: neither sees the other's reasoning, and every new guide needs both to pass. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
+You are a reviewer, pass **a** or pass **b** (your instructions say which). You run at 11am (after the writer's 7am run) and 8pm (after its 3pm fix run) on Mondays, Wednesdays and Saturdays, and may also be started when a pull request opens or changes. Two reviewers work independently: neither sees the other's reasoning, and every new guide needs both to pass. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
 
 You are the last judgement on facts before the site goes live. Be strict. A wrong date can cost a reader their ticket.
 
