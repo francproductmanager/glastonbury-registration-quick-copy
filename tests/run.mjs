@@ -383,18 +383,49 @@ await test("Every guide targets its own search phrase; guides added since launch
   }
 });
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
-  const src = readFileSync(join(ROOT, "site-src", "content.mjs"), "utf8");
-  for (const [re, what] of [[/<\s*(script|iframe|object|embed|form|style|link|meta)\b/i, "an HTML tag that runs or embeds something"], [/\bon[a-z]+\s*=/i, "an inline event handler"],
-    [/javascript:|vbscript:|data:[a-z]+\//i, "a script or data URL"], [/^\s*import\b|\bimport\s*\(|\brequire\s*\(|\beval\s*\(|new Function|\bfetch\s*\(|\bglobalThis\b|\b(?:process|document|window)\.[a-zA-Z]/m, "code that reaches outside the data"]]) {
-    const m = src.match(re);
-    assert(!m, `content.mjs contains ${what}: ${m && m[0]}`);
-  }
-  const exported = [...src.matchAll(/^export\s+const\s+(\w+)/gm)].map((m) => m[1]).sort();
-  eq(exported, ["CALENDAR", "CALENDAR_FEED", "DOWNLOADS", "GUIDES", "LASTMOD", "PAGES", "SITE", "TOPICS"], "content.mjs exports");
-  assert(!/^export\s+(?!const\s)/m.test(src), "content.mjs exports something other than data");
   const allowed = readFileSync(join(ROOT, "tests", "allowed-link-domains.txt"), "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
-  const bad = [...new Set([...src.matchAll(/(?:https?|webcal):\/\/([^/\s"'`)\]]+)/gi)].map((m) => m[1].toLowerCase()))].filter((h) => !allowed.some((d) => h === d || h.endsWith("." + d)));
-  assert(!bad.length, `links to sites not in tests/allowed-link-domains.txt: ${bad.join(", ")}`);
+  // The two files the writer agent may edit, and the only names each may export
+  for (const [file, exports] of [["content.mjs", ["CALENDAR", "CALENDAR_FEED", "DOWNLOADS", "GUIDES", "LASTMOD", "PAGES", "SITE", "TOPICS"]], ["facts.mjs", ["FACTS", "TICKET_MOMENTS"]]]) {
+    const src = readFileSync(join(ROOT, "site-src", file), "utf8");
+    for (const [re, what] of [[/<\s*(script|iframe|object|embed|form|style|link|meta)\b/i, "an HTML tag that runs or embeds something"], [/\bon[a-z]+\s*=/i, "an inline event handler"],
+      [/javascript:|vbscript:|data:[a-z]+\//i, "a script or data URL"], [/^\s*import\b|\bimport\s*\(|\brequire\s*\(|\beval\s*\(|new Function|\bfetch\s*\(|\bglobalThis\b|\b(?:process|document|window)\.[a-zA-Z]/m, "code that reaches outside the data"]]) {
+      const m = src.match(re);
+      assert(!m, `${file} contains ${what}: ${m && m[0]}`);
+    }
+    eq([...src.matchAll(/^export\s+const\s+(\w+)/gm)].map((m) => m[1]).sort(), exports, `${file} exports`);
+    assert(!/^export\s+(?!const\s)/m.test(src), `${file} exports something other than data`);
+    const bad = [...new Set([...src.matchAll(/(?:https?|webcal):\/\/([^/\s"'`)\]]+)/gi)].map((m) => m[1].toLowerCase()))].filter((h) => !allowed.some((d) => h === d || h.endsWith("." + d)));
+    assert(!bad.length, `${file} links to sites not in tests/allowed-link-domains.txt: ${bad.join(", ")}`);
+  }
+});
+await test("Changeable facts live once in site-src/facts.mjs, sourced, and agents keep them in date", async () => {
+  const { FACTS, TICKET_MOMENTS } = await import(join(ROOT, "site-src", "facts.mjs"));
+  const { activeMoment } = await import(join(ROOT, "scripts", "ticket-moment.mjs"));
+  const src = readFileSync(join(ROOT, "site-src", "content.mjs"), "utf8");
+  const isDate = (d) => /^\d{4}-\d\d-\d\d$/.test(d) && !isNaN(Date.parse(d));
+  for (const [key, f] of Object.entries(FACTS)) {
+    assert(f.value && /^https:\/\//.test(f.source) && isDate(f.checked) && isDate(f.recheckBy), `fact ${key} needs a value, an https source and checked and recheckBy dates`);
+    assert(!src.includes(f.value), `site-src/content.mjs types out "${f.value}": use {{fact:${key}}} instead`);
+  }
+  for (const m of TICKET_MOMENTS) assert(m.name && isDate(m.start) && isDate(m.end) && /^https:\/\//.test(m.source), `ticket moment ${m.name} needs dates and a source`);
+  for (const [, key] of src.matchAll(/\{\{fact:(\w*)\}\}/g)) assert(FACTS[key], `content.mjs uses an unknown fact: ${key}`);
+  const built = sitePages.filter((f) => readFileSync(f, "utf8").includes("{{fact:"));
+  assert(!built.length, `unfilled fact in ${built.map((f) => relative(ROOT, f)).join(", ")}`);
+  // Agent work must leave every fact in date; in ticket moment mode, checked within the last day
+  if (!/^seo-(agent|audit)\//.test(String(process.env.GITHUB_HEAD_REF || ""))) return;
+  const today = new Date().toISOString().slice(0, 10), moment = activeMoment();
+  for (const [key, f] of Object.entries(FACTS)) {
+    assert(f.recheckBy >= today, `fact ${key} was due a recheck by ${f.recheckBy}: confirm it against its source, then update it, its checked date and recheckBy`);
+    if (moment) assert((Date.now() - Date.parse(f.checked)) / 864e5 < 2, `ticket moment mode (${moment.name}): fact ${key} was last checked ${f.checked}, more than a day ago`);
+  }
+});
+await test("Every reviewer regression case still applies to the current guides", () => {
+  const cases = JSON.parse(readFileSync(join(ROOT, "tests", "reviewer-cases", "cases.json"), "utf8"));
+  const expected = JSON.parse(readFileSync(join(ROOT, "tests", "reviewer-cases", "expected.json"), "utf8"));
+  for (const c of cases) {
+    assert(readFileSync(join(ROOT, c.file), "utf8").includes(c.find), `${c.id}: its text is no longer in ${c.file}; update tests/reviewer-cases/cases.json`);
+    assert(["pass", "fail"].includes(expected[c.id]?.verdict), `${c.id}: no expected verdict`);
+  }
 });
 await test("The SEO audit plans from fresh search data (once Search Console is connected)", () => {
   const meta = join(ROOT, "site-src", "data", "meta.json");

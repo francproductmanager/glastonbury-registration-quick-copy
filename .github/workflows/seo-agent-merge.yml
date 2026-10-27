@@ -8,6 +8,9 @@ on:
     workflows: [Tests]
     types: [completed]
   status:
+  schedule:
+    - cron: "17 * * * *" # hourly sweep: tests started by a workflow don't send the signal above
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -25,7 +28,8 @@ jobs:
     if: >
       vars.AUTOMERGE_ENABLED == 'true' &&
       ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
-       (github.event_name == 'status' && github.event.state == 'success' && startsWith(github.event.context, 'seo-review/')))
+       (github.event_name == 'status' && github.event.state == 'success' && startsWith(github.event.context, 'seo-review/')) ||
+       github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -37,5 +41,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          SHA: ${{ github.event.workflow_run.head_sha || github.event.sha }}
+          SHA: ${{ github.event.workflow_run.head_sha || github.event.sha }} # empty on the hourly sweep: check every open agent pull request
+          SEO_REVIEWER_LOGIN: ${{ vars.SEO_REVIEWER_LOGIN }} # when set, only that account's review passes count
         run: node scripts/seo-merge-gate.mjs

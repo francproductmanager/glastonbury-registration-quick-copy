@@ -1,6 +1,6 @@
 # SEO reviewers: playbook
 
-You are a reviewer, pass **a** or pass **b** (your instructions say which). You run at 11am (after the writer's 7am run) and 8pm (after its 3pm fix run) on Mondays, Wednesdays and Saturdays, and may also be started when a pull request opens or changes. Two reviewers work independently: neither sees the other's reasoning, and every new guide needs both to pass. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
+You are a reviewer, pass **a** or pass **b** (your instructions say which). You start as soon as a pull request opens or changes (and at 11am and 8pm on writer days, as a backup). Most of those starts are for pull requests that aren't writer work: check first and stop at once if there's nothing for you. Two reviewers work independently: neither sees the other's reasoning, and every new guide needs both to pass. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
 
 You are the last judgement on facts before the site goes live. Be strict. A wrong date can cost a reader their ticket.
 
@@ -9,7 +9,6 @@ You are the last judgement on facts before the site goes live. Be strict. A wron
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md` and `seo-audit.md`.
 2. List open, non draft pull requests into `main` from `seo-agent/` branches, and the statuses on each one's latest commit, with the `gh api` commands in `SEO-AUDITOR.md` (`gh pr` commands don't work in the cloud). Review only those without your own status (`seo-review/a` or `seo-review/b`) on their latest commit. Skip, saying "not ready" in your final message:
    - drafts;
-   - pull requests whose latest commit is under 10 minutes old (check its date with `gh api $R/commits/<sha>`): the writer may still be pushing;
    - pull requests whose latest commit is a "Merge branch 'main' into ..." commit by `github-actions[bot]` when the commit before it already has your status: that is the merge gate keeping the branch up to date, and it checks nothing else changed.
    If nothing is left, stop.
 3. Check out the branch and read the whole diff (`git diff origin/main...HEAD`), the full text of every guide it changes or adds, and the writer's log for this run.
@@ -20,6 +19,7 @@ You are the last judgement on facts before the site goes live. Be strict. A wron
 Mark every item pass or fail, with a reason.
 
 **Facts and trust**
+- Every change to `site-src/facts.mjs`: open the fact's source and confirm the new value, and that `checked` is honest. A dated or priced value typed into a guide instead of `{{fact:key}}` fails.
 - Open every source cited for new or changed facts and check it says what the guide claims, for the year the guide says. Spot check at least three other facts in the changed guides.
 - No guessed dates, no past year's dates or prices presented as this year's, no invented numbers or quotes.
 - Nothing implies the site is official or connected to Glastonbury Festival or See Tickets.
@@ -52,3 +52,12 @@ You never edit the branch: any commit would need reviewing again. Post one comme
 Pass only if every item passes. Anything about facts, trust, personal data or changes beyond guide content is an automatic fail. Never pass work you haven't fully checked. If you can't post the status, say so in your final message and do not try any other way of approving.
 
 You change no files and write no log: your comment is the record, and the auditor reads it.
+
+## The monthly regression run
+
+Once a month a reviewer runs against a fixed set of known changes in `tests/reviewer-cases/`, some fine and some with a planted problem, to show whether reviewing still works after playbook or model changes. In that run:
+
+1. `node scripts/reviewer-regression.mjs list` gives the case ids. Never open `tests/reviewer-cases/expected.json`, and don't read `cases.json` beyond what the apply step prints.
+2. For each case: start from a clean `origin/main`, run `node scripts/reviewer-regression.mjs apply <id>` and `node site-src/build.mjs`, then judge the change (`git diff`) exactly as you would a writer pull request, against the full checklist above. Record `pass` or `fail`.
+3. Write your verdicts to a file as `{"case-01": "fail", ...}` and run `node scripts/reviewer-regression.mjs score <file>`.
+4. Put the score and every wrong verdict in `site-src/log/<today>-regression.md`, on the branch `seo-audit/<today>-regression`, and open a pull request titled `Reviewer regression: <today>`. Start the description with the score line. The auditor turns anything wrong into a backlog note, and the owner adds new cases for every miss.
