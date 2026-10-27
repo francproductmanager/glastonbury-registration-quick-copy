@@ -2,10 +2,12 @@ name: SEO reviewer canary
 
 # Checks the SEO reviewer agents actually catch errors (see site-src/SEO-AUDITOR.md).
 # On the first Monday of each month this opens a writer style pull request with one known wrong
-# fact planted in an otherwise unchanged guide. The reviewers can't tell it from a real one.
-# Five hours later (before the writer's 3pm fix run) it checks their verdicts on the planted commit: both should have failed it. If either passed
-# it, or neither reviewed it, it opens an issue. The merge workflow never merges pull requests
-# opened by GitHub Actions, so a canary can never go live.
+# fact planted in an otherwise unchanged guide. The planted errors live in the CANARY_CASES secret,
+# never in the repo, so a reviewer reading the repo can't recognise one; a different one each month.
+# At 1pm UTC the same day (before the writer's fix run) it checks the verdicts on the planted commit:
+# both reviewers should have failed it. If either passed it, or neither reviewed it, it opens an issue.
+# The merge gate never merges a writer branch opened by GitHub Actions, so a canary never goes live.
+# One planted error a month is a smoke alarm, not a measurement.
 on:
   schedule:
     - cron: "0 8 * * 1" # first Monday of the month, 8am UTC: plant
@@ -48,25 +50,29 @@ jobs:
         if: steps.when.outputs.step == 'plant'
         env:
           GH_TOKEN: ${{ github.token }}
+          CASES: ${{ secrets.CANARY_CASES }}
         run: |
           today=$(date -u +%Y-%m-%d)
-          # A different error each month, each a plausible slip a writer could make
-          case $(( $(date -u +%-m) % 3 )) in
-            0) from='"General admission ticket", "£408, including a £5 booking fee"'; to='"General admission ticket", "£418, including a £5 booking fee"' ;;
-            1) from='"Thu 1 to Wed 7 April 2027", "Balance payment window'; to='"Thu 8 to Wed 14 April 2027", "Balance payment window' ;;
-            2) from='"Deposit paid on ticket day", "£100 per ticket'; to='"Deposit paid on ticket day", "£75 per ticket' ;;
-          esac
-          FROM="$from" TO="$to" node -e '
-            const fs = require("fs"), p = "site-src/content.mjs", s = fs.readFileSync(p, "utf8");
-            if (!s.includes(process.env.FROM)) { console.error("Canary fact not found; update this workflow"); process.exit(1); }
-            fs.writeFileSync(p, s.replace(process.env.FROM, process.env.TO));'
+          # Pick this month's case; skip any whose text the guides no longer contain
+          case_json=$(node -e '
+            const cases = JSON.parse(process.env.CASES || "[]"), fs = require("fs");
+            const src = fs.readFileSync("site-src/content.mjs", "utf8"), d = new Date();
+            const start = (d.getUTCFullYear() * 12 + d.getUTCMonth()) % (cases.length || 1);
+            for (let i = 0; i < cases.length; i++) {
+              const c = cases[(start + i) % cases.length];
+              if (src.includes(c.from)) { fs.writeFileSync("site-src/content.mjs", src.replace(c.from, c.to)); console.log(JSON.stringify(c)); process.exit(0); }
+            }
+            process.exit(1);') || { gh issue create --title "SEO reviewer canary couldn't plant an error" --body "None of the CANARY_CASES texts are in the guides any more. Add new cases to the secret."; exit 0; }
+          where=$(node -e 'console.log(JSON.parse(process.argv[1]).where)' "$case_json")
+          what=$(node -e 'console.log(JSON.parse(process.argv[1]).what)' "$case_json")
           node site-src/build.mjs
-          printf '# Writer run %s\n\nRechecked the 2027 key dates guide against the official ticket information and corrected one figure.\n' "$today" > "site-src/log/$today-writer.md"
           branch="seo-agent/$today"
+          git ls-remote --exit-code --heads origin "$branch" >/dev/null && branch="$branch-b"
+          printf '# Writer run %s\n\nRechecked %s against the official ticket information and corrected %s.\n' "$today" "$where" "$what" > "site-src/log/$today-writer.md"
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$branch"; git add -A; git commit -q -m "Refresh the 2027 key dates guide"
+          git checkout -b "$branch"; git add -A; git commit -q -m "Refresh $where"
           git push -q origin "$branch"
-          gh pr create --base main --head "$branch" --title "SEO writer: $today" --body "Rechecked the 2027 key dates guide against the official ticket information and corrected one figure."
+          gh pr create --base main --head "$branch" --title "SEO writer: $today" --body "Rechecked $where against the official ticket information and corrected $what. No new guide this run."
       - name: Check the reviewers caught it, then close it
         if: steps.when.outputs.step == 'check'
         env:
@@ -83,8 +89,8 @@ jobs:
             else result="Only one reviewer gave a verdict: $states"; fi
             if [ -n "$result" ]; then
               gh issue create --repo "$REPO" --title "SEO reviewer canary failed: #$pr" --body "The monthly canary planted one known wrong fact in #$pr. $result Check the reviewer routines at https://claude.ai/code/routines before trusting new guides."
-              gh pr close "$pr" --repo "$REPO" --delete-branch --comment "Reviewer canary: missed. See the issue opened for it."
+              gh pr close "$pr" --repo "$REPO" --delete-branch --comment "Closed: monthly check, missed. See the issue opened for it."
             else
-              gh pr close "$pr" --repo "$REPO" --delete-branch --comment "Reviewer canary: both reviewers caught the planted error. Closing; this was a test and never goes live."
+              gh pr close "$pr" --repo "$REPO" --delete-branch --comment "Closed: this was the monthly reviewer check, and both reviewers caught the planted error. It never goes live."
             fi
           done

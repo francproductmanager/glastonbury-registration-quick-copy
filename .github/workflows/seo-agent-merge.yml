@@ -1,15 +1,8 @@
 name: Merge SEO agent pull requests
 
-# Scheduled Claude agents look after the guides (see site-src/SEO-AUDITOR.md). This is the only thing
-# that publishes their work, and it is plain code, so it can't be talked out of its rules:
-#   Kill switch: does nothing unless the repo variable AUTOMERGE_ENABLED is "true".
-#   seo-audit/ branches (auditor): merge once the test check passes. They may only touch the audit
-#     and the auditor's own log files.
-#   seo-agent/ branches (writer): also need the reviewer's pass recorded as a commit status on the
-#     exact commit being merged: seo-review/a, plus seo-review/b when a new guide is added. Any new
-#     commit has no statuses, so it needs reviewing again.
-#   Never merges a pull request opened by GitHub Actions (the monthly reviewer canary), one from a
-#   fork, or one that changes files outside what that agent may touch.
+# The only thing that publishes the SEO agents' work (see site-src/SEO-AUDITOR.md). The rules are in
+# scripts/seo-merge-gate.mjs, always run from main so no agent can change them.
+# Kill switch: does nothing unless the repo variable AUTOMERGE_ENABLED is "true".
 on:
   workflow_run:
     workflows: [Tests]
@@ -19,6 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
   checks: read
   statuses: read
 
@@ -30,43 +24,18 @@ jobs:
   merge:
     if: >
       vars.AUTOMERGE_ENABLED == 'true' &&
-      ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request') ||
+      ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
        (github.event_name == 'status' && github.event.state == 'success' && startsWith(github.event.context, 'seo-review/')))
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0 # the gate compares the reviewed commit with what would be merged
       - name: Merge if every rule is met
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           SHA: ${{ github.event.workflow_run.head_sha || github.event.sha }}
-        run: |
-          pr=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '[.[] | select(.state == "open" and .base.ref == "main")][0].number // empty')
-          if [ -z "$pr" ]; then echo "No open pull request into main for $SHA"; exit 0; fi
-          read -r branch head author fork <<<"$(gh api "repos/$REPO/pulls/$pr" --jq '"\(.head.ref) \(.head.sha) \(.user.login) \(.head.repo.full_name != "'"$REPO"'")"')"
-          case "$branch" in seo-agent/*|seo-audit/*) ;; *) echo "Not an SEO agent branch: $branch"; exit 0 ;; esac
-          if [ "$fork" = "true" ] || [ "$author" = "github-actions[bot]" ]; then echo "Never merged: fork or canary ($author)"; exit 0; fi
-          if [ "$head" != "$SHA" ]; then echo "Pull request has moved on to $head; waiting for its own checks"; exit 0; fi
-
-          test=$(gh api "repos/$REPO/commits/$head/check-runs?check_name=test" --jq '[.check_runs[].conclusion] | if length == 0 then "none" elif all(. == "success") then "success" else "not yet" end')
-          if [ "$test" != "success" ]; then echo "The test check hasn't passed on $head ($test)"; exit 0; fi
-
-          files=$(gh api --paginate "repos/$REPO/pulls/$pr/files" --jq '.[] | "\(.status) \(.filename)"')
-          case "$branch" in
-            seo-audit/*) allowed='^(site-src/seo-audit\.md|site-src/log/[0-9]{4}-[0-9]{2}-[0-9]{2}-auditor\.md)$' ;;
-            seo-agent/*)
-              allowed='^(site-src/content\.mjs|site-src/log/[0-9]{4}-[0-9]{2}-[0-9]{2}-writer[0-9a-z-]*\.md|(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\.html|sitemap\.xml|robots\.txt)$'
-              need="seo-review/a"
-              if printf '%s\n' "$files" | grep -Eq '^added guides/[^/]+/index\.html$'; then need="$need seo-review/b"; fi
-              states=$(gh api "repos/$REPO/commits/$head/status" --jq '.statuses[] | "\(.context)=\(.state)"')
-              for c in $need; do
-                if ! printf '%s\n' "$states" | grep -qx "$c=success"; then echo "Waiting for reviewer pass $c on $head"; exit 0; fi
-              done ;;
-          esac
-          other=$(printf '%s\n' "$files" | cut -d' ' -f2- | grep -Ev "$allowed" || true)
-          if [ -n "$other" ]; then
-            echo "Not merging: changes files this agent may not touch:"; echo "$other"
-            gh pr comment "$pr" --repo "$REPO" --body "Not merged automatically: this changes files outside what the agent may touch. Please review it by hand."
-            exit 0
-          fi
-          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$head"
+        run: node scripts/seo-merge-gate.mjs

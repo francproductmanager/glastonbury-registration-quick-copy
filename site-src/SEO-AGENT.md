@@ -19,7 +19,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 1. If an open writer pull request failed review, fix it as the fix run would, and do nothing new this run.
 2. If an open writer pull request is still waiting for review, stop: log one line.
-3. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide**, plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
+3. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
 
 ### Refreshing and fixing guides
 
@@ -48,9 +48,9 @@ You never publish anything yourself. Two independent reviewers check your pull r
 2. `node scripts/check-personal-data.mjs`
 3. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
 4. If nothing changed, stop: no pull request.
-5. Commit, push, and (normal run) open a pull request into `main` titled `SEO writer: <today>`, describing in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+5. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers ignore pull requests whose latest commit is under 10 minutes old, and anything still a draft. Don't push to an open pull request again in the same run titled `SEO writer: <today>`, describing in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
 6. Don't merge, don't label, don't set statuses.
 
 ## Files you may change
 
-`site-src/content.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `calendar/`, `downloads/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or links to unusual sites. Anything else and the merge workflow refuses it.
+`site-src/content.mjs`, your own log file in `site-src/log/`, and the pages `node site-src/build.mjs` generates (`guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `calendar/`, `downloads/`, `404.html`, `sitemap.xml`, `robots.txt`). Change only guide content inside `content.mjs`: no scripts, iframes, embeds, tracking or code. Links may only go to sites listed in `tests/allowed-link-domains.txt` (a test checks). If the best source is on a site that isn't listed, don't use it: say in your log which site and why, and the owner can add it. Anything else and the merge workflow refuses it.
