@@ -1,22 +1,28 @@
 # SEO content audit
 
-Maintained by the weekly auditor (see `SEO-AUDITOR.md`). The writer works from the backlog; the reviewer checks the writer against it.
+Written only by the auditor (see `SEO-AUDITOR.md`). The writer works from the backlog; the reviewers check the writer against it.
 
 Last audit: not yet run.
 
 ## Backlog
 
-Highest priority first. Types: Missing (a guide the site needs), Change (facts or substance), Optimise (titles, summaries, links, layout).
+Highest priority first. One numbered line per item, each citing a source (a test checks):
+`N. Type: what to do, and why. Target: "phrase" (Missing items only). Source: https://...`
+Types: Urgent (wrong facts), Missing (a guide the site needs), Change (substance), Optimise (titles, summaries, links, layout).
 
-Starter ideas, not yet checked against the existing guides or prioritised. The first audit replaces this list.
+(The first audit fills this in.)
 
-1. Missing: Glastonbury registration photo, what makes a good one and how to update it.
-2. Missing: what happens if someone in your group can't come (transfers, refunds, cancellation protection).
-3. Missing: car parking passes, when and how to buy and what they cost.
-4. Missing: campervan and caravan tickets, how and when they're sold.
-5. Missing: volunteering for a ticket (Oxfam, WaterAid, Greenpeace and others).
-6. Missing: the full cost of a Glastonbury weekend beyond the ticket.
-7. Missing: booking on a phone or a laptop on ticket day.
+## Ideas to check
+
+Starter ideas, not yet checked against the existing guides or sourced. The auditor turns good ones into backlog items and removes the rest.
+
+- Glastonbury registration photo: what makes a good one and how to update it.
+- What happens if someone in your group can't come: transfers, refunds and cancellation protection.
+- Car parking passes: when and how to buy, and what they cost.
+- Campervan and caravan tickets: how and when they're sold.
+- Volunteering for a ticket (Oxfam, WaterAid, Greenpeace and others).
+- The full cost of a Glastonbury weekend beyond the ticket.
+- Booking on a phone or a laptop on ticket day.
 
 ## Inventory
 

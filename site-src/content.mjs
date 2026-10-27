@@ -52,6 +52,7 @@ export const TOPICS = [
 export const GUIDES = [
   {
     slug: "glastonbury-2027-key-dates",
+    target: "glastonbury 2027 dates", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "Glastonbury 2027: key dates, prices and what happens next",
     summary: "Every confirmed date for Glastonbury 2027 in one place: the sales that have happened, the balance window, access applications, the resale and the festival itself.",
@@ -100,6 +101,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-sale-history",
+    target: "how fast do glastonbury tickets sell out", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "How fast Glastonbury tickets sell out: recent sales compared",
     summary: "Sell-out times, prices and deposits for the last three Glastonbury ticket sales and resales, and what the numbers mean for your group.",
@@ -148,6 +150,7 @@ export const GUIDES = [
   },
   {
     slug: "how-glastonbury-registration-works",
+    target: "glastonbury registration", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "How Glastonbury registration works",
     summary: "Who needs to register, what you need, how long photo checks take, how to check a friend's registration and how to find your number again.",
@@ -205,6 +208,7 @@ export const GUIDES = [
   },
   {
     slug: "buying-tickets-for-a-group",
+    target: "glastonbury tickets for a group", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Buying Glastonbury tickets for a group",
     summary: "How one lead booker buys for up to six people, what they need from everyone, a worked plan for a bigger group, and how to split the cost.",
@@ -249,6 +253,7 @@ export const GUIDES = [
   },
   {
     slug: "group-chat-messages",
+    target: "glastonbury group chat messages", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Messages to send your Glastonbury group",
     summary: "Ready-to-copy messages for collecting details, agreeing who books, ticket morning and paying each other back.",
@@ -289,6 +294,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-glossary",
+    target: "glastonbury ticket terms", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Glastonbury ticket terms explained",
     summary: "A plain English glossary of every term you'll meet in the Glastonbury ticket process, from registration number to resale.",
@@ -342,6 +348,7 @@ export const GUIDES = [
   },
   {
     slug: "ticket-day-checklist",
+    target: "glastonbury ticket day checklist", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury ticket day checklist",
     summary: "What to sort out two weeks before, the night before and in the minutes before the sale opens, who does what, and what to do once you're through.",
@@ -408,6 +415,7 @@ export const GUIDES = [
   },
   {
     slug: "how-the-ticket-queue-works",
+    target: "glastonbury ticket queue", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "How the Glastonbury ticket queue works",
     summary: "What happens when the sale opens, why extra tabs no longer help, how a group should split up in the queue and what you can and can't control.",
@@ -463,6 +471,7 @@ export const GUIDES = [
   },
   {
     slug: "paying-for-glastonbury-tickets",
+    target: "paying for glastonbury tickets", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Paying for Glastonbury tickets: cards, Apple Pay and the 10 minute clock",
     summary: "What happens at checkout once you're through the queue, which cards have worked, how bank security checks can slow you down and how to be ready.",
@@ -506,6 +515,7 @@ export const GUIDES = [
   },
   {
     slug: "ticket-day-mistakes",
+    target: "glastonbury ticket day mistakes", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Common Glastonbury ticket day mistakes",
     summary: "The small slips that cost people tickets or time every year, why they happen, and how to avoid each one.",
@@ -548,6 +558,7 @@ export const GUIDES = [
   },
   {
     slug: "got-a-glastonbury-ticket-what-next",
+    target: "got glastonbury tickets what next", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Got a Glastonbury ticket? What to do between now and June",
     summary: "A month by month list for the time between booking and the festival: paying the balance, parking, access applications, keeping your details up to date and getting your ticket.",
@@ -591,6 +602,7 @@ export const GUIDES = [
   },
   {
     slug: "deposits-and-balance-payments",
+    target: "glastonbury balance payment", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury deposits and balance payments explained",
     summary: "Why you pay a deposit first, when the balance is due, a worked cost example, and what happens if you can't pay or can't go.",
@@ -633,6 +645,7 @@ export const GUIDES = [
   },
   {
     slug: "resale-and-coach-tickets",
+    target: "glastonbury resale", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "How the Glastonbury spring resale works",
     summary: "Where resale tickets come from, when the resale usually happens, how it differs from the main sale and how to get your group ready.",
@@ -689,6 +702,7 @@ export const GUIDES = [
   },
   {
     slug: "other-ways-to-get-to-glastonbury",
+    target: "other ways to get to glastonbury", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Missed out? Other ways to get to Glastonbury",
     summary: "Your realistic options if you didn't get a ticket: the spring resale, volunteering, working, and what to avoid.",
@@ -726,6 +740,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-scams",
+    target: "glastonbury ticket scams", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "How to spot Glastonbury ticket scams",
     summary: "Why genuine Glastonbury tickets can't be resold, the scams that appear after every sell-out, and how to protect your group's details.",
@@ -776,6 +791,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-coach-tickets",
+    target: "glastonbury coach tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Glastonbury coach tickets: how ticket and coach packages work",
     summary: "What a ticket and coach package includes, how the coach sale differs from general admission, the rules that catch people out and whether it suits your group.",
@@ -812,6 +828,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-access-requirements",
+    target: "glastonbury access requirements", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Going to Glastonbury with access requirements",
     summary: "How access works at Glastonbury: booking a ticket the normal way, the Access Pass, the personal assistant scheme, the application form and when to apply.",
@@ -845,6 +862,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-with-children",
+    target: "glastonbury children tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Taking children and teenagers to Glastonbury: tickets and registration",
     summary: "Who needs a ticket, how the age rule works, what changes for teenagers, coach seats for children and how to book a family group.",
@@ -893,6 +911,7 @@ export const GUIDES = [
   },
   {
     slug: "how-to-use-glasto-quick-copy",
+    target: "glasto quick copy", // the search phrase this guide answers; no two guides share one
     topic: "tool",
     title: "How to use Glasto Quick Copy",
     summary: "A step-by-step guide to putting your group on one page, sharing it, using it on ticket day and fixing common problems.",
