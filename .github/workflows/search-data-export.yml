@@ -2,8 +2,10 @@ name: Search data export
 
 # Every Sunday morning, before the SEO auditor's 6pm run, this pulls real search numbers from Google
 # Search Console into site-src/data/ (scripts/search-data-export.mjs) and opens a pull request that the
-# merge gate publishes once the tests pass. Plain code: no agent ever holds the Google credential.
-# Does nothing until the owner adds the GSC_SA_KEY secret to the "search-data" environment.
+# merge gate publishes once the tests pass. Plain code: no agent ever holds a Google credential.
+# Google sign in is keyless (Workload Identity Federation): Google only hands a short-lived read-only
+# token to this workflow, running from main, in the "search-data" environment (which only main can use).
+# Does nothing until the repo variables GCP_WIF_PROVIDER and GCP_SERVICE_ACCOUNT are set.
 on:
   schedule:
     - cron: "0 5 * * 0"
@@ -14,22 +16,32 @@ permissions:
   pull-requests: write
   actions: write
   issues: write
+  id-token: write # lets Google check this really is this workflow in this repo
 
 jobs:
   export:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    environment: search-data # the credential lives only in this environment
+    environment: search-data
     steps:
       - name: Check Search Console is connected
         id: ready
-        env:
-          KEY: ${{ secrets.GSC_SA_KEY }}
-        run: if [ -n "$KEY" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::Search Console isn't connected yet (no GSC_SA_KEY secret), so there is nothing to export."; fi
+        run: if [ -n "${{ vars.GCP_WIF_PROVIDER }}" ] && [ -n "${{ vars.GCP_SERVICE_ACCOUNT }}" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::Search Console isn't connected yet (GCP_WIF_PROVIDER and GCP_SERVICE_ACCOUNT aren't set), so there is nothing to export."; fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.ready.outputs.ok == 'true'
         with:
           fetch-depth: 0 # first published dates come from git history
+      - name: Sign in to Google (read only, short lived)
+        id: google
+        if: steps.ready.outputs.ok == 'true'
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/webmasters.readonly
+          access_token_lifetime: 900s
+          create_credentials_file: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.ready.outputs.ok == 'true'
         with:
@@ -37,7 +49,7 @@ jobs:
       - name: Export and open a pull request
         if: steps.ready.outputs.ok == 'true'
         env:
-          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+          GSC_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
           GSC_SITE: ${{ vars.GSC_SITE }}
           GH_TOKEN: ${{ github.token }}
         run: |
