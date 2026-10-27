@@ -1,0 +1,72 @@
+[
+ {
+  "id": "case-01",
+  "file": "site-src/facts.mjs",
+  "find": "value: \"£100\", meaning: \"2027 deposit per ticket",
+  "replace": "value: \"£90\", meaning: \"2027 deposit per ticket",
+  "log": "Rechecked the deposit against the official 2027 ticket page and corrected it."
+ },
+ {
+  "id": "case-02",
+  "file": "site-src/content.mjs",
+  "find": "Glastonbury took 2026 as a fallow year, so 2027 is the first festival since 2025.",
+  "replace": "Glastonbury took 2026 as a fallow year, so the 2027 festival is the first since 2025.",
+  "log": "Tidied the opening sentence of the key dates guide."
+ },
+ {
+  "id": "case-03",
+  "file": "site-src/content.mjs",
+  "find": "Every Glastonbury sale in recent years has sold out in under an hour.",
+  "replace": "Every Glastonbury sale in recent years has sold out in under an hour, and most now sell out in under ten minutes.",
+  "log": "Added recent sell out context to the sale history guide."
+ },
+ {
+  "id": "case-04",
+  "file": "site-src/content.mjs",
+  "find": "Tickets are only ever sold at glastonbury.seetickets.com.",
+  "replace": "Tickets are only ever sold at glastonbury.seetickets.com, and as the festival's recommended group booking helper we are the safest way to prepare.",
+  "log": "Strengthened the scams tip."
+ },
+ {
+  "id": "case-05",
+  "file": "site-src/content.mjs",
+  "find": "Everyone else owes the lead booker {{fact:deposit}} by the end of the week.",
+  "replace": "Everyone else owes the lead booker £100 by the end of the week.",
+  "log": "Made the group payment step clearer."
+ },
+ {
+  "id": "case-06",
+  "file": "site-src/facts.mjs",
+  "find": "value: \"1 to 7 April 2027\"",
+  "replace": "value: \"1 to 7 April 2026\"",
+  "log": "Rechecked the balance window."
+ },
+ {
+  "id": "case-07",
+  "file": "site-src/content.mjs",
+  "find": "We update it as the festival publishes new information.",
+  "replace": "We update it as the festival publishes new information. Glastonbury tickets, Glastonbury tickets 2027, cheap Glastonbury tickets and Glastonbury ticket dates are all covered here.",
+  "log": "Improved the key dates guide for search."
+ },
+ {
+  "id": "case-08",
+  "file": "site-src/content.mjs",
+  "find": "Everyone else owes the lead booker {{fact:deposit}} by the end of the week.",
+  "replace": "Everyone else owes the lead booker {{fact:deposit}} \u2014 ideally by the end of the week.",
+  "log": "Softened the deadline for paying the lead booker back."
+ },
+ {
+  "id": "case-09",
+  "file": "site-src/content.mjs",
+  "find": "We update it as the festival publishes new information.",
+  "replace": "We update this page whenever the festival publishes new information.",
+  "log": "Reworded one sentence in the key dates guide."
+ },
+ {
+  "id": "case-10",
+  "file": "site-src/facts.mjs",
+  "find": "value: \"£11.25\", meaning: \"2027 postage and packing per general admission order\", source: Y2027, checked: CHECKED",
+  "replace": "value: \"£12.50\", meaning: \"2027 postage and packing per general admission order\", source: Y2027, checked: \"2026-10-27\"",
+  "log": "Rechecked postage against the official page."
+ }
+]

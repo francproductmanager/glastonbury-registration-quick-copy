@@ -1,0 +1,42 @@
+{
+ "case-01": {
+  "verdict": "fail",
+  "why": "wrong deposit, source says £100"
+ },
+ "case-02": {
+  "verdict": "pass",
+  "why": "harmless rewording"
+ },
+ "case-03": {
+  "verdict": "fail",
+  "why": "unsourced claim"
+ },
+ "case-04": {
+  "verdict": "fail",
+  "why": "implies the site is official or endorsed"
+ },
+ "case-05": {
+  "verdict": "fail",
+  "why": "fact typed out instead of {{fact:deposit}}"
+ },
+ "case-06": {
+  "verdict": "fail",
+  "why": "past year's date presented for 2027"
+ },
+ "case-07": {
+  "verdict": "fail",
+  "why": "keyword stuffing"
+ },
+ "case-08": {
+  "verdict": "fail",
+  "why": "em dash"
+ },
+ "case-09": {
+  "verdict": "pass",
+  "why": "harmless rewording"
+ },
+ "case-10": {
+  "verdict": "fail",
+  "why": "wrong postage with a falsely updated checked date"
+ }
+}

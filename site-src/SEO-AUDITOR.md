@@ -7,7 +7,9 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
 | Monday, Wednesday, Saturday 7am | Writer | `SEO-AGENT.md` | Nothing by itself |
 | Monday, Wednesday, Saturday 3pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
-| Monday, Wednesday, Saturday 11am and 8pm | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
+| Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
+| As soon as a writer pull request opens or changes (backup: writer days 11am and 8pm) | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
+| First Sunday of the month, after the audit | Reviewer regression run | `SEO-REVIEWER.md` | Nothing: reports how many known cases the reviewers still get right |
 | When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs review a, plus review b if it adds a guide |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
 | Sunday 5am UTC | Search data export (not AI) | | `site-src/data/`: Search Console numbers per guide, once the owner has connected Search Console |
@@ -16,6 +18,7 @@ Files the agents share:
 
 - `site-src/seo-owner-priorities.md`: the owner's own priorities. **No agent may change it.** The merge workflow refuses any pull request that does.
 - `site-src/seo-audit.md`: the audit, written only by the auditor. The writer works from its backlog.
+- `site-src/facts.mjs`: every changeable date, price and age, once, with its source and when to recheck it; the guides refer to them as `{{fact:key}}`. Also the ticket moments: from 14 days before one until 3 days after (`node scripts/ticket-moment.mjs`), facts are rechecked daily and no new guides are written.
 - `site-src/log/`: one file per run, named `<date>-<role>.md`, so runs never conflict.
 - `site-src/data/`: real search data from Google Search Console, written each Sunday morning by plain code (no agent ever holds Google credentials). `scorecard.csv` has one row per guide with clicks, impressions, click rate, position, trend, top searches and flags; `unmatched-queries.csv` lists searches that bring people to the site with no guide that answers them.
 
@@ -37,9 +40,12 @@ Files the agents share:
 
 You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who aims to publish three guides a week. You don't change any page.
 
+**The site's one goal is search traffic.** It has no products: it lives on the ads people see when they arrive from Google. So the measure of every week's work is **search clicks**, and every backlog item should be there because it can bring more of them.
+
 ### Each run
 
 1. If `site-src/data/scorecard.csv` exists, read it first, with `unmatched-queries.csv` and `meta.json`. Real search data outranks your judgement. If `meta.json` says the data is more than 8 days old, say "search data missing" at the top of the audit and your pull request.
+   Start the audit, and your pull request, with the traffic line from `meta.json`: `Search clicks, last 28 days: N (previous 28 days: N, change: N%). Impressions: N.` Add a one line reason for the change if the data shows one (a guide climbing or dropping, a ticket moment).
    Then read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, every file in `site-src/log/` from the last 14 days, and `site-src/content.mjs` in full.
 2. **Look back at the week.** Read the merged and open pull requests from `seo-agent/` branches (the last 20, with `state=all`) and the reviewers' comments on them. Move finished backlog items to Done, with the date and pull request. Turn every reviewer failure into a backlog item.
 3. **Recheck everything published this week** against its sources, by opening them. Anything wrong becomes an Urgent item at the top.
@@ -48,7 +54,8 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
    - Word count, last checked date, internal links in and out.
    - Search title (`seoTitle`, or `title`) 65 characters or fewer, summary 110 to 165.
    - Drafts (`draft: true`): note whether what they wait for has been announced. Only the owner publishes a draft, so put it in your pull request summary rather than the backlog.
-   - Whether its facts are still current: check them against the official sources in `content.mjs` and the festival's news page. A source that is dead or now says something different makes every fact it supports Urgent.
+   - Whether its facts are still current: check them against the official sources in `content.mjs` and the festival's news page.
+   - Every fact in `site-src/facts.mjs`: open its source, and make anything wrong, past its `recheckBy` date, or newly announced an Urgent item. Run `node scripts/ticket-moment.mjs`: if a ticket moment is active or starts within 3 weeks, say so at the top of the audit; in ticket moment mode the backlog holds no Missing items. A source that is dead or now says something different makes every fact it supports Urgent.
    - UX: answers the question in the first paragraph, easy to scan on a phone, mentions the tool only where it helps.
    - Health: Good, Needs work or Urgent.
 5. **Find gaps.** Think through someone's journey from registration to arriving at the festival, and the questions they'd search for at each stage, especially in the next six weeks. Watch for saturation: the niche is narrow, so prefer a distinct question over a variation of an existing guide.
