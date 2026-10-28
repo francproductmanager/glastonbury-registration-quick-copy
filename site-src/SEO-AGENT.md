@@ -1,6 +1,6 @@
 # SEO writer: playbook
 
-You are the writer. You run on Monday, Wednesday and Saturday at 7am UK time (the normal run), and again at 3pm on those days (the fix run). The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
+You are the writer. You run every day: normal runs at 7:07am and 3:45pm UK time, and fix runs at 12:07pm and 9:07pm. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
 
 You never publish anything yourself. Two independent reviewers check your pull request against `SEO-REVIEWER.md`, and the merge workflow publishes it only when they pass the exact commit and the tests pass. Any new commit you push is reviewed again from scratch.
 
@@ -9,18 +9,24 @@ You never publish anything yourself. Two independent reviewers check your pull r
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` and `site-src/facts.mjs` in full. The reviewers check your work against all of them.
 2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit: their comments starting `SEO review a:` or `SEO review b:`, each naming the commit it judged. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
 
-## The fix run (3pm)
+## The fix run (12:07pm and 9:07pm)
 
-- If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix exactly what the reviewers said, on that same branch, then check (below) and push. Add `site-src/log/<today>-writer-fix.md`. The push sends it back to both reviewers.
+- If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix it on that same branch:
+  1. Read every point in both FAIL comments. For each one, open the source and decide: the reviewer is right (fix it), or the source supports what you wrote (don't change it). Never change correct text just to get a pass.
+  2. Make the fixes. Then check your whole pull request the way reviewer b will (the **Your role** section of `SEO-REVIEWER.md`): every claim you added or changed, not only the ones the reviewers named, matched to a line in its source. Fix or delete anything you can't point to.
+  3. Check (below) and push. Add `site-src/log/<today>-writer-fix.md` (or `-writer-fix-pm.md` on the 9:07pm run). The push sends it back to both reviewers.
+  4. Straight after pushing, comment on the pull request with a reply to every point, numbered as the reviewers numbered them: `Fixed:` and what changed, or `Not changed:` with a short quote from the source line that supports the text. Name the new commit. Never start this comment with `SEO review `.
 - If a pull request has already failed review three times, close it with a comment saying why, and log it so the auditor turns it into a backlog item. Don't try again. Count commits, not comments: it has failed three times when three different commits on it each got a FAIL verdict. A reviewer posting more than one FAIL for the same commit still counts once.
 - Otherwise, log one line and stop. The fix run never starts new work.
 
-## The normal run (7am)
+## The normal run (7:07am and 3:45pm)
+
+Your branch is `seo-agent/<today>-am` on the morning run and `seo-agent/<today>-pm` on the afternoon run, and your log `site-src/log/<today>-writer-am.md` or `-writer-pm.md`.
 
 1. If an open writer pull request failed review, fix it as the fix run would, and do nothing new this run.
-2. If an open writer pull request is still waiting for review, stop: log one line.
-3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create the branch `seo-agent/<today>` from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
-4. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
+2. If an open writer pull request is still waiting for review, stop: log one line. Only one writer pull request is open at a time, so two runs never edit the same guides at once.
+3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create your branch from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
+4. Otherwise create your branch from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide per run** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. The weeks run Monday to Sunday. Fourteen new guides a week (two a day) is a target, not a quota: if the top Missing item can't be sourced and written to standard, take the next Missing item that can, or do refreshes only, and say why in the log. Never lower the standard to hit the number.
 
 ### Reading sources
 
@@ -53,7 +59,7 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 ### Record it
 
 - Add a dated entry at the top of the updates page (the `updates/index.html` entry in `PAGES` in `content.mjs`): one bullet per change, written for readers.
-- Write `site-src/log/<today>-writer.md`: which backlog items you did, what you changed and why, what you couldn't verify, and ideas for the auditor. Never edit `seo-audit.md`.
+- Write your log (`site-src/log/<today>-writer-am.md` or `-writer-pm.md`): which backlog items you did, what you changed and why, what you couldn't verify, and ideas for the auditor. Never edit `seo-audit.md`.
 
 ## Check, then open or update the pull request
 
@@ -62,7 +68,7 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 3. `node scripts/check-personal-data.mjs`
 4. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
 5. If nothing changed, stop: no pull request.
-6. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today>` and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+6. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
 7. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
 
 ## Files you may change
