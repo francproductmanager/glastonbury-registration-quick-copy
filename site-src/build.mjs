@@ -145,6 +145,8 @@ function latest(page) {
   return { updated: items.length ? items[0].date : null, items: items.slice(0, 7), dates: CALENDAR.map((e) => ({ title: e.title, start: day(e.start), end: lastDay(e) })) };
 }
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// Content text without its inline markup: **bold** and [text](url) become plain text
+const plain = (s) => s.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\[(.+?)\]\((.+?)\)/g, "$1");
 
 // Search results show about 60 characters of a title. One rule for the site name: guides never
 // carry it, so all 60 go on the search the guide answers; the site's own pages (the guides list,
@@ -256,12 +258,20 @@ for (const g of GUIDES) {
   const heads = g.body.map((b, i) => (b && b.h2 ? i : -1)).filter(i => i > 0);
   const mid = heads.length ? heads.reduce((a, i) => (Math.abs(i - g.body.length / 2) < Math.abs(a - g.body.length / 2) ? i : a)) : -1;
   const withAds = mid > 0 ? [...g.body.slice(0, mid), { ad: "guide-mid" }, ...g.body.slice(mid)] : g.body;
+  // "On this page": the guide's own headings, after the intro, for guides with three or more
+  const h2s = g.body.filter((b) => b && b.h2);
+  const firstHead = withAds.findIndex((b) => b && (b.h2 || b.ad));
+  const toc = h2s.length >= 3 ? `<nav class="toc" aria-labelledby="toc-title"><p class="toc-title" id="toc-title">On this page</p><ol class="toc-list">${h2s.map((b) => `<li><a href="#${b.id || slug(b.h2)}">${esc(plain(b.h2))}</a></li>`).join("")}</ol></nav>` : "";
+  const html = blocks(firstHead > 0 ? [{ ad: "guide-top" }, ...withAds.slice(0, firstHead)] : [{ ad: "guide-top" }]) + toc + blocks(firstHead > 0 ? withAds.slice(firstHead) : withAds);
+  // reading time at about 220 words a minute, from the guide's own text
+  const minutes = Math.max(1, Math.round(blocks(g.body).replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length / 220));
+  const initials = SITE.author.name.split(" ").map((w) => w[0]).join("").slice(0, 2);
   const body = `<article class="page guide">
 <p class="crumbs"><a href="/guides/">Guides</a> <span aria-hidden="true">›</span> <a href="/guides/#${g.topic}">${esc(topicName)}</a></p>
 <h1>${inline(g.title)}</h1>
 <p class="lead">${inline(g.summary)}</p>
-<p class="byline">By <a href="/about/#author">${esc(SITE.author.name)}</a>, ${esc(SITE.author.byline)}. Facts checked ${esc(g.updated)}.</p>
-${blocks([{ ad: "guide-top" }, ...withAds])}
+<div class="byline-row"><span class="avatar" aria-hidden="true">${esc(initials)}</span><p class="byline">By <a href="/about/#author">${esc(SITE.author.name)}</a>, ${esc(SITE.author.byline)}. Facts checked ${esc(g.updated)}.</p><span class="readtime">${minutes} min read</span></div>
+${html}
 ${g.sources ? `<h2 id="sources">Sources</h2><ul class="sources">${g.sources.map(([t, u]) => `<li><a href="${esc(safeUrl(u))}" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>` : ""}
 ${blocks([{ ad: "guide-end" }])}
 <aside class="related"><h2>Related guides</h2>${blocks([{ cards: related }])}</aside>
