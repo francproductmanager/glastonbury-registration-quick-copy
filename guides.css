@@ -61,7 +61,7 @@ main { padding-top: 36px; padding-bottom: 56px; }
 .page h2 { font: 500 26px/1.2 var(--serif); letter-spacing: -0.01em; color: var(--ink); margin: 48px 0 14px; scroll-margin-top: 20px; }
 @media (min-width: 720px) { .page h2 { font-size: 30px; margin: 64px 0 18px; } }
 .page h3 { font: 600 18px/1.35 var(--sans); margin: 32px 0 8px; }
-.page p, .page li { color: var(--ink-2); text-wrap: pretty; }
+.page p, .page li { color: var(--ink-2); text-wrap: pretty; overflow-wrap: break-word; } /* long web addresses wrap instead of widening the page */
 .page strong { color: var(--ink); font-weight: 600; }
 .page p { margin: 0 0 20px; }
 @media (min-width: 720px) { .page p { margin-bottom: 22px; } }
