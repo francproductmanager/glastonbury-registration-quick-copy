@@ -66,7 +66,7 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 
 ### Record it
 
-- Add a dated entry at the top of the updates page (the `updates/index.html` entry in `PAGES` in `content.mjs`): one bullet per change, written for readers.
+- Add a dated entry at the top of the updates page (the `updates/index.html` entry in `PAGES` in `content.mjs`): one bullet per change, written for readers. The home page's "Latest guides" list is built from these bullets: start each one with a bold label (`**New:**`, `**Updated:**`, `**Corrected:**`) and link the guide it's about first, and that guide moves to the top of the list.
 - Write your log (`site-src/log/<today>-writer-am.md` or `-writer-pm.md`): which backlog items you did, what you changed and why, what you couldn't verify, and ideas for the auditor. Never edit `seo-audit.md`.
 
 ## Check, then open or update the pull request

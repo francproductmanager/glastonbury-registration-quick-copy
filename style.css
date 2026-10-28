@@ -163,6 +163,53 @@ footer a { color: var(--muted); }
 .guides-links ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .guides-links a { color: var(--accent-ink); }
 
+/* home: dateline, masthead and the hero band holding the main action */
+.dateline { display: flex; justify-content: space-between; gap: 12px; min-height: 20px; font-size: 12.5px; line-height: 20px; color: var(--muted); }
+.dateline .today { font-family: var(--mono); white-space: nowrap; }
+@media (max-width: 359px) { .dateline .weekday { display: none; } }
+.masthead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: calc(6px - var(--gap)); padding: 6px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.masthead .wordmark { font-size: clamp(22px, 6.6vw, 28px); line-height: 1.2; letter-spacing: -0.02em; white-space: nowrap; }
+.masthead nav { display: flex; }
+.masthead nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; color: var(--ink); font-weight: 500; font-size: 15px; text-decoration: none; }
+.masthead nav a:last-child { padding-right: 0; }
+.masthead nav a:hover { color: var(--accent-ink); }
+.hero { display: flex; flex-direction: column; gap: 14px; padding: 22px 18px 18px; border-radius: 20px; background: var(--accent-soft); }
+.hero h1.display { margin: 0; font-size: clamp(28px, 8.2vw, 36px); color: var(--accent-deep); }
+.hero .lead { color: var(--ink-2); }
+.hero .lead + .btn { margin-top: 4px; }
+.hero .btn + .btn { margin-top: -4px; }
+
+/* home: latest guides and countdown, drawn by latest.js */
+.latest-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 2px; border-bottom: 1px solid var(--border-strong); }
+.latest-head a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.latest-meta { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.latest-meta:empty, .latest-countdown:empty { display: none; }
+.live-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--ok-dot); animation: live 2s ease-out infinite; }
+@keyframes live { 0% { box-shadow: 0 0 0 0 var(--ok-dot); } 100% { box-shadow: 0 0 0 7px transparent; } }
+.latest-feed { display: flex; flex-direction: column; }
+.story { display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--divider); color: var(--ink); text-decoration: none; }
+.story:hover { color: var(--ink); }
+.story:hover .story-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.story-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12.5px; color: var(--muted); }
+.story-date { font: 500 12.5px var(--mono); }
+.tag { padding: 1px 7px; border-radius: 6px; background: var(--accent-soft); color: var(--accent-deep); font: 600 11px/1.5 var(--sans); letter-spacing: .05em; text-transform: uppercase; }
+.tag-new { background: var(--accent); color: var(--on-accent); }
+.story-title { font: 500 19px/1.25 var(--serif); }
+.story-lead { padding-top: 6px; }
+.story-lead .story-title { font-size: 26px; line-height: 1.15; letter-spacing: -0.01em; }
+.story-sum { font-size: 15px; color: var(--ink-2); }
+.story-list { list-style: none; margin: 0; padding: 0; }
+.countdown { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; padding: 18px; border-radius: 16px; background: var(--accent); color: var(--on-accent); }
+.cd-cap { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.cd-row { display: grid; grid-template-columns: 6.6em minmax(0, 1fr); align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, .3); border-bottom-color: color-mix(in oklab, var(--on-accent) 30%, transparent); }
+.cd-num { font: 600 30px/1 var(--mono); white-space: nowrap; }
+.cd-unit { font: 500 13px var(--sans); }
+.cd-what { display: flex; flex-direction: column; }
+.cd-title { font-weight: 600; font-size: 15px; line-height: 1.3; }
+.cd-date { font-size: 13.5px; }
+.cd-link { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; margin: -10px 0 -12px; color: var(--on-accent); font-size: 14px; font-weight: 600; }
+.cd-link:hover { color: var(--on-accent); }
+
 /* ad slots (see ads.js): nothing shows until Google fills the slot; then it sits in its own
    dashed panel with a label and extra space, so it can't be mistaken for part of the tool */
 .ad-slot:not([data-filled]) { display: none; }
