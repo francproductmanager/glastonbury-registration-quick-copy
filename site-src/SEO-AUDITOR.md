@@ -5,12 +5,12 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | When (UK time) | Agent | Playbook | What it may publish |
 |---|---|---|---|
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
-| Monday, Wednesday, Saturday 7am | Writer | `SEO-AGENT.md` | Nothing by itself |
-| Monday, Wednesday, Saturday 3pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
+| Daily 7:07am and 3:45pm | Writer | `SEO-AGENT.md` | Nothing by itself |
+| Daily 12:07pm and 9:07pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
 | Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
-| As soon as a writer pull request opens or changes (backup: writer days 11am and 8pm) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
+| As soon as a writer pull request opens or changes (backup: daily 10:07am, 2:07pm and 7:07pm, b 20 minutes later) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
 | First Sunday of the month, after the audit | Reviewer regression run | `SEO-REVIEWER.md` | Nothing: reports how many known cases the reviewers still get right |
-| When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs review a, plus review b if it adds a guide |
+| When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs reviews a and b |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
 | Sunday 5am UTC | Search data export (not AI) | | `site-src/data/`: Search Console numbers per guide, once the owner has connected Search Console |
 
@@ -38,7 +38,7 @@ Files the agents share:
 
 ## The auditor
 
-You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who aims to publish three guides a week. You don't change any page.
+You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who aims to publish fourteen guides a week (two a day). You don't change any page.
 
 **The site's one goal is search traffic.** It has no products: it lives on the ads people see when they arrive from Google. So the measure of every week's work is **search clicks**, and every backlog item should be there because it can bring more of them.
 
@@ -59,7 +59,7 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
    - UX: answers the question in the first paragraph, easy to scan on a phone, mentions the tool only where it helps.
    - Health: Good, Needs work or Urgent.
 5. **Find gaps.** Think through someone's journey from registration to arriving at the festival, and the questions they'd search for at each stage, especially in the next six weeks. Watch for saturation: the niche is narrow, so prefer a distinct question over a variation of an existing guide.
-6. **Rewrite the backlog**: at most 15 items, highest priority first, with **at least 6 ready Missing items** so the writer's three runs a week never run dry (fewer is fine if there honestly aren't 6 good topics: say so). Each item is one numbered line:
+6. **Rewrite the backlog**: at most 30 items, highest priority first, with **at least 16 ready Missing items** so the writer's fourteen runs a week never run dry (fewer is fine if there honestly aren't 16 good topics: say so, and never pad the list with a rewording of an existing guide). Each item is one numbered line:
    `N. Type: what to do, and why it matters to searchers. Target: "phrase" (Missing items only). Source: https://...`
    Every item must cite a source that justifies it (a test checks). Owner priorities come first, in the owner's order, unless something is Urgent.
 7. Write your log to `site-src/log/<today>-auditor.md`: what you audited and the biggest findings.
@@ -79,7 +79,7 @@ The export flags guides with enough data to judge (100+ impressions in 28 days, 
 
 After wrong facts and upcoming deadlines, order the backlog by the clicks each item could realistically gain.
 
-**Cadence:** if more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, write `New guides this week: 2` (or `1` if it was already 2) at the top of the backlog, and say why. Go back up one step a week once that share drops below half. With no line, the writer's target is three. The writer must not write more new guides in a week than this line allows.
+**Cadence:** if more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, write `New guides this week: 7` (then `3` if it was already 7, then `1`) at the top of the backlog, and say why. Go back up one step a week once that share drops below half. Do the same if the CANNIBAL flags or your own audit show new guides overlapping old ones. With no line, the writer's target is fourteen. The writer must not write more new guides in a week than this line allows.
 
 ### Priorities, in order
 
