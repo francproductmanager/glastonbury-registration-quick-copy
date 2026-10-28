@@ -160,8 +160,6 @@ footer a { color: var(--muted); }
 .visit-count:empty { margin-top: calc(-1 * var(--gap)); } /* no gap until there's a number */
 .home-info p, .home-info li { font-size: 15px; text-wrap: wrap; } /* "pretty" wrapping costs layout time on long text */
 .home-info ul, .home-info ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
-.guides-links ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
-.guides-links a { color: var(--accent-ink); }
 
 /* home: dateline, masthead and the hero band holding the main action */
 .dateline { display: flex; justify-content: space-between; gap: 12px; min-height: 20px; font-size: 12.5px; line-height: 20px; color: var(--muted); }

@@ -24,6 +24,8 @@ const GUIDES = ALL_GUIDES.filter((g) => !g.draft);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = ROOT;
 const URL_ = SITE.url;
+// The name in the header of every page (page titles and text still use SITE.name)
+const WORDMARK = "GlastoBolt.co.uk";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // Inline markup allowed in content: **bold** and [text](url). Everything else is escaped.
@@ -180,7 +182,7 @@ ${path === "/updates/" ? `<link rel="alternate" type="application/atom+xml" titl
 <body>
 <header class="site-head">
   <div class="wrap head-row">
-    <a class="wordmark" href="/">${esc(SITE.name)}</a>
+    <a class="wordmark" href="/">${esc(WORDMARK)}</a>
     <nav aria-label="Main">
       <a href="/guides/">Guides</a>
       <a href="/faq/">FAQ</a>
