@@ -10,3 +10,10 @@ Fixed by hand in a session with the owner, after both reviewers failed the refun
 
 ## Ideas for the auditor
 - The writer's original mistakes came from reading the info page through narrow questions to a summarising web tool. The playbook now asks for the full page to be downloaded and searched.
+
+## Second round, after both reviewers failed 550df46
+Checked every point against the info page again, this time searching the full page text with whitespace flattened (an earlier search cut long lines short and missed the ticket terms).
+- Booking fees, postage and packing: the ticket terms say they are non-refundable. The refund guide and the deposits guide now say so; removed from "What we couldn't confirm".
+- Coach charge: the refund section says an extra 15 pounds, the ticket terms say an additional 3 pounds. The guide now gives both and tells readers to ask See Tickets.
+- Deposits guide: the 2025 sentence no longer uses the 2027 `refundFee` fact.
+- Not changed: the 12 May access deadline is on the info page ("The final deadline for Access Applications is the 12th May"). The 30 April accessible campsite cut off is not on the 2027 info page: the only 30 April there is for coach wheelchair requests, and an all access applications deadline of 30 April appears in the 2025 resale FAQ. The 25 pound campervan and accommodation charges are on the info page ("subject to an administration charge of £25"; "£25 administration fee per unit").
