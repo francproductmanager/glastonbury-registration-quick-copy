@@ -10,7 +10,8 @@
 // when a value here changes, the writer updates those too.
 
 const Y2027 = "https://www.glastonburyfestivals.co.uk/news/glastonbury-2027-ticket-information-confirmed/";
-const CHECKED = "2026-10-26";
+const CHECKED = "2026-10-28";
+const INFO = "https://www.glastonburyfestivals.co.uk/info/";
 
 export const FACTS = {
   ticketPrice: { value: "£408", meaning: "2027 general admission ticket, including the £5 booking fee", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
@@ -25,6 +26,9 @@ export const FACTS = {
   festivalDates: { value: "Wednesday 23 to Sunday 27 June 2027", meaning: "Glastonbury Festival 2027", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
   festivalDatesShort: { value: "Wed 23 to Sun 27 June 2027", meaning: "Glastonbury Festival 2027, short form", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
   ticketAgeCutoff: { value: "23 June 2014", meaning: "Anyone born on or before this date is 13 or over on the first day of the 2027 festival and needs a ticket", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
+  refundDeadline: { value: "7 May 2027", meaning: "Last moment (11.59pm BST) to get a refund on a 2027 general admission ticket or car park pass; non-refundable after it", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
+  refundFee: { value: "£25", meaning: "Administration charge kept from each refunded 2027 ticket", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
+  accessDeadline: { value: "12 May", meaning: "Final deadline for 2027 Access Applications, as listed on the info page", source: INFO, checked: CHECKED, recheckBy: "2027-05-12" },
 };
 
 // Ticket moments: when people search most and a wrong fact costs readers the most. From 14 days before
