@@ -36,7 +36,7 @@ export const FACTS = {
 // Ticket moments: when people search most and a wrong fact costs readers the most. From 14 days before
 // one starts until 3 days after it ends, the agents work in ticket moment mode (scripts/ticket-moment.mjs):
 // facts are rechecked every day and no new guides are written. Add a moment as soon as its dates are
-// confirmed, with the source.
+// confirmed, with the source. Only sales and deadlines open to everyone count (see SEO-AUDITOR.md).
 export const TICKET_MOMENTS = [
   { name: "2027 balance payment window", start: "2027-04-01", end: "2027-04-07", source: Y2027 },
 ];
