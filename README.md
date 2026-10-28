@@ -19,6 +19,7 @@ Through the Glasto queue? Fill in your whole group in seconds. Put everyone's re
 - **Saved on your phone only.** Groups live in your browser's local storage. No accounts, no database.
 - **The tool's code never sends your group anywhere.** `app.js` makes no network requests (the tests check this).
 - **One visit counter.** `counter.js` (home page only) asks this site's `/api/visits` to add one visit per browser session. The total isn't shown on the page for now (`SHOW_TOTAL` in `counter.js`); read it at https://glastobolt.co.uk/api/visits. It sends no cookies, no referrer and nothing about anyone's group. The server side (`netlify/functions/visits.mjs`) stores a single number in Netlify Blobs: no IP addresses or other visitor details.
+- **The latest guides.** `latest.js` (home page only) reads `/updates/latest.json`, a plain file on this site, to show the newest guides and a countdown to the next dates. It sends no cookies, no referrer and nothing about anyone's group, and draws everything as text. `node site-src/build.mjs` writes that file from the updates page, so the list moves on by itself whenever a guide is added or changed.
 - **The site shows Google ads.** That keeps it free. Like any site with Google ads, Google's ad code runs on its pages, and Google uses cookies to show and measure ads (with a consent message in the UK, EEA and Switzerland). Ads only appear in fixed slots on the home page, guides and info pages, never on the screens where you set up, edit or copy your group. See the [privacy policy](https://glastobolt.co.uk/privacy/).
 - **Security policy.** Because of the ads, the Content Security Policy allows Google's ad servers. It still blocks plugins, `<base>` hijacking and form submissions, and stops other sites embedding the pages.
 - **Share links carry the data themselves.** First names, reg numbers and postcodes are packed into the part of the link after `#`, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead ("Alex 1", "Alex 2"). It's encoded, not encrypted, so only send it to your group.
@@ -50,6 +51,7 @@ bash scripts/verify-live.sh
 | `app.js` | All the tool's logic: screens, import parser, local storage, copy boxes, share links |
 | `ads.js` | The ad slots and their AdSense ad unit IDs (see below) |
 | `counter.js`, `netlify/functions/visits.mjs` | The home page visit counter: the page script and the tiny server function that keeps the total |
+| `latest.js` | The home page's latest guides and countdown, read from `updates/latest.json` (built from the updates page) |
 | `style.css`, `guides.css`, `fonts/` | Styles and self-hosted fonts (Newsreader, Instrument Sans, IBM Plex Mono, all OFL) |
 | `guides/`, `faq/`, `about/`, `contact/`, `privacy/`, `terms/`, `updates/`, `404.html`, `sitemap.xml`, `robots.txt` | Guides and info pages, generated from `site-src/` |
 | `site-src/` | Content (`content.mjs`) and generator (`build.mjs`) for those pages |

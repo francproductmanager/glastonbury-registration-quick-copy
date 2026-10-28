@@ -16,7 +16,7 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const GENERATED = ["guides", "faq", "about", "contact", "privacy", "terms", "updates", "calendar", "downloads", "404.html", "sitemap.xml", "robots.txt"];
 const SITE_URL = "https://glastobolt.co.uk";
 const SOURCE_REPO = "https://github.com/francproductmanager/glastonbury-registration-quick-copy";
-const TYPES = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".txt": "text/plain", ".woff2": "font/woff2", ".xml": "application/xml" };
+const TYPES = { ".html": "text/html", ".js": "application/javascript", ".css": "text/css", ".txt": "text/plain", ".woff2": "font/woff2", ".xml": "application/xml", ".json": "application/json" };
 const toml = readFileSync(join(ROOT, "netlify.toml"), "utf8");
 const CSP = toml.match(/Content-Security-Policy = "([^"]+)"/)[1];
 
@@ -106,6 +106,7 @@ const toolHtml = ["index.html", "demo.html"].map(f => readFileSync(join(ROOT, f)
 const sitePages = GENERATED.flatMap(g => { const f = join(ROOT, g); return !existsSync(f) ? [] : statSync(f).isDirectory() ? walk(f) : [f]; }).filter(f => f.endsWith(".html"));
 const adsSrc = readFileSync(join(ROOT, "ads.js"), "utf8");
 const counterSrc = readFileSync(join(ROOT, "counter.js"), "utf8");
+const latestSrc = readFileSync(join(ROOT, "latest.js"), "utf8");
 const guidesSrc = readFileSync(join(ROOT, "guides.js"), "utf8");
 
 console.log("\nStatic checks");
@@ -116,7 +117,7 @@ await test("Security policy allows Google ads but keeps every other protection",
   assert(/Referrer-Policy = "strict-origin-when-cross-origin"/.test(toml), "referrer policy");
 });
 await test("The tool's code makes no network requests; pages load only Google's ad loader, through ads.js", () => {
-  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["guides.js", guidesSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
+  for (const [name, src] of [["app.js", appSrc], ["ads.js", adsSrc], ["counter.js", counterSrc], ["latest.js", latestSrc], ["guides.js", guidesSrc], ["style.css", readFileSync(join(ROOT, "style.css"), "utf8")]]) {
     const urls = (src.match(/https?:\/\/[^\s"'`)]+/g) || []).filter(u => !u.startsWith("http://www.w3.org/") && u !== SOURCE_REPO)
       // ads.js adds Google's ad loader (and checks whether it's already there); nothing else may
       .filter(u => !(name === "ads.js" && ["https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=", "https://pagead2.googlesyndication.com/"].includes(u)));
@@ -126,7 +127,7 @@ await test("The tool's code makes no network requests; pages load only Google's 
   const LOADER = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2229524942259780";
   for (const h of [...toolHtml, ...sitePages.map(f => readFileSync(f, "utf8"))]) {
     const srcs = [...h.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map(m => m[1]);
-    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || u === "/guides.js" || (h === toolHtml[0] && /^counter\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
+    for (const u of srcs) assert(u === LOADER || /^\/?(ads|app)\.js(\?v=\d+)?$/.test(u) || u === "/guides.js" || (h === toolHtml[0] && /^(counter|latest)\.js(\?v=\d+)?$/.test(u)), `unexpected script ${u}`);
     assert(!srcs.includes(LOADER), "Google's ad loader is added by ads.js after the page loads, not in the page");
     assert(srcs.some(u => /^\/?ads\.js(\?v=\d+)?$/.test(u)), "ads.js missing");
     assert(!/<link[^>]+href="https?:/.test(h.replace(/<link rel="canonical"[^>]+>/, "")), "external stylesheet or font");
@@ -221,6 +222,26 @@ await test("Fonts are self-hosted and present", () => {
   const files = [...css.matchAll(/url\("fonts\/([^"]+)"\)/g)].map(m => m[1]);
   assert(files.length === 7, `expected 7 font faces, got ${files.length}`);
   for (const f of files) assert(existsSync(join(ROOT, "fonts", f)), `missing font ${f}`);
+});
+await test("latest.js makes exactly one request, for this site's list of latest guides, and draws it as text", () => {
+  const code = latestSrc.replace(/\/\/.*$/gm, "");
+  eq((code.match(/fetch\(/g) || []).length, 1, "one fetch");
+  assert(/fetch\("\/updates\/latest\.json", \{ credentials: "omit", referrerPolicy: "no-referrer" \}\)/.test(code), "same-site file, no cookies, no referrer, no body");
+  for (const bad of ["innerHTML", "outerHTML", "insertAdjacentHTML", "document.write", "eval(", "new Function", "XMLHttpRequest", "WebSocket", "sendBeacon", "postMessage", "localStorage", "sessionStorage", "tdqc:", "method:", "body:"]) assert(!code.includes(bad), `found ${bad}`);
+  assert(toolHtml[0].includes('<script src="latest.js') && !toolHtml[1].includes("latest.js"), "on the tool's home page only, not the demo");
+});
+await test("The guides build lists the latest guides for the home page from the updates page", async () => {
+  const d = JSON.parse(readFileSync(join(ROOT, "updates", "latest.json"), "utf8"));
+  const { GUIDES } = await import(new URL("../site-src/content.mjs", import.meta.url));
+  assert(d.items.length >= 3 && d.items.length <= 7, "three to seven guides");
+  for (const i of d.items) {
+    assert(/^\/guides\/[a-z0-9-]+\/$/.test(i.href) && GUIDES.some(g => !g.draft && `/guides/${g.slug}/` === i.href), `published guide: ${i.href}`);
+    assert(["New", "Updated"].includes(i.tag) && /^\d{4}-\d\d-\d\d$/.test(i.date), "tag and date");
+  }
+  eq(new Set(d.items.map(i => i.href)).size, d.items.length, "each guide once");
+  eq(d.items.map(i => i.date), [...d.items.map(i => i.date)].sort().reverse(), "newest first");
+  eq(d.updated, d.items[0].date, "updated is the newest entry");
+  assert(d.dates.length && d.dates.every(x => /^\d{4}-\d\d-\d\d$/.test(x.start) && x.end >= x.start), "countdown dates");
 });
 
 // ---------- guides and info pages ----------
@@ -656,8 +677,9 @@ await test("Try it: a failed copy says so and doesn't move on", async () => {
 });
 await test("Home: one main action, how it works, questions, footer with commit and data link", async () => {
   const p = await page(await context()); await p.goto(stamped.url);
-  eq(await p.locator(".v-home > a.btn-primary").textContent(), "Set up your group", "CTA");
-  assert(await p.evaluate(() => { const a = document.querySelector(".v-home > a.btn-primary"), t = document.querySelector(".v-home .card[aria-label='Try it']"); return !!(a.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING); }), "main action before the practice demo");
+  eq(await p.locator(".v-home > .hero > a.btn-primary").textContent(), "Set up your group", "CTA");
+  assert(await p.evaluate(() => { const a = document.querySelector(".v-home > .hero > a.btn-primary"), t = document.querySelector(".v-home .card[aria-label='Try it']"); return !!(a.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING); }), "main action before the practice demo");
+  eq(await p.locator(".v-home .btn-primary").count(), 1, "one main action");
   eq(await p.locator(".steps li").count(), 3, "steps");
   eq(await p.locator(".v-home > .section .faq").count(), 4, "faq");
   await p.locator(".faq summary").first().click(); assert(await p.locator(".faq").first().evaluate(d => d.open), "faq opens");
@@ -667,6 +689,40 @@ await test("Home: one main action, how it works, questions, footer with commit a
   for (const l of ["/guides/", "/faq/", "/about/", "/privacy/", "/terms/", "/contact/"]) assert(links.some(([t, h]) => h === l), `footer link ${l}`);
   assert(await p.locator(".guides-links a[href^='/guides/']").count() >= 4, "guide links on home");
   noErrors(p); await p.context().close();
+});
+await test("Home: latest guides and countdown come from the build, after the guide links and before the explanation", async () => {
+  const p = await page(await context()); await p.goto(B);
+  await p.waitForSelector(".latest:not([hidden]) .story-lead");
+  const d = JSON.parse(readFileSync(join(ROOT, "updates", "latest.json"), "utf8"));
+  eq(await p.locator(".latest .story").evaluateAll(as => as.map(a => a.getAttribute("href"))), d.items.map(i => i.href), "every guide, in order");
+  eq(await p.textContent(".story-lead .story-title"), d.items[0].title, "lead story");
+  assert(/^Guides updated /.test(await p.textContent(".latest-meta")), "when");
+  assert(await p.evaluate(() => { const s = [...document.querySelectorAll(".v-home > *")]; const i = (q) => s.indexOf(document.querySelector(q)); return i(".guides-links") < i(".latest") && i(".latest") < i("#home-info"); }), "order");
+  assert(await p.locator(".v-home > .hero > .btn").count() === 2, "practice shortcut in the band");
+  await p.click(".hero .btn-secondary"); await p.waitForFunction(() => document.querySelector(".card[aria-label='Try it']").getBoundingClientRect().top < 200);
+  // Nothing on the home page is wider than the smallest phones, and the masthead stays on one line
+  for (const width of [320, 360, 375, 390, 412, 430]) {
+    await p.setViewportSize({ width, height: 800 });
+    eq(await p.evaluate(() => document.documentElement.scrollWidth), width, `no sideways scrolling at ${width}px`);
+    assert(await p.evaluate(() => { const m = document.querySelector(".masthead"); return Math.abs(m.querySelector(".wordmark").getBoundingClientRect().top - m.querySelector("nav").getBoundingClientRect().top) < 20; }), `masthead on one line at ${width}px`);
+    eq(await p.evaluate(() => document.querySelector(".dateline").getBoundingClientRect().height), 20, `dateline on one line at ${width}px`);
+  }
+  noErrors(p); await p.context().close();
+  // A file with HTML or a link off the site is drawn as text or left out; a missing file hides the section
+  const c2 = await context();
+  await c2.route("**/updates/latest.json", r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ updated: "2026-10-28", items: [
+    { date: "2026-10-28", tag: "New", title: "<img src=x onerror=window.__pwned=1>", href: "/guides/a-guide/" },
+    { date: "2026-10-27", tag: "Updated", title: "Off site", href: "javascript:window.__pwned=1" },
+    { date: "2026-10-26", tag: "Updated", title: "Elsewhere", href: "https://example.com/guides/x/" }],
+    dates: [{ title: "Past", start: "2020-01-01", end: "2020-01-02" }, { title: "Later", start: "2099-01-01", end: "2099-01-01" }] }) }));
+  const q = await page(c2); await q.goto(B); await q.waitForSelector(".latest:not([hidden])");
+  eq(await q.locator(".latest .story").count(), 1, "only the guide link");
+  eq(await q.textContent(".story-lead .story-title"), "<img src=x onerror=window.__pwned=1>", "as text");
+  eq(await q.locator(".cd-title").allTextContents(), ["Later"], "past dates left out");
+  assert(!(await q.evaluate(() => window.__pwned)), "nothing ran"); noErrors(q); await c2.close();
+  const c3 = await context(); await c3.route("**/updates/latest.json", r => r.abort());
+  const s = await page(c3); await s.goto(B); await s.waitForSelector(".v-home .faq"); await s.waitForTimeout(300);
+  assert(await s.locator(".latest").evaluate(e => e.hidden), "hidden"); noErrors(s); await c3.close();
 });
 await test("Visit counter: counts once per session, sends nothing, and keeps the total off the page", async () => {
   const ctx = await context(); const calls = [];

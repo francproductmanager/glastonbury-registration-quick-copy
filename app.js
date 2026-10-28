@@ -473,15 +473,18 @@
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
-    return homeScreen(
+    // The practice demo is for newcomers: once a group is saved on this phone, it's hidden
+    const practice = ids.length ? null : tryIt();
+    return homeScreen([
       // Starting from home always begins a fresh setup
       h("a", { class: "btn btn-primary", href: "#/new", onclick: () => { draft = null; } }, "Set up your group"),
+      practice && h("button", { type: "button", class: "btn btn-secondary btn-sm", onclick: () => practice.scrollIntoView({ behavior: "smooth", block: "start" }) }, "Try it first with example data"),
+    ],
       ids.length ? h("div", { class: "saved-list" }, ids.map(id => h("a", { class: "saved", href: "#/p/" + id },
         h("span", null, h("span", { class: "meta" }, "Saved on this phone"), h("span", { class: "names" }, firstNames(all[id].people))),
         h("span", { class: "open" }, "Open ›"))))
         : h("p", { class: "help saved-empty" }, "No groups saved yet. Set one up before ticket day."),
-      // The practice demo is for newcomers: once a group is saved on this phone, it's hidden
-      ids.length ? null : tryIt(),
+      practice,
       h("section", { class: "section" },
         h("h2", null, "How it works"),
         h("ol", { class: "steps" },
@@ -494,23 +497,40 @@
         h("h2", null, "Ticket day guides"),
         h("ul", null, GUIDE_LINKS.map(([href, t]) => h("li", null, h("a", { href }, t)))),
         h("p", null, h("a", { href: "/guides/" }, "All guides"), " or ", h("a", { href: "/faq/" }, "read the FAQ"))),
+      // filled by latest.js from /updates/latest.json, which the guides build writes; it stays
+      // hidden if that file can't be read
+      h("section", { class: "section latest", "aria-labelledby": "latest-h", hidden: true },
+        h("div", { class: "latest-head" }, h("h2", { id: "latest-h" }, "Latest guides"), h("a", { href: "/guides/" }, "All guides")),
+        h("p", { class: "latest-meta" }),
+        h("div", { class: "latest-feed" }),
+        h("div", { class: "latest-countdown" }),
+        h("p", { class: "help" }, "Every change is listed on the ", h("a", { href: "/updates/" }, "updates page"), ".")),
       homeInfo,
       ad("home-end"),
       footer(),
       // filled by counter.js with the site's visit total when SHOW_TOTAL is on; otherwise stays empty
       h("p", { class: "visit-count" }));
   }
-  // The home screen's container with its fixed top (title bar, heading, intro), then `rest`.
+  // The home screen's container with its fixed top (dateline, masthead, and the hero band with the
+  // heading and intro), then `heroActions` in the band and `rest` below it.
   // On the real site the top comes from index.html and is never removed; the demo page has none,
   // so it's built here.
   let homeEl = null;
-  function homeScreen(...rest) {
+  function homeScreen(heroActions, ...rest) {
     if (!homeEl) homeEl = staticHome || h("div", { class: "view v-home" },
-      h("div", { class: "topbar" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"), h("span", null, "Free and unofficial")),
-      h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
-      h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one."));
-    const lead = homeEl.querySelector(":scope > .lead");
+      h("div", { class: "dateline" }, h("span", { class: "today" }), h("span", null, "Free and unofficial")),
+      h("div", { class: "masthead" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"),
+        h("nav", { "aria-label": "Main" }, h("a", { href: "/guides/" }, "Guides"), h("a", { href: "/faq/" }, "FAQ"))),
+      h("div", { class: "hero" },
+        h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
+        h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one.")));
+    // today's date, like a newspaper's (the weekday is dropped on the narrowest phones)
+    const now = new Date(), day = (o) => now.toLocaleDateString("en-GB", o);
+    homeEl.querySelector(".today").replaceChildren(h("span", { class: "weekday" }, day({ weekday: "long" }) + " "), day({ day: "numeric", month: "long", year: "numeric" }));
+    const hero = homeEl.querySelector(":scope > .hero"), lead = hero.querySelector(":scope > .lead");
     while (lead.nextSibling) lead.nextSibling.remove();
+    while (hero.nextSibling) hero.nextSibling.remove();
+    hero.append(...heroActions.filter((x) => x != null && x !== false));
     homeEl.append(...rest.flat().filter((x) => x != null && x !== false));
     return homeEl;
   }
@@ -923,7 +943,7 @@
       h("h1", null, "How your data is handled"),
       block("Where it's saved", "In this browser's storage, on this phone only. No accounts and no database."),
       block("When it's cleared", "Groups and links are cleared on a seasonal schedule: details created from June through October are cleared on 1 December; details created from November through May are cleared on 1 June. Dates are UK dates. Clearing happens the next time you open the tool on this phone."),
-      block("Is it sent anywhere?", "Not by this tool. Its code never sends your group anywhere and there's no server copy of your group. The only request the site makes for itself is the home page's visit counter, which sends nothing about you or your group."),
+      block("Is it sent anywhere?", "Not by this tool. Its code never sends your group anywhere and there's no server copy of your group. The only requests the site makes for itself are on the home page: its visit counter, and reading the list of latest guides. Neither sends anything about you or your group."),
       block("Ads", "The site is free because it shows Google ads. As on any site with ads, Google's ad code runs on these pages and Google uses cookies to show and measure ads. ", h("a", { href: "/privacy/" }, "Privacy and cookies")),
       block("Share links", "First names, reg numbers and postcodes are packed into the part of the link after the #, which browsers never send to a server. Surnames are left out: two people with the same first name are numbered instead (Alex 1, Alex 2). It's encoded, not encrypted, so anyone with the link can read it."),
       block("Your clipboard", "Some keyboards, like Gboard, keep a clipboard history. You can clear it from the keyboard's clipboard menu after ticket day."),
@@ -966,6 +986,7 @@
     else for (const c of [...app.childNodes]) if (c !== node) c.remove();
     if (window.GQCAds) window.GQCAds.fill(app);
     if (window.GQCVisits) window.GQCVisits.fill(app);
+    if (window.GQCLatest) window.GQCLatest.fill(app);
     document.title = view === "p" && loadAll()[arg] ? `${pageTitle(loadAll()[arg].people)} | Glasto Quick Copy` : DEMO ? "Demo | Glasto Quick Copy" : HOME_TITLE;
     window.scrollTo(0, 0);
   }

@@ -111,6 +111,37 @@ ${entries.map((e) => `<entry><title>${esc(e.title)}</title><id>${URL_}${page.pat
 </feed>
 `;
 }
+// The home page's "Latest" feed, read from the updates page so it moves on whenever a guide is
+// added or changed: each guide once, at its newest entry, newest first. A bullet counts when it
+// starts with a bold label (**New:**, **Updated:** ...) and links to a guide; it's marked new when
+// the label says so. A "new" bullet can list several new guides; any other names one, its first.
+// Also the dates in CALENDAR, for the home page's countdown. latest.js draws it all.
+function latest(page) {
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  // "28 October 2026" to "2026-10-28"; a heading that isn't a date gives null, and its bullets are skipped
+  const isoDay = (t) => { const m = t.match(/^(\d{1,2}) ([A-Z][a-z]+) (\d{4})$/); return m && MONTHS.includes(m[2]) ? `${m[3]}-${String(MONTHS.indexOf(m[2]) + 1).padStart(2, "0")}-${m[1].padStart(2, "0")}` : null; };
+  const items = [], seen = new Set();
+  let date = null;
+  for (const b of page.body) {
+    if (b.h2) date = isoDay(b.h2);
+    else if (b.ul && date) for (const x of b.ul) {
+      const label = x.match(/^\*\*(.+?)\*\*/);
+      if (!label) continue;
+      const isNew = /\bnew\b/i.test(label[1]);
+      const slugs = [...x.matchAll(/\]\(\/guides\/([a-z0-9-]+)\/(#[^)]*)?\)/g)].filter((m) => !isNew || !m[2]).map((m) => m[1]);
+      for (const s of isNew ? slugs : slugs.slice(0, 1)) {
+        const g = GUIDES.find((y) => y.slug === s);
+        if (!g || seen.has(s)) continue;
+        seen.add(s);
+        items.push({ date, tag: isNew ? "New" : "Updated", title: g.title, summary: g.summary, topic: TOPICS.find(([id]) => id === g.topic)[1], href: `/guides/${s}/` });
+      }
+    }
+  }
+  const day = (t) => t.replace(/^(\d{4})-?(\d\d)-?(\d\d).*$/, "$1-$2-$3");
+  // an all-day entry's end is the day after it finishes, as calendars expect
+  const lastDay = (e) => (e.allDay ? new Date(Date.parse(day(e.end)) - 864e5).toISOString().slice(0, 10) : day(e.end));
+  return { updated: items.length ? items[0].date : null, items: items.slice(0, 7), dates: CALENDAR.map((e) => ({ title: e.title, start: day(e.start), end: lastDay(e) })) };
+}
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 // Search results show about 60 characters of a title. One rule for the site name: guides never
@@ -240,6 +271,7 @@ for (const e of CALENDAR) write(`calendar/${e.id}.ics`, ics([e]));
 write(`calendar/${CALENDAR_FEED.file}`, ics(CALENDAR, CALENDAR_FEED.name));
 const updatesPage = PAGES.find((p) => p.path === "/updates/");
 write("updates/feed.xml", atom(updatesPage));
+write("updates/latest.json", JSON.stringify(latest(updatesPage), null, 1) + "\n");
 for (const d of DOWNLOADS) write(`downloads/${d.file}`, d.content);
 urls[0][1] = LASTMOD;
 write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
