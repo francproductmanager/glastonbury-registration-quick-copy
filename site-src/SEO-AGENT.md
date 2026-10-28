@@ -58,7 +58,7 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 - Give it a `target`: the search phrase it answers, lower case, different from every other guide's (a test checks), and not the same question in other words.
 - **900 words or more** (a test checks) of genuinely useful text: answer the question in the first paragraph, then worked examples, steps, tables, and what to do if things go wrong. Short paragraphs that read well on a phone.
 - **Every fact from a source you opened and read**, listed in its `sources`, official sources first and reputable news second. If you can't source it, leave it out. Never present a past year's date or price as this year's: say which year every date and price is from.
-- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic. Never publish a guide marked `draft: true` and never remove that mark: drafts are held back on purpose.
+- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic. A guide marked `draft: true` is held back until something is announced (its comment says what). Publish one only when a backlog item says `Publish draft: <slug>`: then bring the whole guide up to the standard of a new guide (every fact rechecked from its source, the overlap check, links in and out), remove `draft: true`, and treat it as your new guide for the run. Never publish a draft whose comment says `owner hold`.
 - Link to at least two existing guides, and add a natural link to it from at least two.
 
 ### Record it
