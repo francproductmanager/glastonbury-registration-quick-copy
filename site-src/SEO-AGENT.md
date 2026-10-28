@@ -9,7 +9,10 @@ You never publish anything yourself. Two independent reviewers check your pull r
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` and `site-src/facts.mjs` in full. The reviewers check your work against all of them.
 2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit: their comments starting `SEO review a:` or `SEO review b:`, each naming the commit it judged. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
 
-## The fix run (12:07pm and 9:07pm)
+## The fix run (as soon as a fix is needed, and at 12:07pm and 9:07pm as a backup)
+
+The merge workflow puts the label `seo-fix-needed` on a writer pull request once both reviewers have judged its latest commit and either failed it, and that label starts this run. A pull request needs fixing when both reviewers have given a verdict on its latest commit and at least one is FAIL, or when one reviewer has failed it and the other still hasn't given a verdict two hours later. If one reviewer has failed it and the other is still within those two hours, stop: fixing now would change the commit the other reviewer is reading.
+
 
 - If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix it on that same branch:
   1. Read every point in both FAIL comments. For each one, open the source and decide: the reviewer is right (fix it), or the source supports what you wrote (don't change it). Never change correct text just to get a pass.
@@ -23,7 +26,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 
 Your branch is `seo-agent/<today>-am` on the morning run and `seo-agent/<today>-pm` on the afternoon run, and your log `site-src/log/<today>-writer-am.md` or `-writer-pm.md`.
 
-1. If an open writer pull request failed review, fix it as the fix run would, and do nothing new this run.
+1. If an open writer pull request needs fixing (as the fix run defines it), fix it as the fix run would, and do nothing new this run.
 2. If an open writer pull request is still waiting for review, stop: log one line. Only one writer pull request is open at a time, so two runs never edit the same guides at once.
 3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create your branch from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
 4. Otherwise create your branch from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide per run** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus every Urgent, Change and Optimise item in the backlog's top 10, wherever it sits, in one pull request. Skip items already done or in progress: check the writer logs and writer pull requests (merged and open) since the audit was written. If that would change more than 8 guides, do the highest items and leave the rest for the next run, saying so in your log. The weeks run Monday to Sunday. Fourteen new guides a week (two a day) is a target, not a quota: if the top Missing item can't be sourced and written to standard, take the next Missing item that can, or do refreshes only, and say why in the log. Never lower the standard to hit the number.

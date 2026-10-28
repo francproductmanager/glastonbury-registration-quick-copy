@@ -37,6 +37,7 @@ const stop = (why) => { throw new Stop(why); };
 class Wait extends Stop {}
 const wait = (why) => { throw new Wait(why); };
 const WAIT_MINUTES = 12;
+const FIX_LABEL = "seo-fix-needed";
 
 const BOT = "github-actions[bot]";
 const GENERATED = "(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\\.html|sitemap\\.xml|robots\\.txt";
@@ -97,6 +98,13 @@ function gate(pr) {
       if (SIGNED && !signedBy(s, reviewed)) continue;
       latest[s.context] ??= s.state;
     }
+    // Once both reviewers have judged the reviewed commit and either failed it, label the pull request: adding
+    // the label starts the writer's fix run (a GitHub trigger on the routine). A new commit takes it off again
+    const failed = need.every((c) => latest[c]) && need.some((c) => latest[c] === "failure");
+    const labelled = (pr.labels || []).some((l) => l.name === FIX_LABEL);
+    if (failed && !labelled) run("gh", ["api", "-X", "POST", `${R}/issues/${n}/labels`, "-f", `labels[]=${FIX_LABEL}`]);
+    if (!failed && labelled) run("gh", ["api", "-X", "DELETE", `${R}/issues/${n}/labels/${FIX_LABEL}`]);
+    if (failed) stop(`reviewers failed ${reviewed}; labelled ${FIX_LABEL} for the writer's fix run`);
     for (const c of need) if (latest[c] !== "success") stop(`waiting for ${SIGNED ? "a signed " : ""}reviewer pass ${c} on ${reviewed}`);
     if (reviewed !== head) {
       // Only main merged in since the review: the change this pull request makes must be exactly what was reviewed

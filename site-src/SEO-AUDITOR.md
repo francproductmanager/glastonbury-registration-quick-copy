@@ -6,11 +6,11 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 |---|---|---|---|
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
 | Daily 7:07am and 3:45pm | Writer | `SEO-AGENT.md` | Nothing by itself |
-| Daily 12:07pm and 9:07pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
+| As soon as both reviewers have judged a writer pull request and one failed it (backup: daily 12:07pm and 9:07pm) | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
 | Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
 | As soon as a writer pull request opens or changes (backup: daily 10:07am, 2:07pm and 7:07pm, b 20 minutes later) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
 | First Sunday of the month, after the audit | Reviewer regression run | `SEO-REVIEWER.md` | Nothing: reports how many known cases the reviewers still get right |
-| When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs reviews a and b |
+| When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs reviews a and b. When the reviews are in and one failed, it labels the pull request `seo-fix-needed`, which starts the fix run |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
 | Sunday 5am UTC | Search data export (not AI) | | `site-src/data/`: Search Console numbers per guide, once the owner has connected Search Console |
 
