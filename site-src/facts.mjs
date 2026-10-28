@@ -28,6 +28,7 @@ export const FACTS = {
   ticketAgeCutoff: { value: "23 June 2014", meaning: "Anyone born on or before this date is 13 or over on the first day of the 2027 festival and needs a ticket", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
   refundDeadline: { value: "7 May 2027", meaning: "Last moment (11.59pm BST) to get a refund on a 2027 general admission ticket or car park pass; non-refundable after it", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
   refundFee: { value: "£25", meaning: "Administration charge kept from each refunded 2027 ticket", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
+  coachCancelFee: { value: "£15 coach cancellation fee", meaning: "Extra administration charge kept, on top of the ticket charge, from any cancelled 2027 ticket + coach travel booking", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
   accessDeadline: { value: "12 May", meaning: "Final deadline for 2027 Access Applications, as listed on the info page", source: INFO, checked: CHECKED, recheckBy: "2027-05-12" },
 };
 
