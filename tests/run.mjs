@@ -377,11 +377,23 @@ await test("Privacy policy has the disclosures AdSense requires, and is honest a
   const all = sitePages.map(f => readFileSync(f, "utf8")).join("\n") + appSrc;
   for (const stale of ["never appear on the tool", "blocks it from connecting", "separate web address", "connect-src 'none'"]) assert(!all.includes(stale), `stale promise: "${stale}"`);
 });
+// A guide page's words, for the length checks: without scripts, and without the contents list and
+// reading time the build adds, which repeat or describe the guide rather than add to it
+const guideText = (html) => html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<nav class="toc"[\s\S]*?<\/nav>/g, "").replace(/<span class="readtime">[^<]*<\/span>/g, "").replace(/<[^>]+>/g, " ");
+await test("Guide pages: a contents list of the guide's own headings, and a reading time", () => {
+  const h = readFileSync(join(ROOT, "guides", "glastonbury-2027-key-dates", "index.html"), "utf8");
+  const toc = [...(h.match(/<nav class="toc"[\s\S]*?<\/nav>/) || [""])[0].matchAll(/href="#([^"]+)"/g)].map(m => m[1]);
+  const heads = [...h.matchAll(/<h2 id="([^"]+)"/g)].map(m => m[1]).filter(id => id !== "sources");
+  assert(toc.length >= 3, "contents list");
+  eq(toc, heads, "every heading, in order, each linking to its own id");
+  assert(/<span class="readtime">\d+ min read<\/span>/.test(h), "reading time");
+  assert(h.indexOf('data-slot="guide-top"') < h.indexOf('class="toc"'), "after the top ad slot and intro");
+});
 await test("Guides have real depth: 18 or more articles of 700+ words with sources and dates", () => {
   const guides = sitePages.filter(f => /guides\/[^/]+\/index\.html$/.test(relative(ROOT, f).replace(/\\/g, "/")));
   assert(guides.length >= 18, `${guides.length} guides`);
   for (const f of guides) {
-    const text = readFileSync(f, "utf8").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
+    const text = guideText(readFileSync(f, "utf8"));
     const words = text.split(/\s+/).filter(Boolean).length;
     assert(words > 700, `${relative(ROOT, f)} has only ${words} words`);
     assert(/Last checked \d+ \w+ \d{4}/.test(text), `${relative(ROOT, f)}: no date`);
@@ -398,7 +410,7 @@ await test("Every guide targets its own search phrase; guides added since launch
     assert(!seen.has(t), `${g.slug} and ${seen.get(t)} both target "${t}"`);
     seen.set(t, g.slug);
     if (FIRST_GUIDES.includes(g.slug) || g.draft) continue;
-    const text = readFileSync(join(ROOT, "guides", g.slug, "index.html"), "utf8").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
+    const text = guideText(readFileSync(join(ROOT, "guides", g.slug, "index.html"), "utf8"));
     const words = text.split(/\s+/).filter(Boolean).length;
     assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
   }
@@ -689,6 +701,16 @@ await test("Home: one main action, how it works, questions, footer with commit a
   for (const l of ["/guides/", "/faq/", "/about/", "/privacy/", "/terms/", "/contact/"]) assert(links.some(([t, h]) => h === l), `footer link ${l}`);
   assert(await p.locator("#home-info a[href^='/guides/']").count() >= 4, "guide links on home, in the page itself");
   eq(await p.textContent(".masthead .wordmark"), "GlastoBolt.co.uk", "wordmark");
+  noErrors(p); await p.context().close();
+});
+await test("Guide pages fit phones: header on one line, nothing wider than the screen", async () => {
+  const p = await page(await context());
+  for (const width of [320, 375, 412, 768, 1280]) {
+    await p.setViewportSize({ width, height: 800 }); await p.goto(B.replace(/\/?$/, "/") + "guides/glastonbury-2027-key-dates/");
+    eq(await p.evaluate(() => document.documentElement.scrollWidth), width, `no sideways scrolling at ${width}px`);
+    assert(await p.evaluate(() => Math.abs(document.querySelector(".wordmark").getBoundingClientRect().top - document.querySelector(".site-head nav").getBoundingClientRect().top) < 20), `header on one line at ${width}px`);
+    assert(await p.evaluate(() => document.querySelector(".nav-cta").getBoundingClientRect().height >= 40), `tool button at ${width}px`);
+  }
   noErrors(p); await p.context().close();
 });
 await test("Home: latest guides and countdown come from the build, after the questions and before the explanation", async () => {
