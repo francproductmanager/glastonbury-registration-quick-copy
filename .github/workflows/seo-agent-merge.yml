@@ -8,6 +8,8 @@ on:
     workflows: [Tests]
     types: [completed]
   status:
+  issue_comment: # reviewers' verdict comments, since the cloud proxy refuses status writes
+    types: [created]
   schedule:
     - cron: "17 * * * *" # hourly sweep: tests started by a workflow don't send the signal above
   workflow_dispatch:
@@ -29,6 +31,7 @@ jobs:
       vars.AUTOMERGE_ENABLED == 'true' &&
       ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
        (github.event_name == 'status' && github.event.state == 'success' && startsWith(github.event.context, 'seo-review/')) ||
+       (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, 'SEO review ')) ||
        github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-24.04
     timeout-minutes: 10

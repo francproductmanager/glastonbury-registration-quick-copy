@@ -3,8 +3,9 @@
 //   the pull request comes from this repo, on an agent branch, by the expected author, and isn't a draft
 //   the test check passed on its exact head commit
 //   it only changes files that agent may touch
-//   writer work: reviewer a passed the reviewed commit (and reviewer b too if it adds a guide), and any
-//     commits since are only this gate's own merges of main with nothing else changed
+//   writer work: reviewer a passed the reviewed commit (and reviewer b too if it adds a guide), as a commit
+//     status or a verdict comment, and any commits since are only this gate's own merges of main with nothing
+//     else changed
 //   if REQUIRE_SIGNED_REVIEWS is "true", each pass carries a signature made with REVIEW_SIGNING_KEY, which only
 //     the reviewers' own cloud environment holds: every agent acts on GitHub as the owner, so this is what
 //     stops the writer recording a pass for its own work
@@ -75,9 +76,19 @@ function gate(pr) {
     const reviewed = commits[i].sha;
     const need = ["seo-review/a"];
     if (files.some((f) => f.status === "added" && /^guides\/[^/]+\/index\.html$/.test(f.filename))) need.push("seo-review/b");
-    // Newest status first; with signed reviews required, unsigned or forged statuses don't count
+    // A verdict is a commit status or, because Claude's cloud proxy refuses status writes, a comment from the
+    // owner's account (every agent acts as the owner) starting "SEO review <a or b>: PASS for <sha>" (or FAIL).
+    // Newest first; with signed reviews required, unsigned or forged verdicts don't count
+    const owner = REPO.split("/")[0];
+    const verdicts = all(`${R}/commits/${reviewed}/statuses?per_page=100`).map((s) => ({ ...s, at: s.created_at }));
+    for (const c of all(`${R}/issues/${n}/comments?per_page=100`)) {
+      const m = c.body.match(/^SEO review ([ab]): (PASS|FAIL) for ([0-9a-f]{40})\b/);
+      if (!m || m[3] !== reviewed || c.user.login !== owner) continue;
+      verdicts.push({ context: `seo-review/${m[1]}`, state: m[2] === "PASS" ? "success" : "failure", description: c.body, at: c.created_at });
+    }
+    verdicts.sort((x, y) => y.at.localeCompare(x.at));
     const latest = {};
-    for (const s of all(`${R}/commits/${reviewed}/statuses?per_page=100`)) {
+    for (const s of verdicts) {
       if (SIGNED && !signedBy(s, reviewed)) continue;
       latest[s.context] ??= s.state;
     }

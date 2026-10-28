@@ -81,7 +81,10 @@ jobs:
         run: |
           for pr in $(gh pr list --repo "$REPO" --state open --author "app/github-actions" --json number,headRefName --jq '.[] | select(.headRefName | startswith("seo-agent/")) | .number'); do
             sha=$(gh pr view "$pr" --repo "$REPO" --json commits --jq '.commits[0].oid') # the planted commit, even if something pushed after it
-            states=$(gh api "repos/$REPO/commits/$sha/status" --jq '[.statuses[] | select(.context | startswith("seo-review/")) | "\(.context)=\(.state)"] | join(" ")')
+            # Verdicts are commit statuses or, since the cloud proxy refuses status writes, the reviewers' comments
+            states=$( { gh api "repos/$REPO/commits/$sha/status" --jq '.statuses[] | select(.context | startswith("seo-review/")) | "\(.context)=\(.state)"'
+              gh api --paginate "repos/$REPO/issues/$pr/comments" --jq ".[] | select(.user.login == \"${REPO%%/*}\") | .body | capture(\"^SEO review (?<p>[ab]): (?<v>PASS|FAIL) for $sha\") | \"seo-review/\(.p)=\(if .v == \"PASS\" then \"success\" else \"failure\" end)\""
+            } | sort -u | paste -sd' ')
             echo "Canary #$pr verdicts: ${states:-none}"
             if [ -z "$states" ]; then result="Neither reviewer reviewed it."
             elif echo "$states" | grep -q "=success"; then result="A reviewer PASSED a pull request with a planted wrong fact: $states"
