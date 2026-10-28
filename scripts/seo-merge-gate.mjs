@@ -9,10 +9,12 @@
 //   if REQUIRE_SIGNED_REVIEWS is "true", each pass carries a signature made with REVIEW_SIGNING_KEY, which only
 //     the reviewers' own cloud environment holds: every agent acts on GitHub as the owner, so this is what
 //     stops the writer recording a pass for its own work
-//   it is up to date with main; if not, the gate merges main in, reruns the tests, and decides next time
+//   it is up to date with main; if not, the gate merges main in and reruns the tests
+// When all that's missing is tests it started or approved itself, it waits for them (up to WAIT_MINUTES) and
+// checks again in the same run, because tests started by a workflow don't send the signal that would wake it.
 // It never merges a writer branch opened by GitHub Actions: that is the monthly reviewer canary.
 // With SHA set it checks the pull request at that commit; without, it sweeps every open agent pull
-// request (hourly), because tests started by a workflow don't send the signal that would wake it.
+// request (hourly, as a backup).
 import { execFileSync } from "node:child_process";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
@@ -31,6 +33,10 @@ const api = (path, ...args) => JSON.parse(run("gh", ["api", path, ...args]) || "
 const all = (path) => JSON.parse(run("gh", ["api", "--paginate", "--slurp", path])).flat();
 class Stop extends Error {}
 const stop = (why) => { throw new Stop(why); };
+// A stop that only needs the tests on the pull request's head to finish
+class Wait extends Stop {}
+const wait = (why) => { throw new Wait(why); };
+const WAIT_MINUTES = 12;
 
 const BOT = "github-actions[bot]";
 const GENERATED = "(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\\.html|sitemap\\.xml|robots\\.txt";
@@ -53,10 +59,11 @@ function gate(pr) {
   // gate's own test run passes: approve them, then decide next time
   const held = api(`${R}/actions/runs?head_sha=${head}&status=action_required`).workflow_runs;
   for (const r of held) run("gh", ["api", "-X", "POST", `${R}/actions/runs/${r.id}/approve`]);
-  if (held.length) stop(`approved ${held.length} held test run(s); merging once they pass`);
+  if (held.length) wait(`approved ${held.length} held test run(s); merging once they pass`);
 
-  const checks = api(`${R}/commits/${head}/check-runs?check_name=test`).check_runs.map((c) => c.conclusion);
-  if (!checks.length || !checks.every((c) => c === "success")) stop(`the test check hasn't passed on ${head}`);
+  const checks = api(`${R}/commits/${head}/check-runs?check_name=test`).check_runs;
+  if (!checks.length || checks.some((c) => c.status !== "completed")) wait(`the tests are still running on ${head}`);
+  if (!checks.every((c) => c.conclusion === "success")) stop(`the test check hasn't passed on ${head}`);
 
   const files = all(`${R}/pulls/${n}/files?per_page=100`);
   const outside = files.map((f) => f.filename).filter((f) => !role.allowed.test(f));
@@ -105,10 +112,11 @@ function gate(pr) {
     for (let t = 0; t < 30 && api(`${R}/pulls/${n}`).head.sha === head; t++) run("sleep", ["4"]);
     // Pushes made by this workflow don't start other workflows, so start the tests directly
     run("gh", ["workflow", "run", "test.yml", "--repo", REPO, "--ref", branch]);
-    stop("was behind main: merged main in and started the tests again");
+    wait("was behind main: merged main in and started the tests again");
   }
 
-  run("gh", ["api", "-X", "PUT", `${R}/pulls/${n}/merge`, "-f", "merge_method=squash", "-f", `sha=${head}`]);
+  try { run("gh", ["api", "-X", "PUT", `${R}/pulls/${n}/merge`, "-f", "merge_method=squash", "-f", `sha=${head}`]); }
+  catch (e) { if (/status check/i.test(`${e.stdout}${e.stderr}`)) wait("GitHub is still waiting for the test check"); throw e; }
   run("gh", ["api", "-X", "DELETE", `${R}/git/refs/heads/${branch}`]);
   return "merged";
 }
@@ -121,7 +129,24 @@ if (process.env.SHA) {
   prs = all(`${R}/pulls?state=open&base=main&per_page=100`).filter((p) => Object.keys(ROLES).some((k) => p.head.ref.startsWith(k)));
 }
 if (!prs.length) console.log("No agent pull request to check");
-for (const pr of prs) {
-  try { console.log(`#${pr.number}: ${gate(pr)}`); }
-  catch (e) { if (e instanceof Stop) console.log(`#${pr.number}: ${e.message}`); else throw e; }
+// No test run on a commit is queued or running (a held run counts as finished: checking again approves it)
+const testsSettled = (sha) => api(`${R}/actions/runs?head_sha=${sha}&per_page=50`).workflow_runs
+  .filter((r) => r.name === "Tests").every((r) => r.status === "completed");
+const deadline = Date.now() + WAIT_MINUTES * 60_000;
+for (let pr of prs) {
+  for (;;) {
+    try { console.log(`#${pr.number}: ${gate(pr)}`); break; }
+    catch (e) {
+      if (!(e instanceof Stop)) throw e;
+      console.log(`#${pr.number}: ${e.message}`);
+      if (!(e instanceof Wait)) break;
+      // Give new or approved runs time to appear, then wait for every test run on the head to finish
+      run("sleep", ["20"]);
+      while (Date.now() < deadline && !testsSettled(api(`${R}/pulls/${pr.number}`).head.sha)) run("sleep", ["15"]);
+      if (Date.now() >= deadline) { console.log(`#${pr.number}: still waiting after ${WAIT_MINUTES} minutes; the next run checks again`); break; }
+      run("git", ["fetch", "--quiet", "origin"]);
+      pr = api(`${R}/pulls/${pr.number}`);
+      if (pr.state !== "open") break;
+    }
+  }
 }
