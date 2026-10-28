@@ -382,6 +382,15 @@ await test("Every guide targets its own search phrase; guides added since launch
     assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
   }
 });
+await test("Guides added since launch aren't near copies of another guide", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const { closestToGuide, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  for (const g of GUIDES) {
+    if (FIRST_GUIDES.includes(g.slug) || g.draft) continue;
+    const [top] = closestToGuide(g.slug);
+    assert(top.score < BANDS.text.high, `${g.slug} overlaps ${top.slug} (similarity ${top.score.toFixed(2)}): add to that guide instead`);
+  }
+});
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
   const allowed = readFileSync(join(ROOT, "tests", "allowed-link-domains.txt"), "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   // The two files the writer agent may edit, and the only names each may export
