@@ -3,7 +3,7 @@
 //   the pull request comes from this repo, on an agent branch, by the expected author, and isn't a draft
 //   the test check passed on its exact head commit
 //   it only changes files that agent may touch
-//   writer work: reviewer a passed the reviewed commit (and reviewer b too if it adds a guide), as a commit
+//   writer work: reviewers a and b both passed the reviewed commit (b is the accuracy specialist), as a commit
 //     status or a verdict comment, and any commits since are only this gate's own merges of main with nothing
 //     else changed
 //   if REQUIRE_SIGNED_REVIEWS is "true", each pass carries a signature made with REVIEW_SIGNING_KEY, which only
@@ -74,8 +74,7 @@ function gate(pr) {
     let i = commits.length - 1;
     while (i > 0 && gateMerge(commits[i])) i--;
     const reviewed = commits[i].sha;
-    const need = ["seo-review/a"];
-    if (files.some((f) => f.status === "added" && /^guides\/[^/]+\/index\.html$/.test(f.filename))) need.push("seo-review/b");
+    const need = ["seo-review/a", "seo-review/b"];
     // A verdict is a commit status or, because Claude's cloud proxy refuses status writes, a comment from the
     // owner's account (every agent acts as the owner) starting "SEO review <a or b>: PASS for <sha>" (or FAIL).
     // Newest first; with signed reviews required, unsigned or forged verdicts don't count

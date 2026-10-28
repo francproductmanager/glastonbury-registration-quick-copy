@@ -8,7 +8,7 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | Monday, Wednesday, Saturday 7am | Writer | `SEO-AGENT.md` | Nothing by itself |
 | Monday, Wednesday, Saturday 3pm | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
 | Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
-| As soon as a writer pull request opens or changes (backup: writer days 11am and 8pm) | Reviewers a and b | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
+| As soon as a writer pull request opens or changes (backup: writer days 11am and 8pm) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
 | First Sunday of the month, after the audit | Reviewer regression run | `SEO-REVIEWER.md` | Nothing: reports how many known cases the reviewers still get right |
 | When tests and reviews pass | Merge workflow (not AI) | | The writer's work: needs review a, plus review b if it adds a guide |
 | First Monday of the month | Canary workflow (not AI) | | Nothing: plants a known error to check the reviewers catch it |
