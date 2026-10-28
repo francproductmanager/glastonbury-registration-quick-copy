@@ -20,7 +20,7 @@ Mark every item pass or fail, with a reason.
 
 **Facts and trust**
 - Every change to `site-src/facts.mjs`: open the fact's source and confirm the new value, and that `checked` is honest. A dated or priced value typed into a guide instead of `{{fact:key}}` fails.
-- Open every source cited for new or changed facts and check it says what the guide claims, for the year the guide says. Spot check at least three other facts in the changed guides. Read sources the way `SEO-AGENT.md` asks the writer to: download the whole page and search all of it. Before failing a claim as unsourced, search the full page for its key words: festival pages repeat rules in several sections.
+- Open every source cited for new or changed facts and check it says what the guide claims, for the year the guide says. Spot check at least three other facts in the changed guides. Read sources the way `SEO-AGENT.md` asks the writer to: download the whole page and search all of it. Before failing a claim as unsourced, search the full page for its key words: festival pages repeat rules in several sections. Search dates in every form the page might use (12 May, 12th May, May 12th) and allow for a date split across lines of the page. Before failing two figures as a contradiction, check they aren't charges for different things (a fee for booking is not a fee for cancelling).
 - No guessed dates, no past year's dates or prices presented as this year's, no invented numbers or quotes.
 - Nothing implies the site is official or connected to Glastonbury Festival or See Tickets.
 
