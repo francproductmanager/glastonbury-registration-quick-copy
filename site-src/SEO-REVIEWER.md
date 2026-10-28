@@ -42,7 +42,7 @@ Mark every item pass or fail, with a reason.
 - Only guide content changed in `content.mjs`: no scripts, iframes, embeds, tracking, unusual links or changes to anything but guides and the updates page.
 
 **SEO**
-- A new guide's `target` is a genuinely different question from every other guide's, not a rewording.
+- A new guide's `target` is a genuinely different question from every other guide's, not a rewording. Run `node scripts/guide-similarity.mjs --slug <slug>`: for any guide marked CHECK, read both and fail if they answer the same question or repeat whole sections, saying which guide the new material should go into instead.
 - Search title (`seoTitle`, or `title` when there is none) 65 characters or fewer and says what the page answers; summary 110 to 165 and worth clicking.
 - Headings follow the questions people actually ask; no keyword stuffing.
 - At least two links in and out, with natural link text.
