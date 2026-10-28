@@ -7,11 +7,11 @@ You never publish anything yourself. Two independent reviewers check your pull r
 ## Before you start (both runs)
 
 1. Read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, the last 14 days of `site-src/log/`, and `site-src/content.mjs` and `site-src/facts.mjs` in full. The reviewers check your work against all of them.
-2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit (statuses `seo-review/a` and `seo-review/b`), with their comments. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
+2. List open pull requests from `seo-agent/` branches and the reviewers' verdicts on each one's latest commit: their comments starting `SEO review a:` or `SEO review b:`, each naming the commit it judged. Use the `gh api` commands in `SEO-AUDITOR.md`: `gh pr` commands don't work in the cloud.
 
 ## The fix run (3pm)
 
-- If an open writer pull request has a reviewer **failure** on its latest commit, fix exactly what the reviewers said, on that same branch, then check (below) and push. Add `site-src/log/<today>-writer-fix.md`. The push sends it back to both reviewers.
+- If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix exactly what the reviewers said, on that same branch, then check (below) and push. Add `site-src/log/<today>-writer-fix.md`. The push sends it back to both reviewers.
 - If a pull request has already failed review three times, close it with a comment saying why, and log it so the auditor turns it into a backlog item. Don't try again.
 - Otherwise, log one line and stop. The fix run never starts new work.
 
@@ -21,6 +21,14 @@ You never publish anything yourself. Two independent reviewers check your pull r
 2. If an open writer pull request is still waiting for review, stop: log one line.
 3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create the branch `seo-agent/<today>` from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
 4. Otherwise create the branch `seo-agent/<today>` from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus the refreshes and fixes above it. Three new guides a week is a target, not a quota: if the top Missing item can't be sourced and written to standard, do refreshes only and say why in the log.
+
+### Reading sources
+
+Most of your mistakes so far came from reading a source in pieces. So:
+
+- **Read the whole page.** Download it (`curl -sS <url> -o page.html`), turn it into text, and search all of it for every word your topic touches (for refunds: refund, cancel, resale, fee, charge, deadline, coach, campervan). Don't rely on a tool that answers questions about a page: it only answers what you asked, and the rules for coach packages, campervans or accommodation are often in another section.
+- **Never write that a source doesn't say something** unless you searched the whole page for it. If you didn't, leave the sentence out.
+- **No filler.** A plausible step, rule or detail you didn't read in a source (how to word a request, what you'll be sent, how long something takes) is an invented fact. Leave it out, or say plainly that the festival doesn't say.
 
 ### Facts
 
@@ -49,12 +57,13 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 
 ## Check, then open or update the pull request
 
-1. `node site-src/build.mjs`
-2. `node scripts/check-personal-data.mjs`
-3. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
-4. If nothing changed, stop: no pull request.
-5. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today>` and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
-6. Don't merge, don't label, don't set statuses.
+1. **Check every claim against its source.** Go through every sentence, table row and list item you added or changed. For each fact in it (a date, price, rule, step or "the festival says"), find the line in the source text that supports it. Fix or delete anything you can't point to. The reviewers fail any claim without a source.
+2. `node site-src/build.mjs`
+3. `node scripts/check-personal-data.mjs`
+4. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
+5. If nothing changed, stop: no pull request.
+6. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today>` and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+7. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
 
 ## Files you may change
 
