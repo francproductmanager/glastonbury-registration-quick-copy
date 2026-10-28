@@ -392,7 +392,15 @@ await test("Guides added since launch aren't near copies of another guide", asyn
   }
 });
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
-  const allowed = readFileSync(join(ROOT, "tests", "allowed-link-domains.txt"), "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  const domains = (f) => readFileSync(f, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  // The writer may add sites to its own list, each with a reason, but never the kinds of site that can't be trusted
+  const agentLines = domains(join(ROOT, "site-src", "link-domains.txt"));
+  for (const line of agentLines) {
+    const [site, why] = line.split(/\s+#\s+/);
+    assert(/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(site) && why && why.length >= 20, `site-src/link-domains.txt: "${line}" needs a site name, then " # " and why it's trusted`);
+    assert(!/(^|\.)(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|is\.gd|buff\.ly|rebrand\.ly|cutt\.ly|viagogo\.\w+|stubhub\.\w+|seatwave\.\w+|getmein\.com|gigsberg\.com|ticketswap\.\w+|twickets\.\w+|facebook\.com|instagram\.com|tiktok\.com|x\.com|twitter\.com|reddit\.com|youtube\.com|whatsapp\.com|telegram\.\w+|blogspot\.com|wordpress\.com|medium\.com|substack\.com|tumblr\.com|ebay\.\w+|amazon\.\w+|gumtree\.com)$/.test(site), `site-src/link-domains.txt: ${site} is a kind of site the guides may not link to`);
+  }
+  const allowed = [...domains(join(ROOT, "tests", "allowed-link-domains.txt")), ...agentLines.map((l) => l.split(/\s+/)[0])];
   // The two files the writer agent may edit, and the only names each may export
   for (const [file, exports] of [["content.mjs", ["CALENDAR", "CALENDAR_FEED", "DOWNLOADS", "GUIDES", "LASTMOD", "PAGES", "SITE", "TOPICS"]], ["facts.mjs", ["FACTS", "TICKET_MOMENTS"]]]) {
     const src = readFileSync(join(ROOT, "site-src", file), "utf8");
@@ -404,7 +412,7 @@ await test("Guide content is only content: no code, embeds or links to unapprove
     eq([...src.matchAll(/^export\s+const\s+(\w+)/gm)].map((m) => m[1]).sort(), exports, `${file} exports`);
     assert(!/^export\s+(?!const\s)/m.test(src), `${file} exports something other than data`);
     const bad = [...new Set([...src.matchAll(/(?:https?|webcal):\/\/([^/\s"'`)\]]+)/gi)].map((m) => m[1].toLowerCase()))].filter((h) => !allowed.some((d) => h === d || h.endsWith("." + d)));
-    assert(!bad.length, `${file} links to sites not in tests/allowed-link-domains.txt: ${bad.join(", ")}`);
+    assert(!bad.length, `${file} links to sites not in tests/allowed-link-domains.txt or site-src/link-domains.txt: ${bad.join(", ")}`);
   }
 });
 await test("Changeable facts live once in site-src/facts.mjs, sourced, and agents keep them in date", async () => {

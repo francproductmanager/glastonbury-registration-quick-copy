@@ -1,5 +1,6 @@
 # Websites the guides may link to (site-src/content.mjs). A subdomain of a listed site is allowed too.
-# The SEO agents can't change this file; the owner adds a site here when an agent's log asks for one.
+# The SEO agents can't change this file. The writer adds sites it needs to site-src/link-domains.txt,
+# under the rules in site-src/SEO-AGENT.md, and both reviewers check each one.
 
 # This site and the festival
 glastobolt.co.uk

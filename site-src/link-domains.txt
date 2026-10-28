@@ -1,0 +1,5 @@
+# More websites the guides may link to, added by the SEO writer (the owner's own list is
+# tests/allowed-link-domains.txt). One site per line, then " # " and why: who runs it, which guide cites it,
+# and the date it was added. Only official sites, public bodies and established news outlets: never ticket
+# resellers, link shorteners, social media, forums, blogs or sites that sell things. Both reviewers check
+# every new line, and a test rejects the obvious bad kinds.
