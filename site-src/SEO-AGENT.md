@@ -12,7 +12,7 @@ You never publish anything yourself. Two independent reviewers check your pull r
 ## The fix run (3pm)
 
 - If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix exactly what the reviewers said, on that same branch, then check (below) and push. Add `site-src/log/<today>-writer-fix.md`. The push sends it back to both reviewers.
-- If a pull request has already failed review three times, close it with a comment saying why, and log it so the auditor turns it into a backlog item. Don't try again.
+- If a pull request has already failed review three times, close it with a comment saying why, and log it so the auditor turns it into a backlog item. Don't try again. Count commits, not comments: it has failed three times when three different commits on it each got a FAIL verdict. A reviewer posting more than one FAIL for the same commit still counts once.
 - Otherwise, log one line and stop. The fix run never starts new work.
 
 ## The normal run (7am)
