@@ -687,17 +687,18 @@ await test("Home: one main action, how it works, questions, footer with commit a
   assert(links.some(([t, h]) => h === "#/data"), "data link");
   assert(links.some(([t, h]) => t === "0123456" && h === `${SOURCE_REPO}/commit/${STAMP}`), "commit link");
   for (const l of ["/guides/", "/faq/", "/about/", "/privacy/", "/terms/", "/contact/"]) assert(links.some(([t, h]) => h === l), `footer link ${l}`);
-  assert(await p.locator(".guides-links a[href^='/guides/']").count() >= 4, "guide links on home");
+  assert(await p.locator("#home-info a[href^='/guides/']").count() >= 4, "guide links on home, in the page itself");
+  eq(await p.textContent(".masthead .wordmark"), "GlastoBolt.co.uk", "wordmark");
   noErrors(p); await p.context().close();
 });
-await test("Home: latest guides and countdown come from the build, after the guide links and before the explanation", async () => {
+await test("Home: latest guides and countdown come from the build, after the questions and before the explanation", async () => {
   const p = await page(await context()); await p.goto(B);
   await p.waitForSelector(".latest:not([hidden]) .story-lead");
   const d = JSON.parse(readFileSync(join(ROOT, "updates", "latest.json"), "utf8"));
   eq(await p.locator(".latest .story").evaluateAll(as => as.map(a => a.getAttribute("href"))), d.items.map(i => i.href), "every guide, in order");
   eq(await p.textContent(".story-lead .story-title"), d.items[0].title, "lead story");
   assert(/^Guides updated /.test(await p.textContent(".latest-meta")), "when");
-  assert(await p.evaluate(() => { const s = [...document.querySelectorAll(".v-home > *")]; const i = (q) => s.indexOf(document.querySelector(q)); return i(".guides-links") < i(".latest") && i(".latest") < i("#home-info"); }), "order");
+  assert(await p.evaluate(() => { const s = [...document.querySelectorAll(".v-home > *")]; const i = (q) => s.indexOf(document.querySelector(q)); return i(".section:has(.faq)") < i(".latest") && i(".latest") < i("#home-info"); }), "order");
   assert(await p.locator(".v-home > .hero > .btn").count() === 2, "practice shortcut in the band");
   await p.click(".hero .btn-secondary"); await p.waitForFunction(() => document.querySelector(".card[aria-label='Try it']").getBoundingClientRect().top < 200);
   // Nothing on the home page is wider than the smallest phones, and the masthead stays on one line

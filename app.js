@@ -460,16 +460,6 @@
     return h("div", { class: "faq-list" }, items.map(([q, a]) =>
       h("details", { class: "faq" }, h("summary", null, h("span", null, q), h("span", { class: "faq-sign", "aria-hidden": "true" })), h("p", null, a))));
   }
-  const GUIDE_LINKS = [
-    ["/guides/buying-tickets-for-a-group/", "Glastonbury syndicate: buying as a group"],
-    ["/guides/how-to-get-glastonbury-tickets/", "Glastonbury ticket tips 2027"],
-    ["/guides/glastonbury-2027-resale/", "Glastonbury 2027 resale"],
-    ["/guides/glastonbury-2027-key-dates/", "Glastonbury 2027 key dates and prices"],
-    ["/guides/how-glastonbury-registration-works/", "How Glastonbury registration works"],
-    ["/guides/how-the-ticket-queue-works/", "How the ticket queue works"],
-    ["/guides/ticket-day-checklist/", "Ticket day checklist"],
-    ["/guides/glastonbury-ticket-spreadsheet-template/", "Free group spreadsheet template"],
-  ];
   function viewHome() {
     const all = loadAll();
     const ids = Object.keys(all).sort((a, b) => (all[b].created || 0) - (all[a].created || 0));
@@ -493,10 +483,6 @@
            ["Tap, paste, next.", " Each box goes blue once it's used, so you know who's done."]]
             .map(([b, rest], i) => h("li", null, h("span", { class: "num" }, String(i + 1)), h("span", null, h("strong", null, b), rest))))),
       h("section", { class: "section" }, h("h2", null, "Questions"), faqList(FAQ)),
-      h("section", { class: "section guides-links" },
-        h("h2", null, "Ticket day guides"),
-        h("ul", null, GUIDE_LINKS.map(([href, t]) => h("li", null, h("a", { href }, t)))),
-        h("p", null, h("a", { href: "/guides/" }, "All guides"), " or ", h("a", { href: "/faq/" }, "read the FAQ"))),
       // filled by latest.js from /updates/latest.json, which the guides build writes; it stays
       // hidden if that file can't be read
       h("section", { class: "section latest", "aria-labelledby": "latest-h", hidden: true },
@@ -519,7 +505,7 @@
   function homeScreen(heroActions, ...rest) {
     if (!homeEl) homeEl = staticHome || h("div", { class: "view v-home" },
       h("div", { class: "dateline" }, h("span", { class: "today" }), h("span", null, "Free and unofficial")),
-      h("div", { class: "masthead" }, h("span", { class: "wordmark" }, "Glasto Quick Copy"),
+      h("div", { class: "masthead" }, h("span", { class: "wordmark" }, "GlastoBolt.co.uk"),
         h("nav", { "aria-label": "Main" }, h("a", { href: "/guides/" }, "Guides"), h("a", { href: "/faq/" }, "FAQ"))),
       h("div", { class: "hero" },
         h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
