@@ -171,7 +171,7 @@ export const GUIDES = [
       { cta: "Get your resale group ready" },
     ],
     related: ["glastonbury-2027-resale", "deposits-and-balance-payments", "got-a-glastonbury-ticket-what-next"],
-    sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.tickets, NEWS.nme2027],
+    sources: [OFFICIAL.y2027, OFFICIAL.info, NEWS.nme2027],
   },
   {
     slug: "glastonbury-ticket-sale-history",
@@ -282,7 +282,7 @@ export const GUIDES = [
       { cta: "Get your group ready" },
     ],
     related: ["glastonbury-2027-resale", "glastonbury-ticket-sale-history", "buying-tickets-for-a-group"],
-    sources: [OFFICIAL.info, OFFICIAL.y2027, OFFICIAL.sale2027, OFFICIAL.resale, OFFICIAL.sale2025, OFFICIAL.tickets, NEWS.gff2024price, NEWS.gff2024coach],
+    sources: [OFFICIAL.info, OFFICIAL.y2027, OFFICIAL.resale, OFFICIAL.sale2025, NEWS.timeout2027queue, NEWS.gff2024price, NEWS.gff2024coach],
   },
   {
     slug: "how-glastonbury-registration-works",
@@ -351,7 +351,7 @@ export const GUIDES = [
       { cta: "Put your group on one page" },
     ],
     related: ["buying-tickets-for-a-group", "collect-registration-numbers-from-whatsapp", "glastonbury-2027-resale"],
-    sources: [OFFICIAL.info, OFFICIAL.tickets, OFFICIAL.register, OFFICIAL.lookup, OFFICIAL.sale2027, OFFICIAL.customer],
+    sources: [OFFICIAL.info, OFFICIAL.register, OFFICIAL.lookup, OFFICIAL.customer],
   },
   {
     slug: "glastonbury-registration-number-lookup",
@@ -1214,7 +1214,7 @@ export const GUIDES = [
       ] },
       "See [messages to send your Glastonbury group](/guides/group-chat-messages/) for more ready-made messages.",
       { h2: "If the balance isn't paid" },
-      "If a balance isn't paid by the end of the window, that ticket is cancelled and goes back on sale in the spring resale. For 2027, the festival says the deposit is refunded automatically to the card it was booked on, with a {{fact:refundFee}} administration charge kept: so £75 back from a {{fact:deposit}} deposit. In 2025 it was £50 back from a £75 deposit, within about seven working days of the window closing, and people whose card had changed had to contact See Tickets to arrange the refund.",
+      "If a balance isn't paid by the end of the window, that ticket is cancelled and goes back on sale in the spring resale. For 2027, the festival says the deposit is refunded automatically to the card it was booked on, with a {{fact:refundFee}} administration charge kept: so £75 back from a {{fact:deposit}} deposit.",
       "This is the most painful mistake on this page, because it happens months after the hard part. A card that's expired since ticket day, a missed email or a holiday in the payment week are the usual causes. Calendar reminders for everyone in the group, not just the lead booker, guard against all three.",
       { h2: "If you can't go" },
       "Tickets can't be transferred to anyone else. For 2027, general admission tickets are refundable until 11.59pm on {{fact:refundDeadline}}, minus a {{fact:refundFee}} administration charge per ticket, and not refundable after that. The festival's ticket terms say booking fees, postage and packing are not refunded. The full rules are in [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
@@ -1223,7 +1223,7 @@ export const GUIDES = [
       "Friends still without a ticket? The spring resale is paid in full at booking, up to four people per booking in 2025: [get their resale group ready](/#/new).",
     ],
     related: ["got-a-glastonbury-ticket-what-next", "glastonbury-2027-cost", "glastonbury-2027-resale"],
-    sources: [OFFICIAL.info, OFFICIAL.tickets, OFFICIAL.customer, NEWS.radiox2025balance],
+    sources: [OFFICIAL.info, OFFICIAL.customer, OFFICIAL.sale2025, OFFICIAL.resale],
   },
   {
     slug: "glastonbury-ticket-refund",
