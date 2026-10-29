@@ -23,6 +23,27 @@ DESCRIPTION:Glastonbury 2027 balance payment window
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
+UID:glastonbury-2027-local-sale@glastobolt.co.uk
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+SUMMARY:Glastonbury 2027 local and Sunday ticket sale (local residents onl
+ y)
+DESCRIPTION:For local residents only\, on glastonbury.seetickets.com: full
+  weekend tickets for the inner zone from 9am on Sunday 1 November 2026\, f
+ or the inner and outer zones from 10am on Sunday 1 November 2026\, and Sun
+ day tickets for Mendip and Central Somerset residents from 11am on Sunday 
+ 1 November 2026. Details: glastobolt.co.uk/guides/glastonbury-sunday-ticke
+ ts/
+URL:https://glastobolt.co.uk/guides/glastonbury-2027-key-dates/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Glastonbury 2027 local and Sunday ticket sale (local residents
+  only)
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:glastonbury-2027-festival@glastobolt.co.uk
 DTSTAMP:20261026T000000Z
 DTSTART;VALUE=DATE:20270623
