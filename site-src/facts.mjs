@@ -12,6 +12,7 @@
 const Y2027 = "https://www.glastonburyfestivals.co.uk/news/glastonbury-2027-ticket-information-confirmed/";
 const CHECKED = "2026-10-28";
 const INFO = "https://www.glastonburyfestivals.co.uk/info/";
+const SUNDAY_TERMS = "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/10/GF-Sunday-Ticket-TCs-2027-FINAL-CL-.pdf";
 
 export const FACTS = {
   ticketPrice: { value: "£408", meaning: "2027 general admission ticket, including the £5 booking fee", source: Y2027, checked: CHECKED, recheckBy: "2027-06-27" },
@@ -31,6 +32,16 @@ export const FACTS = {
   coachCancelFee: { value: "£15 coach cancellation fee", meaning: "Extra administration charge kept, on top of the ticket charge, from any cancelled 2027 ticket + coach travel booking", source: INFO, checked: CHECKED, recheckBy: "2027-05-07" },
   carParkPass: { value: "£60, plus £3 postage where bought separately", meaning: "2027 general admission car park pass, sold with the balance; the same price for accessible or Blue Badge parking", source: INFO, checked: CHECKED, recheckBy: "2027-04-07" },
   accessDeadline: { value: "12 May", meaning: "Final deadline for 2027 Access Applications, as listed on the info page", source: INFO, checked: CHECKED, recheckBy: "2027-05-12" },
+  localSaleDate: { value: "Sunday 1 November 2026", meaning: "Day of the 2027 local resident full weekend and Sunday ticket sale, on glastonbury.seetickets.com", source: INFO, checked: "2026-10-29", recheckBy: "2026-11-01" },
+  localSaleInner: { value: "9am on Sunday 1 November 2026", meaning: "Local full weekend tickets on sale to the inner zone only", source: INFO, checked: "2026-10-29", recheckBy: "2026-11-01" },
+  localSaleOuter: { value: "10am on Sunday 1 November 2026", meaning: "Local full weekend tickets on sale to the inner and outer zones", source: INFO, checked: "2026-10-29", recheckBy: "2026-11-01" },
+  sundaySale: { value: "11am on Sunday 1 November 2026", meaning: "Sunday tickets on sale to Mendip and Central Somerset residents", source: INFO, checked: "2026-10-29", recheckBy: "2026-11-01" },
+  sundayPrice: { value: "£145", meaning: "2027 Sunday ticket per person, including the bus to and from the site, plus postage and packing per order", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
+  sundayChildBus: { value: "£25", meaning: "2027 pre-booked Sunday bus ticket for a child aged 6 to 12 (the child is admitted free)", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
+  sundayProtection: { value: "£4.10", meaning: "Optional TicketPlan Booking Refund Protection per 2027 Sunday ticket", source: INFO, checked: "2026-10-29", recheckBy: "2027-05-07" },
+  sundayPickups: { value: "9am and 11am", meaning: "2027 Sunday ticket bus morning pick-up times from each town", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
+  sundayReturns: { value: "10pm and 12.30am", meaning: "2027 Sunday ticket return bus times from the festival (22:00 and 00:30)", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
+  sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-10-29", recheckBy: "2027-06-27" },
 };
 
 // Ticket moments: when people search most and a wrong fact costs readers the most. From 14 days before

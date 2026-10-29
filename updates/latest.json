@@ -1,6 +1,38 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "items": [
+  {
+   "date": "2026-10-29",
+   "tag": "New",
+   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
+   "summary": "Who can buy a Glastonbury 2027 Sunday ticket, when the sale opens, the price with the bus, children's bus seats, refunds, and how to get your booking ready.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-sunday-tickets/"
+  },
+  {
+   "date": "2026-10-29",
+   "tag": "Updated",
+   "title": "When is the next Glastonbury ticket sale?",
+   "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
+   "topic": "Glastonbury 2027: where things stand",
+   "href": "/guides/next-glastonbury-ticket-sale/"
+  },
+  {
+   "date": "2026-10-29",
+   "tag": "Updated",
+   "title": "How to register for Glastonbury: photo, number and deadlines",
+   "summary": "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to find or change your details.",
+   "topic": "Before the sale",
+   "href": "/guides/how-glastonbury-registration-works/"
+  },
+  {
+   "date": "2026-10-29",
+   "tag": "Updated",
+   "title": "Glastonbury deposits and balance payments explained",
+   "summary": "Why you pay a deposit first, when the balance is due, a worked cost example, and what happens if you can't pay or can't go.",
+   "topic": "After you've booked",
+   "href": "/guides/deposits-and-balance-payments/"
+  },
   {
    "date": "2026-10-28",
    "tag": "New",
@@ -24,38 +56,6 @@
    "summary": "How to get a refund on a Glastonbury 2027 ticket: the deadline, the administration fee, what Refund Protection covers, and what to do when someone drops out.",
    "topic": "After you've booked",
    "href": "/guides/glastonbury-ticket-refund/"
-  },
-  {
-   "date": "2026-10-28",
-   "tag": "Updated",
-   "title": "Going to Glastonbury with access requirements",
-   "summary": "How access works at Glastonbury: booking a ticket the normal way, the Access Pass, the personal assistant scheme, the application form and when to apply.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-access-requirements/"
-  },
-  {
-   "date": "2026-10-26",
-   "tag": "New",
-   "title": "When is the next Glastonbury ticket sale?",
-   "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
-   "topic": "Glastonbury 2027: where things stand",
-   "href": "/guides/next-glastonbury-ticket-sale/"
-  },
-  {
-   "date": "2026-10-26",
-   "tag": "Updated",
-   "title": "Glastonbury checkout: paying for tickets and fixing problems",
-   "summary": "What happens once you're through the queue: the timers, which cards and wallets work, bank checks, and what to do when a name doesn't come up, a registration locks, the timer runs out or a card is declined.",
-   "topic": "On ticket day",
-   "href": "/guides/paying-for-glastonbury-tickets/"
-  },
-  {
-   "date": "2026-10-26",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 resale: date, rules and how to get ready",
-   "summary": "Everything known about the Glastonbury 2027 resale: when it's likely to be, the registration deadline, how many tickets per booking, paying in full, and how to get your group ready.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-2027-resale/"
   }
  ],
  "dates": [
@@ -63,6 +63,11 @@
    "title": "Glastonbury 2027 balance payment window",
    "start": "2027-04-01",
    "end": "2027-04-07"
+  },
+  {
+   "title": "Glastonbury 2027 local and Sunday ticket sale (local residents only)",
+   "start": "2026-11-01",
+   "end": "2026-11-01"
   },
   {
    "title": "Glastonbury Festival 2027",
