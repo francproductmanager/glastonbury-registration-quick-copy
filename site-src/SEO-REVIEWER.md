@@ -33,17 +33,18 @@ Mark every item pass or fail, with a reason.
 **Facts and trust**
 - Every change to `site-src/facts.mjs`: open the fact's source and confirm the new value, and that `checked` is honest. A dated or priced value typed into a guide instead of `{{fact:key}}` fails.
 - Open every source cited for new or changed facts and check it says what the guide claims, for the year the guide says. Spot check at least three other facts in the changed guides. Read sources the way `SEO-AGENT.md` asks the writer to: download the whole page and search all of it. Before failing a claim as unsourced, search the full page for its key words: festival pages repeat rules in several sections. Search dates in every form the page might use (12 May, 12th May, May 12th) and allow for a date split across lines of the page. Before failing two figures as a contradiction, check they aren't charges for different things (a fee for booking is not a fee for cancelling).
+- Run `node scripts/check-sources.mjs --slug <every guide the pull request changes or adds>`. Anything DEAD or MOVED fails, on every guide the pull request touches, even a source the writer didn't add: a guide the writer changed must have every source working. Open anything BLOCKED yourself before relying on it. A MOVED source is fine only if the writer changed it to the new address of the same article.
 - No guessed dates, no past year's dates or prices presented as this year's, no invented numbers or quotes.
 - Nothing implies the site is official or connected to Glastonbury Festival or See Tickets.
 
 **Guidelines**
-- Followed `SEO-AGENT.md`: at most one new guide, from the top of the backlog (or a logged reason why not); updates page entry and log written; honest dates (no date bumped for a trivial change).
+- Followed `SEO-AGENT.md`: at most one new guide, from the top of the backlog (or a logged reason why not), and none while the dead source check listed anything at the start of the run; at most 25 guides changed; updates page entry and log written; honest dates (no date bumped for a trivial change). A new guide's `published` is the day the pull request opened, and no published guide's `published` changed.
 - UK English, plain and friendly, matching the existing guides. No filler or AI style phrasing. No dashes, no personal data.
 - Only guide content changed in `content.mjs`: no scripts, iframes, embeds, tracking, unusual links or changes to anything but guides and the updates page.
 - Every new line in `site-src/link-domains.txt`: open the site and check it is what the line says, and that it is the official site of the organisation concerned, a public body or an established news outlet, with the cited page being the original source. Fail anything else, including a reseller, a shortener, social media, a forum, a blog, a shop, or a site that looks set up to be linked to. More than two new sites in one pull request fails.
 
 **SEO**
-- A new guide's `target` is a genuinely different question from every other guide's, not a rewording. Run `node scripts/guide-similarity.mjs --slug <slug>`: for any guide marked CHECK, read both and fail if they answer the same question or repeat whole sections, saying which guide the new material should go into instead.
+- A new guide's `target` is a genuinely different question from every other guide's, not a rewording. Run `node scripts/guide-similarity.mjs --slug <slug>`: for any guide marked CHECK, read both and fail if they answer the same question or repeat whole sections, saying which guide the new material should go into instead. A guide marked CHECK that was published less than 15 days before the new one fails too (a test also checks).
 - Search title (`seoTitle`, or `title` when there is none) 65 characters or fewer and says what the page answers; summary 110 to 165 and worth clicking.
 - Headings follow the questions people actually ask; no keyword stuffing.
 - At least two links in and out, with natural link text.

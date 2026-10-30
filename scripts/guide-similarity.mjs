@@ -5,6 +5,7 @@
 //   node scripts/guide-similarity.mjs "proposed search phrase"   guides closest to a proposed topic
 //   node scripts/guide-similarity.mjs --slug <slug>              guides closest to one guide's full text
 //   node scripts/guide-similarity.mjs --all                      every pair of guides at or above "check"
+// Each guide is shown with the day it was published.
 import { fileURLToPath } from "node:url";
 import { GUIDES } from "../site-src/content.mjs";
 
@@ -61,7 +62,9 @@ export function allPairs(guides = GUIDES) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [arg, value] = process.argv.slice(2);
-  const show = (rows, kind) => rows.forEach((r) => console.log(`${band(r.score, kind).padEnd(5)} ${r.score.toFixed(2)}  ${r.slug ?? `${r.a}  and  ${r.b}`}`));
+  // With each guide's published date, for the rule that neighbouring guides go live at least 15 days apart
+  const pub = (slug) => `${slug} (published ${GUIDES.find((g) => g.slug === slug)?.published ?? "not yet"})`;
+  const show = (rows, kind) => rows.forEach((r) => console.log(`${band(r.score, kind).padEnd(5)} ${r.score.toFixed(2)}  ${r.slug ? pub(r.slug) : `${pub(r.a)}  and  ${pub(r.b)}`}`));
   if (arg === "--slug") show(closestToGuide(value).slice(0, 5), "text");
   else if (arg === "--all") show(allPairs().filter((p) => p.score >= BANDS.text.check), "text");
   else if (arg) show(closestToTopic(process.argv.slice(2).join(" ")).slice(0, 5), "topic");
