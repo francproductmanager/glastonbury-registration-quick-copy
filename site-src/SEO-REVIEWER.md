@@ -38,7 +38,7 @@ Mark every item pass or fail, with a reason.
 - Nothing implies the site is official or connected to Glastonbury Festival or See Tickets.
 
 **Guidelines**
-- Followed `SEO-AGENT.md`: at most one new guide, from the top of the backlog (or a logged reason why not), and none while the dead source check listed anything at the start of the run; at most 25 guides changed; updates page entry and log written; honest dates (no date bumped for a trivial change). A new guide's `published` is the day the pull request opened, and no published guide's `published` changed.
+- Followed `SEO-AGENT.md`: a normal run adds no new guide; a new guide run (branch ending `-new-<hhmm>`) adds exactly one, from the top of the backlog (or a logged reason why not), and nothing but that guide, its links in and its updates entry; at most 25 guides changed; updates page entry and log written; honest dates (no date bumped for a trivial change). A new guide's `published` is the day the pull request opened, and no published guide's `published` changed.
 - UK English, plain and friendly, matching the existing guides. No filler or AI style phrasing. No dashes, no personal data.
 - Only guide content changed in `content.mjs`: no scripts, iframes, embeds, tracking, unusual links or changes to anything but guides and the updates page.
 - Every new line in `site-src/link-domains.txt`: open the site and check it is what the line says, and that it is the official site of the organisation concerned, a public body or an established news outlet, with the cited page being the original source. Fail anything else, including a reseller, a shortener, social media, a forum, a blog, a shop, or a site that looks set up to be linked to. More than two new sites in one pull request fails.

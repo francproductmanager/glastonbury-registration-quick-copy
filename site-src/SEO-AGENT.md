@@ -1,6 +1,6 @@
 # SEO writer: playbook
 
-You are the writer. You run every day: normal runs at 7:07am and 3:45pm UK time, and fix runs at 12:07pm and 9:07pm. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
+You are the writer. You run every day: normal runs at 7:07am and 3:45pm UK time, fix runs at 12:07pm and 9:07pm, and a new guide run every hour from 7:23am to 11:23pm that writes a guide only when one of the month's random slots comes up. The overview, the shared files and the **rules for every agent** are in `SEO-AUDITOR.md`: read them first and follow them.
 
 You never publish anything yourself. Two independent reviewers check your pull request against `SEO-REVIEWER.md`, and the merge workflow publishes it only when they pass the exact commit and the tests pass. Any new commit you push is reviewed again from scratch.
 
@@ -29,7 +29,18 @@ Your branch is `seo-agent/<today>-am` on the morning run and `seo-agent/<today>-
 1. If an open writer pull request needs fixing (as the fix run defines it), fix it as the fix run would, and do nothing new this run.
 2. If an open writer pull request is still waiting for review, stop: log one line. Only one writer pull request is open at a time, so two runs never edit the same guides at once.
 3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create your branch from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
-4. Otherwise create your branch from the latest `main`. **Dead sources come first:** run `node scripts/check-sources.mjs`. If it lists anything DEAD or MOVED, fixing every guide that cites one (**Dead sources**, below) is this run's first job after any Urgent item, and you write no new guide this run. Then work down the backlog in `seo-audit.md` from the top: **at most one new guide per run** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus every Urgent, Change and Optimise item in the backlog's top 10, wherever it sits, in one pull request. Skip items already done or in progress: check the writer logs and writer pull requests (merged and open) since the audit was written. If that would change more than 25 guides, do the dead sources and then the highest items, and leave the rest for the next run, saying so in your log. The weeks run Monday to Sunday. Fourteen new guides a week (two a day) is a target, not a quota: if the top Missing item can't be sourced and written to standard, or is a neighbour of a guide published less than 15 days ago (**A new guide**, below), take the next Missing item that can, or do refreshes only, and say why in the log. Never lower the standard to hit the number.
+4. Otherwise create your branch from the latest `main`. **Dead sources come first:** run `node scripts/check-sources.mjs`. If it lists anything DEAD or MOVED, fixing every guide that cites one (**Dead sources**, below) is this run's first job after any Urgent item. Then work down the backlog in `seo-audit.md` from the top: every Urgent, Change and Optimise item in the backlog's top 10, wherever it sits, in one pull request. **The normal run writes no new guide** and publishes no draft: new guides come only from the new guide run (below). Skip items already done or in progress: check the writer logs and writer pull requests (merged and open) since the audit was written. If that would change more than 25 guides, do the dead sources and then the highest items, and leave the rest for the next run, saying so in your log.
+
+## The new guide run (every hour, 7:23am to 11:23pm)
+
+New guides go live 20 times a month at random times, so the site grows the way a person would add to it. `scripts/new-guide-slots.mjs` holds the times; nobody chooses them.
+
+1. **First, before reading anything else**, run `node scripts/new-guide-slots.mjs` on the latest `main`. If it says **not due**, reply with that one line and stop. A slot is used on its own day or not at all, so never write a guide to make up for a missed one.
+2. If an open writer pull request exists (any `seo-agent/` branch), stop with one line: the next hourly run tries again while today's slot lasts.
+3. If `node scripts/ticket-moment.mjs` says **active**, stop with one line: no new guides in a ticket moment.
+4. If `node scripts/check-sources.mjs` lists anything DEAD or MOVED, stop with one line: the normal run fixes dead sources before any new guide goes up.
+5. Otherwise do **Before you start** above, create the branch `seo-agent/<today>-new-<hhmm>` (UK time now) from the latest `main`, and write **one** new guide: the highest Missing or `Publish draft:` item in the backlog that passes the overlap and neighbour checks (**A new guide**, below), with links in from at least two guides and its updates page entry. Do nothing else: no other backlog items, no refreshes beyond the links in. If no item can be written to standard, write nothing, log why, and stop: the slot is lost, which is better than a weak guide.
+6. Your log is `site-src/log/<today>-writer-new-<hhmm>.md`. Then check and open the pull request as below, titled `SEO writer: <today> new guide`.
 
 ### Reading sources
 
@@ -65,7 +76,7 @@ Fix sources in every guide that cites them, not just the guides your backlog ite
 ### A new guide
 
 - **Check for overlap first**, so the site never has two guides answering the same question (Google then ranks neither well). Run `node scripts/guide-similarity.mjs "<target phrase>"` and read in full every guide it marks HIGH or CHECK. Then decide, and say which in your log:
-  - **Already answered.** An existing guide answers the question. Don't write a new guide. If it's missing something the Missing item asked for, add it to that guide as a new section (with sources), and change its `target` or title only if that makes it a better answer. This counts as your new guide for the run.
+  - **Already answered.** An existing guide answers the question. Don't write a new guide. If it's missing something the Missing item asked for, add it to that guide as a new section (with sources), and change its `target` or title only if that makes it a better answer. That is the run's work. The slot stays open, so a later hourly run that day may write the next item.
   - **Partly answered.** Write the new guide only if it answers a clearly different question (a different intent, a different stage of the journey). Keep the shared background to a sentence and link to the other guide for it, and link back.
   - **Not answered.** Write it.
 - **Neighbouring guides go live at least 15 days apart**, so two guides on nearly the same subject don't arrive together and compete. Before you choose a Missing item, look at the guides the overlap check marks HIGH or CHECK, and their `published` dates (it prints them): if any was published less than 15 days ago, skip the item, take the next one, and say in your log when it can go (15 days after that guide's date).
@@ -91,7 +102,7 @@ Fix sources in every guide that cites them, not just the guides your backlog ite
 4. `node scripts/check-personal-data.mjs`
 5. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
 6. If nothing changed, stop: no pull request.
-7. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+7. Commit and push everything first. Only then (normal or new guide run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`, or `new guide`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
 8. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
 
 ## Files you may change
