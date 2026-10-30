@@ -444,6 +444,15 @@ await test("Every live guide has a published date; neighbouring guides go live a
     assert(days >= NEIGHBOUR_GAP_DAYS, `${a} and ${b} are neighbours (similarity ${score.toFixed(2)}) published ${days} days apart: the later one waits until ${NEIGHBOUR_GAP_DAYS} days after the earlier`);
   }
 });
+await test("New guides go live only in their random slots: no more on a day than it has slots (20 a month)", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const { START, slotsOn } = await import(join(ROOT, "scripts", "new-guide-slots.mjs"));
+  const perDay = new Map();
+  for (const g of GUIDES) if (!g.draft && g.published >= START) perDay.set(g.published, [...(perDay.get(g.published) || []), g.slug]);
+  for (const [date, slugs] of perDay) {
+    assert(slugs.length <= slotsOn(date), `${slugs.join(", ")} published on ${date}, which has ${slotsOn(date)} new guide slot(s) (node scripts/new-guide-slots.mjs --list)`);
+  }
+});
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
   const domains = (f) => readFileSync(f, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   // The writer may add sites to its own list, each with a reason, but never the kinds of site that can't be trusted

@@ -5,7 +5,8 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | When (UK time) | Agent | Playbook | What it may publish |
 |---|---|---|---|
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
-| Daily 7:07am and 3:45pm | Writer | `SEO-AGENT.md` | Nothing by itself |
+| Daily 7:07am and 3:45pm | Writer, normal run: fixes and refreshes, no new guides | `SEO-AGENT.md` | Nothing by itself |
+| Hourly 7:23am to 11:23pm, writing only when a random slot is due (20 a month) | Writer, new guide run | `SEO-AGENT.md` | Nothing by itself |
 | As soon as both reviewers have judged a writer pull request and one failed it (backup: daily 12:07pm and 9:07pm) | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
 | Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
 | As soon as a writer pull request opens or changes (backup: daily 10:07am, 2:07pm and 7:07pm, b 20 minutes later) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
@@ -39,7 +40,7 @@ Files the agents share:
 
 ## The auditor
 
-You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who aims to publish fourteen guides a week (two a day). You don't change any page.
+You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who publishes 20 new guides a month at random times (`scripts/new-guide-slots.mjs`), and fixes and refreshes guides twice a day. You don't change any page.
 
 **The site's one goal is search traffic.** It has no products: it lives on the ads people see when they arrive from Google. So the measure of every week's work is **search clicks**, and every backlog item should be there because it can bring more of them.
 
@@ -47,6 +48,7 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
 
 1. If `site-src/data/scorecard.csv` exists, read it first, with `unmatched-queries.csv` and `meta.json`. Real search data outranks your judgement. If `meta.json` says the data is more than 8 days old, say "search data missing" at the top of the audit and your pull request.
    Start the audit, and your pull request, with the traffic line from `meta.json`: `Search clicks, last 28 days: N (previous 28 days: N, change: N%). Impressions: N.` Add a one line reason for the change if the data shows one (a guide climbing or dropping, a ticket moment).
+   Then run `node scripts/seo-scorecard.mjs --sources` and put its output under a `## Scorecard` heading straight after the traffic line, with one plain sentence on what changed since last week (better or worse, and the likely reason). Put the same table in your pull request description, so the owner sees it every Sunday.
    Then read `CLAUDE.md`, the three playbooks, `seo-owner-priorities.md`, `seo-audit.md`, every file in `site-src/log/` from the last 14 days, and `site-src/content.mjs` in full.
 2. **Look back at the week.** Read the merged and open pull requests from `seo-agent/` branches (the last 20, with `state=all`) and the reviewers' comments on them. Move finished backlog items to Done, with the date and pull request. Turn every reviewer failure into a backlog item.
 3. **Recheck everything published this week** against its sources, by opening them. Anything wrong becomes an Urgent item at the top.
@@ -60,7 +62,7 @@ You keep `site-src/seo-audit.md` a complete, honest picture of the site's conten
    - UX: answers the question in the first paragraph, easy to scan on a phone, mentions the tool only where it helps.
    - Health: Good, Needs work or Urgent.
 5. **Find gaps.** Think through someone's journey from registration to arriving at the festival, and the questions they'd search for at each stage, especially in the next six weeks. Watch for saturation: the niche is narrow, so prefer a distinct question over a variation of an existing guide. **Check every Missing item for overlap** before it goes in the backlog: run `node scripts/guide-similarity.mjs "<target phrase>"` and read every guide it marks HIGH or CHECK. If an existing guide already answers it, make it a Change to that guide (add a section) instead, or drop it. If it only partly overlaps, the item must say which guide it is close to and how its question differs. Neighbouring guides go live at least 15 days apart: if a close guide was published in the last 15 days, add `Not before: <date>` (15 days after it) to the item, and the writer skips it until then. Also run `node scripts/guide-similarity.mjs --all`: each pair it lists becomes a Change item (give each guide a clearly different focus and link between them, or merge the weaker one into the stronger) unless you judge they already answer different questions, which you note in the inventory.
-6. **Rewrite the backlog**: at most 30 items, highest priority first, with **at least 16 ready Missing items** so the writer's fourteen runs a week never run dry (fewer is fine if there honestly aren't 16 good topics: say so, and never pad the list with a rewording of an existing guide). Each item is one numbered line:
+6. **Rewrite the backlog**: at most 30 items, highest priority first, with **at least 8 ready Missing items** so a week's new guide slots never run dry (fewer is fine if there honestly aren't 8 good topics: say so, and never pad the list with a rewording of an existing guide). Each item is one numbered line:
    `N. Type: what to do, and why it matters to searchers. Target: "phrase" (Missing items only). Source: https://...`
    Every item must cite a source that justifies it (a test checks). Owner priorities come first, in the owner's order, unless something is Urgent.
 7. Write your log to `site-src/log/<today>-auditor.md`: what you audited and the biggest findings.
@@ -80,7 +82,7 @@ The export flags guides with enough data to judge (100+ impressions in 28 days, 
 
 After wrong facts and upcoming deadlines, order the backlog by the clicks each item could realistically gain.
 
-**Cadence:** if more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, write `New guides this week: 7` (then `3` if it was already 7, then `1`) at the top of the backlog, and say why. Go back up one step a week once that share drops below half. Do the same if the CANNIBAL flags or your own audit show new guides overlapping old ones. With no line, the writer's target is fourteen. The writer must not write more new guides in a week than this line allows.
+**Cadence:** the owner set 20 new guides a month, at random times (`node scripts/new-guide-slots.mjs --list` shows this month's). No agent can change that. If more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, or the CANNIBAL flags or your own audit show new guides overlapping old ones, recommend a lower number under `Needs the owner` in your pull request, and say why.
 
 ### Priorities, in order
 
