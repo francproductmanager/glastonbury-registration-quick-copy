@@ -749,7 +749,7 @@ export const GUIDES = [
     body: [
       "There's no trick that gets you to the front of the Glastonbury queue. Demand is many times the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked.",
       { h2: "What changed in 2027" },
-      "For the 2027 sales, Time Out reported, buyers entered their registration details **before** joining the queue, and each person got a unique queue ID linked to their registration, so they could only enter the queue once. It was no longer possible to queue on several tabs or devices. The full detail, with the official advice, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
+      "In the 2027 sales, buyers entered their registration details **before** joining the queue: Time Out reported it for the coach sale, and NME for the general sale. In the coach sale, Time Out said, each person got a unique queue ID linked to their registration, so they could only enter the queue once and could no longer queue on several tabs or devices. NME reported that the general sale also tied each registration to a single place in the queue. The full detail, with the official advice, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
       "Time Out noted that the old approach, where friends each ran as many devices as they could, was likely to be far less successful under the new system. Time Out also said the new queue made the sale fairer.",
       { h2: "The one thing that really raises your odds" },
       "If each registration gets one place, then the number of chances your group has is simply **the number of people with their own registration who queue**. Six friends queueing on one device each have six places. One person with six devices has one.",
@@ -841,7 +841,7 @@ export const GUIDES = [
       { checks: [
         "Phone and laptop charged, chargers plugged in where you'll sit.",
         "Screen lock set to a longer time, and power saving off. See [phone or laptop: setting up either](/guides/set-up-your-phone-for-ticket-day/).",
-        "The lead booker knows their own registration number: in the 2027 sales, Time Out reported, buyers entered it before joining the queue.",
+        "The lead booker knows their own registration number: in the 2027 sales, Time Out (coach sale) and NME (general sale) reported, buyers entered it before joining the queue.",
         "Your group's page open once, to check it works.",
         "Card limit checked, a second card to hand, and your bank's app working for the payment check.",
         "Apple Pay or Google Pay set up now, if you want to use them.",
@@ -891,7 +891,7 @@ export const GUIDES = [
       { cta: "Get your group ready now" },
     ],
     related: ["how-the-ticket-queue-works", "paying-for-glastonbury-tickets", "set-up-your-phone-for-ticket-day"],
-    sources: [OFFICIAL.info, OFFICIAL.sale2025, NEWS.timeout2027queue],
+    sources: [OFFICIAL.info, OFFICIAL.sale2025, NEWS.timeout2027queue, NEWS.nme2027],
   },
   {
     slug: "how-the-ticket-queue-works",
@@ -1054,7 +1054,7 @@ export const GUIDES = [
         ],
       } },
       "If you queue on a laptop, keep your phone next to you for the payment check.",
-      "Use **one device per registration**. In the 2027 sale, Time Out reported, each person got a queue ID linked to their registration and could only enter the queue once, and the festival says using several devices or tabs will lose you your place. And open your group's details on the same device you're booking on: copying on your phone won't paste on your laptop.",
+      "Use **one device per registration**. In the 2027 coach sale, Time Out reported, each person got a queue ID linked to their registration and could only enter the queue once, and NME reported that the general sale also tied each registration to a single place in the queue. The festival says using several devices or tabs will lose you your place. And open your group's details on the same device you're booking on: copying on your phone won't paste on your laptop.",
       { h2: "On an iPhone" },
       { ul: [
         "**Stop the screen locking.** Open Settings, tap **Display & Brightness**, then **Auto-Lock**, and choose a longer time. Apple notes this uses more battery, so plug in too.",
@@ -1079,7 +1079,7 @@ export const GUIDES = [
       ] },
       { h2: "Your connection" },
       "Use the connection you trust most, which for most people is their home broadband. Know how to switch your phone to mobile data, or use it as a hotspot, in case the broadband drops. Treat that as a backup, not a trick: your place is linked to your registration, so a second connection doesn't give you a second chance.",
-      "Don't use a VPN. NME reported that some buyers in 2027 got \"access restricted\" messages, and the 2025 sale FAQ warned that anything that looks like suspicious behaviour can trigger the anti-bot software. If others in your home are on the same broadband, ask them to hold off on streaming and downloads for the hour.",
+      "Stick to your normal connection. The 2025 sale FAQ warned that refreshing the page, using multiple tabs or many devices can look like suspicious behaviour and trigger the anti-bot software. In the 2027 general sale, NME reported, some buyers got \"access restricted\" messages even though they said they weren't using a VPN. If others in your home are on the same broadband, ask them to hold off on streaming and downloads for the hour.",
       { h2: "Things to avoid once you're in" },
       { ul: [
         "**Don't refresh** the queue page unless the official instructions on the page tell you to.",
