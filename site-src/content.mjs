@@ -22,10 +22,8 @@ const CHECKED = UPDATED;
 const MODIFIED = "2026-10-26";
 
 const OFFICIAL = {
-  tickets: ["Glastonbury Festival: ticket information", "https://www.glastonburyfestivals.co.uk/information/tickets/"],
   y2027: ["Glastonbury Festival: 2027 ticket information confirmed", "https://www.glastonburyfestivals.co.uk/news/glastonbury-2027-ticket-information-confirmed/"],
   sale2025: ["Glastonbury Festival: 2025 ticket sale FAQ", "https://www.glastonburyfestivals.co.uk/news/2025-ticket-sale-faq/"],
-  sale2027: ["Glastonbury Festival: 2027 ticket sale FAQ (PDF)", "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/10/2027-TICKET-SALE-FAQ.pdf"],
   register: ["See Tickets: Glastonbury registration", "https://glastonbury.seetickets.com/registration"],
   lookup: ["See Tickets: registration lookup", "https://glastonbury.seetickets.com/gfl/registration/lookup"],
   info: ["Glastonbury Festival: info hub", "https://www.glastonburyfestivals.co.uk/info/"],
@@ -49,15 +47,13 @@ const NEWS = {
   nme2027: ["NME: Glastonbury 2027 general tickets sell out in 42 minutes", "https://www.nme.com/news/music/fans-react-glastonbury-2027-general-tickets-sell-out-42-minutes-3972068"],
   gff2024price: ["Glasto Fest Feed: 2024 ticket sale dates and prices", "https://www.glastofestfeed.com/news/information/glastonbury-2024-ticket-sale-dates-cost/"],
   gff2024: ["Glasto Fest Feed: 2024 general tickets sell out in 57 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-general-tickets-sell-out-57-minutes/"],
-  gff2024coach: ["Glasto Fest Feed: 2024 coach tickets sell out in 25 minutes", "https://www.glastofestfeed.com/news/glastonbury-2024-coach-tickets-sell-out-26-minutes/"],
+  gff2024coach: ["Glasto Fest Feed: 2024 coach tickets sell out in 25 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-coach-tickets-sell-out-26-minutes/"],
   gff2024resale: ["Glasto Fest Feed: 2024 resale tickets sold out in 22 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-resale-tickets-sold-out-22-minutes/"],
   wiki2024: ["Wikipedia: Glastonbury Festival 2024", "https://en.wikipedia.org/wiki/Glastonbury_Festival_2024"],
-  radiox2025balance: ["Radio X: 2025 balance payment deadline", "https://www.radiox.co.uk/festivals/glastonbury/2025-ticket-balance-payment-deadline-1-7-april/"],
   nimbus: ["Criplife: Glastonbury partners with Nimbus Disability", "https://criplife.co.uk/glastonbury-festival-partners-with-nimbus-disability/"],
   timeout2027other: ["Time Out: Glastonbury 2027 resale and volunteering guide", "https://www.timeout.com/uk/news/glastonbury-2027-ticket-resale-volunteering-guide-100526"],
   actionfraud: ["Action Fraud: report fraud and cyber crime", "https://www.actionfraud.police.uk/"],
   timeout2027queue: ["Time Out: Glastonbury 2027 sale time, prices and the new queue system", "https://www.timeout.com/uk/news/glastonbury-tickets-this-weekend-sale-time-prices-queue-guide-100226"],
-  indy2025: ["The Independent via AOL: Glastonbury 2025 ticket sale as it happened", "https://aol.com/glastonbury-2025-live-festival-coach-122539691.html"],
   nationwide2025: ["Nationwide: 1 in 4 snared by ticket scams ahead of the Glastonbury resale (April 2025)", "https://www.nationwide.co.uk/media/news/1-in-4-snared-by-ticket-scams-as-peak-fomo-sets-in-due-to-imminent-glastonbury-resale"],
   lloydsTickets: ["Lloyds Bank: ticket scams", "https://www.lloydsbank.com/help-guidance/protecting-yourself-from-fraud/ticket-scams.html"],
   radioxTips: ["Radio X: the best tips to buy Glastonbury tickets", "https://radiox.co.uk/festivals/glastonbury/how-to-get-glastonbury-tickets-best-tips-tricks"],
@@ -181,7 +177,7 @@ export const GUIDES = [
     topic: "now",
     title: "How fast Glastonbury tickets sell out: recent sales compared",
     summary: "Sell-out times, prices and deposits for the last three Glastonbury ticket sales and resales, and what the numbers mean for your group.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Every Glastonbury sale in recent years has sold out in under an hour. Looking at the last few side by side shows how quickly things move, how the price has changed, and why the minutes straight after you get through the queue matter so much.",
       { h2: "General admission sales" },
@@ -224,7 +220,7 @@ export const GUIDES = [
       { cta: "Get your group ready for the next sale" },
     ],
     related: ["how-the-ticket-queue-works", "glastonbury-2027-key-dates", "how-to-get-glastonbury-tickets"],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.indy2025, NEWS.nme2027, NEWS.gff2024price, NEWS.gff2024, NEWS.gff2024coach, NEWS.wiki2024],
+    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, NEWS.nme2027, NEWS.gff2024price, NEWS.gff2024, NEWS.gff2024coach, NEWS.wiki2024],
   },
   {
     // One permanent address for "when's the next sale?", updated every cycle instead of starting a
@@ -364,7 +360,7 @@ export const GUIDES = [
     topic: "before",
     title: "Lost your Glastonbury registration number? Find or change it",
     summary: "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, how to check a friend's number, and how to change your photo, postcode or email.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Your registration number is in the email See Tickets sent when your photo was accepted. If you can't find that email, you don't need to register again: the official **registration lookup** sends your number back to you. This page covers finding it, checking a friend's, and changing the details on your registration.",
       { h2: "Find your number with the lookup" },
@@ -379,7 +375,7 @@ export const GUIDES = [
       { ul: [
         "**Try every email address you might have used.** Many people registered for an earlier festival with a work, university or old personal address. A registration carries over between festivals, so the old one is still the one that counts.",
         "**Check you were ever accepted.** If your photo was rejected and you didn't try again, there's no registration to find.",
-        "**Register again while registration is open.** For 2027, registration closed on 25 September 2026, and the festival said there would be a chance to register again before any spring resale. See [how to register](/guides/how-glastonbury-registration-works/).",
+        "**Register again while registration is open.** For 2027, registration closed on 25 September 2026, and the festival says it will reopen later in the autumn. See [how to register](/guides/how-glastonbury-registration-works/).",
       ] },
       { h2: "Registered twice?" },
       "If you've registered more than once, use the number from your most recent confirmation email, and make sure that's the one your group has. When organising a group, it's worth asking everyone to forward their latest email rather than retype a number they remember.",
@@ -391,18 +387,18 @@ export const GUIDES = [
         rows: [
           ["Your photo", "The update link in your confirmation email", "While registration is open, and only before a booking is linked to your registration"],
           ["Your postcode", "The edit link in your confirmation email, or tell your lead booker the old one", "While registration is open. What matters is that the postcode typed matches the registration"],
-          ["Your email address", "The edit link in your confirmation email", "While registration is open. In 2025, changing it once a booking was linked needed a request to See Tickets customer service"],
+          ["Your email address", "The edit link in your confirmation email", "While registration is open. Make sure it is one you'll keep: you need access to it to use your registration"],
           ["Deleting your registration", "The delete link in your confirmation email", "Any time you no longer want it"],
         ],
       } },
-      "The festival's advice has been to check your registration at least a week before registration closes, so there's time to fix anything.",
+      "The festival advises checking your registration every year, and before you book, so your details are up to date and your photo still looks like you. Registration is paused before and during each sale, so do it early. Once you're booked, your registration is locked: changing it doesn't change the booking, and a new delivery address has to go to See Tickets instead.",
       { h2: "Once you're booked, your photo is fixed" },
       "You can't change your photo while a booking is linked to your registration, and the photo is printed on your ticket. If your appearance changes a lot before June, contact See Tickets customer service for advice rather than assuming it'll be fine at the gate.",
       { tip: "Keep your confirmation email in a folder you won't clear out. It's the quickest way to your number next time, and it has the links to change your details." },
       { cta: "Put your group's numbers on one page" },
     ],
     related: ["how-glastonbury-registration-works", "collect-registration-numbers-from-whatsapp", "buying-tickets-for-a-group"],
-    sources: [OFFICIAL.lookup, OFFICIAL.register, OFFICIAL.tickets, OFFICIAL.sale2027, OFFICIAL.customer],
+    sources: [OFFICIAL.lookup, OFFICIAL.register, OFFICIAL.info, OFFICIAL.customer],
   },
   {
     slug: "buying-tickets-for-a-group",
@@ -460,7 +456,7 @@ export const GUIDES = [
       { cta: "Set up your syndicate's page" },
     ],
     related: ["glastonbury-ticket-spreadsheet-template", "group-chat-messages", "how-to-get-glastonbury-tickets"],
-    sources: [OFFICIAL.tickets, NEWS.timeout2027queue, NEWS.radioxTips, OFFICIAL.resale],
+    sources: [OFFICIAL.info, NEWS.timeout2027queue, NEWS.radioxTips, OFFICIAL.resale],
   },
   {
     slug: "glastonbury-ticket-spreadsheet-template",
@@ -520,7 +516,7 @@ export const GUIDES = [
       { cta: "Put a booking group on one page" },
     ],
     related: ["buying-tickets-for-a-group", "collect-registration-numbers-from-whatsapp", "how-to-use-glasto-quick-copy"],
-    sources: [NEWS.radioxTips, NEWS.timeout2027queue, OFFICIAL.tickets, HELP.tool],
+    sources: [NEWS.radioxTips, NEWS.timeout2027queue, OFFICIAL.info, HELP.tool],
   },
   {
     slug: "group-chat-messages",
@@ -563,7 +559,7 @@ export const GUIDES = [
       { cta: "Put your group on one page" },
     ],
     related: ["buying-tickets-for-a-group", "collect-registration-numbers-from-whatsapp", "glastonbury-ticket-spreadsheet-template"],
-    sources: [OFFICIAL.tickets, OFFICIAL.lookup],
+    sources: [OFFICIAL.info, OFFICIAL.lookup],
   },
   {
     slug: "glastonbury-ticket-glossary",
@@ -619,7 +615,7 @@ export const GUIDES = [
       "Each of these is explained in more detail in our [guides](/guides/).",
     ],
     related: ["first-time-glastonbury-ticket-day", "how-glastonbury-registration-works", "how-the-ticket-queue-works"],
-    sources: [OFFICIAL.tickets, OFFICIAL.y2027, OFFICIAL.register, OFFICIAL.lookup],
+    sources: [OFFICIAL.info, OFFICIAL.y2027, OFFICIAL.sale2025, OFFICIAL.resale, OFFICIAL.register, OFFICIAL.lookup],
   },
   {
     slug: "first-time-glastonbury-ticket-day",
@@ -675,7 +671,7 @@ export const GUIDES = [
       { cta: "Get your group ready" },
     ],
     related: ["how-the-ticket-queue-works", "buying-tickets-for-a-group", "ticket-day-checklist"],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2027, OFFICIAL.tickets, NEWS.timeout2027queue, NEWS.nme2027, NEWS.itv2027],
+    sources: [OFFICIAL.y2027, OFFICIAL.info, NEWS.timeout2027queue, NEWS.nme2027, NEWS.itv2027],
   },
   {
     slug: "collect-registration-numbers-from-whatsapp",
@@ -740,7 +736,7 @@ export const GUIDES = [
       { cta: "Paste your group chat" },
     ],
     related: ["glastonbury-ticket-spreadsheet-template", "group-chat-messages", "how-to-use-glasto-quick-copy"],
-    sources: [HELP.whatsappExport, OFFICIAL.tickets, OFFICIAL.lookup, HELP.tool],
+    sources: [HELP.whatsappExport, OFFICIAL.info, OFFICIAL.lookup, HELP.tool],
   },
   {
     slug: "how-to-get-glastonbury-tickets",
@@ -749,11 +745,11 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Glastonbury ticket tips 2027: what works under the new queue",
     summary: "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group across the coach sale, the general sale and the resale.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "There's no trick that gets you to the front of the Glastonbury queue. Demand is many times the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked.",
       { h2: "What changed in 2027" },
-      "For the 2027 sales, buyers entered their registration details **before** joining the queue, and each registration got one place. Extra phones, browsers and connections with the same registration brought up the same place, not a new one. The full detail, with the official advice, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
+      "In the 2027 sales, buyers entered their registration details **before** joining the queue: Time Out reported it for the coach sale, and NME for the general sale. In the coach sale, Time Out said, each person got a unique queue ID linked to their registration, so they could only enter the queue once and could no longer queue on several tabs or devices. NME reported that the general sale also tied each registration to a single place in the queue. The full detail, with the official advice, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
       "Time Out noted that the old approach, where friends each ran as many devices as they could, was likely to be far less successful under the new system. Time Out also said the new queue made the sale fairer.",
       { h2: "The one thing that really raises your odds" },
       "If each registration gets one place, then the number of chances your group has is simply **the number of people with their own registration who queue**. Six friends queueing on one device each have six places. One person with six devices has one.",
@@ -785,11 +781,11 @@ export const GUIDES = [
       ] },
       { h2: "What doesn't help" },
       { ul: [
-        "**Extra tabs and devices on the same registration.** They gave the same place in 2027, and the official advice was against them.",
-        "**Refreshing.** A slow queue page is normal. The festival warned that refreshing could lose your place or disrupt your booking.",
+        "**Extra tabs and devices on the same registration.** Since 2027 each registration can only enter the queue once, and the festival says using several devices or tabs will lose you your place.",
+        "**Refreshing.** A slow queue page is normal. The festival says refreshing the queue page will lose you your place.",
         "**VPNs.** Some buyers in 2027 reported \"access restricted\" messages. Use your normal connection.",
         "**Arriving at the last second.** Be in the waiting room at least 10 minutes early. Arriving even earlier than that didn't move you forward in 2027.",
-        "**Paid services, bots and \"guaranteed\" access.** Nobody can sell you a better place in the queue, and handing your registration to strangers puts it at risk. It's also against the sale's rules. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
+        "**Paid services, bots and \"guaranteed\" access.** Nobody can sell you a better place in the queue, and handing your registration to strangers puts it at risk. The festival also says bookings made with bots or automated software will be cancelled. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
       ] },
       { h2: "A plan for your group" },
       { ol: [
@@ -807,7 +803,7 @@ export const GUIDES = [
       { cta: "Get your group ready" },
     ],
     related: ["buying-tickets-for-a-group", "how-the-ticket-queue-works", "ticket-day-checklist"],
-    sources: [OFFICIAL.sale2027, OFFICIAL.y2027, NEWS.timeout2027queue, NEWS.nme2027],
+    sources: [OFFICIAL.info, OFFICIAL.y2027, NEWS.timeout2027queue, NEWS.nme2027],
   },
   {
     slug: "ticket-day-checklist",
@@ -816,7 +812,7 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Glastonbury ticket day checklist",
     summary: "A tickable, printable checklist for two weeks before, the night before and the minutes before the sale, who does what, what to do once you're through, and the ten mistakes to avoid.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Glastonbury tickets usually sell out in under an hour. The queue is luck, but what happens after you get through isn't. This checklist covers the things you can control, in the order you'll need them. Tick the boxes as you go, or print it: nothing you tick is saved.",
       { h2: "Two weeks or more before" },
@@ -845,7 +841,7 @@ export const GUIDES = [
       { checks: [
         "Phone and laptop charged, chargers plugged in where you'll sit.",
         "Screen lock set to a longer time, and power saving off. See [phone or laptop: setting up either](/guides/set-up-your-phone-for-ticket-day/).",
-        "The lead booker knows their own registration number: recent sales have asked for it before you can join the queue.",
+        "The lead booker knows their own registration number: in the 2027 sales, Time Out (coach sale) and NME (general sale) reported, buyers entered it before joining the queue.",
         "Your group's page open once, to check it works.",
         "Card limit checked, a second card to hand, and your bank's app working for the payment check.",
         "Apple Pay or Google Pay set up now, if you want to use them.",
@@ -853,7 +849,7 @@ export const GUIDES = [
       ] },
       { h2: "In the 15 minutes before" },
       { checks: [
-        "In the waiting room on the official See Tickets Glastonbury page **at least 10 minutes before** the start, as the 2027 sale FAQ advised.",
+        "In the waiting room on the official See Tickets Glastonbury page **at least 10 minutes before** the start, as the festival's information page advises. Anyone who arrives after the start goes to the back of the queue.",
         "One device and one tab for each registration number.",
         "Phone plugged in, screen on, notifications silenced.",
         "Big downloads and video calls closed.",
@@ -885,7 +881,7 @@ export const GUIDES = [
           ["A typo in a registration number", "Copy and paste instead of typing, and check the names that appear before paying."],
           ["Hunting through the group chat", "Collect everything in one place beforehand, one entry per person."],
           ["Two people booking the same friends", "Agree who covers whom, and announce bookings the moment they're confirmed."],
-          ["Too many tabs", "One device and one tab per registration number. Extra ones gave the same place in 2027 and slow older phones down."],
+          ["Too many tabs", "One device and one tab per registration number. The festival says using several devices or tabs will lose you your place in the queue."],
           ["A card that gets declined", "Check your limit beforehand and have a second card ready. Six deposits is a bigger payment than usual."],
           ["A phone that locks or dies", "Charge it, plug it in and set a longer screen lock. The tool's **Keep screen on** helps on your group's page."],
           ["Forgetting the balance", "Put the April window in your calendar straight away, and ask everyone else to as well."],
@@ -895,7 +891,7 @@ export const GUIDES = [
       { cta: "Get your group ready now" },
     ],
     related: ["how-the-ticket-queue-works", "paying-for-glastonbury-tickets", "set-up-your-phone-for-ticket-day"],
-    sources: [OFFICIAL.tickets, OFFICIAL.info, OFFICIAL.sale2027, OFFICIAL.sale2025],
+    sources: [OFFICIAL.info, OFFICIAL.sale2025, NEWS.timeout2027queue, NEWS.nme2027],
   },
   {
     slug: "how-the-ticket-queue-works",
@@ -1043,7 +1039,7 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Phone or laptop for Glastonbury tickets? Setting up either",
     summary: "Whether to use a phone or a laptop for the Glastonbury sale, and the settings to change on iPhone, Android and laptops so your screen doesn't lock, your battery lasts and nothing pops up over the queue.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "A phone that locks, dims or runs out of battery in the queue is one of the few ticket day problems that's entirely in your hands. Setting it up takes about five minutes, and the best time is the evening before the sale, not the morning of it.",
       "The steps below follow Apple's and Google's own help pages. Menu names vary a little between models, brands and software versions, so if you can't find a setting, type its name into the search bar at the top of your Settings app.",
@@ -1058,7 +1054,7 @@ export const GUIDES = [
         ],
       } },
       "If you queue on a laptop, keep your phone next to you for the payment check.",
-      "Use **one device per registration**. In the 2027 sale, extra devices with the same registration number brought up the same place in the queue, and the official advice was against using several. And open your group's details on the same device you're booking on: copying on your phone won't paste on your laptop.",
+      "Use **one device per registration**. In the 2027 coach sale, Time Out reported, each person got a queue ID linked to their registration and could only enter the queue once, and NME reported that the general sale also tied each registration to a single place in the queue. The festival says using several devices or tabs will lose you your place. And open your group's details on the same device you're booking on: copying on your phone won't paste on your laptop.",
       { h2: "On an iPhone" },
       { ul: [
         "**Stop the screen locking.** Open Settings, tap **Display & Brightness**, then **Auto-Lock**, and choose a longer time. Apple notes this uses more battery, so plug in too.",
@@ -1082,8 +1078,8 @@ export const GUIDES = [
         "**Put the group's page in its own window** next to the booking page, so you can copy from one and paste into the other without hunting for tabs.",
       ] },
       { h2: "Your connection" },
-      "Use the connection you trust most, which for most people is their home broadband. Know how to switch your phone to mobile data, or use it as a hotspot, in case the broadband drops. Treat that as a backup, not a trick: in 2027 reports said a different connection with the same registration brought up the same place in the queue.",
-      "Don't use a VPN. Some buyers in 2027 reported \"access restricted\" messages, and the anti-bot checks look for unusual connections. If others in your home are on the same broadband, ask them to hold off on streaming and downloads for the hour.",
+      "Use the connection you trust most, which for most people is their home broadband. Know how to switch your phone to mobile data, or use it as a hotspot, in case the broadband drops. Treat that as a backup, not a trick: your place is linked to your registration, so a second connection doesn't give you a second chance.",
+      "Stick to your normal connection. The 2025 sale FAQ warned that refreshing the page, using multiple tabs or many devices can look like suspicious behaviour and trigger the anti-bot software. In the 2027 general sale, NME reported, some buyers got \"access restricted\" messages even though they said they weren't using a VPN. If others in your home are on the same broadband, ask them to hold off on streaming and downloads for the hour.",
       { h2: "Things to avoid once you're in" },
       { ul: [
         "**Don't refresh** the queue page unless the official instructions on the page tell you to.",
@@ -1105,7 +1101,7 @@ export const GUIDES = [
       { cta: "Get your group's page ready" },
     ],
     related: ["ticket-day-checklist", "how-to-use-glasto-quick-copy", "how-the-ticket-queue-works"],
-    sources: [OFFICIAL.sale2027, OFFICIAL.sale2025, HELP.appleAutoLock, HELP.appleLowPower, HELP.appleDnd, HELP.appleFocus, HELP.appleSwitch, HELP.pixelDisplay, HELP.pixelBattery, HELP.pixelSplit],
+    sources: [OFFICIAL.info, OFFICIAL.sale2025, NEWS.timeout2027queue, NEWS.nme2027, HELP.appleAutoLock, HELP.appleLowPower, HELP.appleDnd, HELP.appleFocus, HELP.appleSwitch, HELP.pixelDisplay, HELP.pixelBattery, HELP.pixelSplit],
   },
   {
     slug: "got-a-glastonbury-ticket-what-next",
@@ -1114,7 +1110,7 @@ export const GUIDES = [
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
     summary: "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything else between booking and the festival, including when tickets arrive.",
-    updated: CHECKED, isoDate: MODIFIED,
+    updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Getting through the queue is the hard part, but a deposit isn't a ticket yet. The one deadline that matters is the **balance payment window: 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time**. Any ticket whose balance isn't paid by then is cancelled. This guide covers that week first, then everything else between now and June.",
       { h2: "Paying the 2027 balance" },
@@ -1130,7 +1126,7 @@ export const GUIDES = [
       } },
       "Add the window to your calendar now. The file opens in your calendar app, with a reminder the day before:",
       { calendar: ["glastonbury-2027-balance"] },
-      "The festival and See Tickets send reminders, but paying on time is each ticket holder's responsibility. In 2025 the balance page also let people change the delivery address for their tickets. What happens to the deposit if a balance isn't paid, and what to do if someone can't go, is in [deposits and balance payments](/guides/deposits-and-balance-payments/).",
+      "Paying on time is each ticket holder's responsibility, the festival says. If you've moved since booking, tell See Tickets: changing the address on your registration doesn't change where your tickets are sent. What happens to the deposit if a balance isn't paid, and what to do if someone can't go, is in [deposits and balance payments](/guides/deposits-and-balance-payments/).",
       { tip: "Ask each person to reply in the group chat with \"PAID\" once their balance is done. The lead booker can then see at a glance who still needs reminding before the 7th." },
       { h2: "Parking and protection" },
       `For 2027, car park passes are sold during the balance window, for general admission ticket holders only. The [festival's information page](https://www.glastonburyfestivals.co.uk/info/) listed them at **{{fact:carParkPass}}** when we checked on ${CHECKED}, so check that page again before you pay. They can't be added to a ticket and coach booking. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none. More on passes, and on driving there, is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
@@ -1160,13 +1156,14 @@ export const GUIDES = [
         "Make sure the delivery address for your tickets is right.",
       ] },
       { h2: "When do tickets arrive?" },
-      "General admission tickets are posted to the address on the booking, and coach passengers are given their festival tickets on the coach. The festival hasn't announced 2027 delivery dates yet. For an earlier festival, See Tickets said to expect tickets at least 14 days before the festival started. If yours haven't arrived by then, contact See Tickets customer service.",
+      "For 2027, the festival's information page says UK tickets will be sent by Royal Mail in late May to June, to the address given when booking, and someone will need to sign for them. See Tickets emails a tracking reference, and the lead booker can also find it in See Tickets' order tracker. A booking's tickets all go to the address for the first name on it, unless balances were paid separately, in which case each person gets their own. You should have them at least 7 days before the festival starts: if not, contact See Tickets customer service.",
+      "Ticket and coach passengers get an e-ticket travel voucher, expected from mid-May, and are given their festival tickets on the coach, with photo ID.",
       "Keep everyone's tickets safe, and agree how they'll get to each person before travel day. Each ticket shows its holder's photo, so you can't swap tickets between yourselves.",
       { cta: "Add the balance week to your calendar", href: "/calendar/glastonbury-2027-balance.ics" },
       "Friends still without a ticket? The resale is their next chance, and whoever gets through needs everyone's details to hand: [get their resale group ready](/#/new).",
     ],
     related: ["deposits-and-balance-payments", "glastonbury-2027-cost", "glastonbury-2027-key-dates"],
-    sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.sale2025, OFFICIAL.dispatch, OFFICIAL.customer, NEWS.radiox2025balance],
+    sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.sale2025, OFFICIAL.customer],
   },
   {
     // Held back until the festival announces 2027 dispatch dates (usually in late spring)
@@ -1395,7 +1392,7 @@ export const GUIDES = [
       { cta: "Get your group ready" },
     ],
     related: ["deposits-and-balance-payments", "got-a-glastonbury-ticket-what-next", "glastonbury-coach-tickets"],
-    sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.tickets],
+    sources: [OFFICIAL.y2027, OFFICIAL.info],
   },
   {
     slug: "glastonbury-2027-resale",
@@ -2159,7 +2156,7 @@ export const GUIDES = [
       { cta: "Open the tool" },
     ],
     related: ["collect-registration-numbers-from-whatsapp", "paying-for-glastonbury-tickets", "set-up-your-phone-for-ticket-day"],
-    sources: [OFFICIAL.sale2027, OFFICIAL.sale2025, HELP.appleSwitch, HELP.pixelSplit, HELP.tool],
+    sources: [OFFICIAL.info, OFFICIAL.sale2025, HELP.appleSwitch, HELP.pixelSplit, HELP.tool],
   },
 ];
 
@@ -2180,7 +2177,7 @@ const FAQ_ITEMS = [
   ["What do I need for each person on ticket day?", "Their registration number and the postcode they registered with."],
   ["I've lost my registration number. What now?", "Use the official registration lookup on See Tickets with the email address you registered with. See [finding or changing your registration](/guides/glastonbury-registration-number-lookup/)."],
   ["Is there a trick to getting Glastonbury tickets?", "No. What helps is more people in your group queueing with their own registration, and everyone's details ready to paste. See [Glastonbury ticket tips](/guides/how-to-get-glastonbury-tickets/)."],
-  ["Do extra tabs or devices help in the queue?", "No. Since 2027 each registration gets one place, so extra tabs on the same registration give the same place. See [how the queue works](/guides/how-the-ticket-queue-works/)."],
+  ["Do extra tabs or devices help in the queue?", "No. Since 2027 each registration can only enter the queue once, and the festival says using several devices or tabs will lose you your place. See [how the queue works](/guides/how-the-ticket-queue-works/)."],
   ["How long do I have once I'm through the queue?", "About 10 minutes for the page with everyone's registration details in recent sales, and payment has had its own, shorter timer. See [the checkout guide](/guides/paying-for-glastonbury-tickets/)."],
   ["How much is the deposit and when is the balance due?", "{{fact:deposit}} per ticket in October 2026, then the {{fact:balance}} balance plus postage between {{fact:balanceWindowBetween}}. See [deposits and balance payments](/guides/deposits-and-balance-payments/)."],
   ["Is there a resale?", "Yes, in the spring, for tickets that weren't paid for or were returned. The 2027 date hasn't been announced. See [the 2027 resale](/guides/glastonbury-2027-resale/). Before that, people who live in the qualifying local areas have their own sale for full weekend and Sunday tickets on {{fact:localSaleDate}}: see [Sunday tickets](/guides/glastonbury-sunday-tickets/)."],
@@ -2251,7 +2248,7 @@ export const PAGES = [
       { h2: "Privacy questions" },
       "For questions about your data or this site's cookies, see our [privacy and cookies policy](/privacy/), then contact us using the options above.",
       { h2: "Ticket questions" },
-      "We can't help with bookings, refunds or registrations: we're not connected to the festival. Please contact [See Tickets customer service](https://glastonbury.seetickets.com/customerservice) or check the [official Glastonbury website](https://www.glastonburyfestivals.co.uk/information/tickets/).",
+      "We can't help with bookings, refunds or registrations: we're not connected to the festival. Please contact [See Tickets customer service](https://glastonbury.seetickets.com/customerservice) or check the [official Glastonbury website](https://www.glastonburyfestivals.co.uk/info/).",
     ],
   },
   {
@@ -2311,6 +2308,12 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "30 October 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 balance payment and what to do before June](/guides/got-a-glastonbury-ticket-what-next/) now says when 2027 tickets will be posted (late May to June, signed for), where they go, and how coach passengers get theirs.",
+        "**Updated:** [Glastonbury ticket tips](/guides/how-to-get-glastonbury-tickets/), the [ticket day checklist](/guides/ticket-day-checklist/), [phone or laptop: setting up either](/guides/set-up-your-phone-for-ticket-day/) and [lost your registration number?](/guides/glastonbury-registration-number-lookup/) now rest on the festival's information page and live news reports, after the 2027 sale FAQ and the old ticket information page stopped working. The advice on tabs and devices now gives the festival's own reason: you'll lose your place in the queue.",
+        "**Updated:** [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/) now takes its 2025 sell-out times from NME, after an older report was taken down. The times are unchanged.",
+      ] },
       { h2: "29 October 2026" },
       { ul: [
         "**New:** [Glastonbury 2027 local resident tickets](/guides/glastonbury-local-resident-tickets/): the inner and outer zone towns, the full weekend sale times on {{fact:localSaleDate}}, the deposit and balance, proof of address and what to have ready.",
