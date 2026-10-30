@@ -424,6 +424,26 @@ await test("Guides added since launch aren't near copies of another guide", asyn
     assert(top.score < BANDS.text.high, `${g.slug} overlaps ${top.slug} (similarity ${top.score.toFixed(2)}): add to that guide instead`);
   }
 });
+// Neighbouring guides (similarity "check" or above) go live at least 15 days apart, so two near neighbours
+// don't arrive together and compete. The rule started on 30 October 2026; pairs from before then stay.
+const NEIGHBOUR_GAP_DAYS = 15, NEIGHBOUR_RULE_FROM = "2026-10-30";
+await test("Every live guide has a published date; neighbouring guides go live at least 15 days apart", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const { allPairs, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  const published = new Map();
+  for (const g of GUIDES) {
+    if (g.draft) continue;
+    assert(/^\d{4}-\d{2}-\d{2}$/.test(g.published || "") && !isNaN(Date.parse(g.published)), `${g.slug}: needs published: "YYYY-MM-DD", the day it first went live`);
+    published.set(g.slug, g.published);
+  }
+  for (const { a, b, score } of allPairs(GUIDES)) {
+    if (score < BANDS.text.check) continue;
+    const [first, second] = [published.get(a), published.get(b)].sort();
+    if (second < NEIGHBOUR_RULE_FROM) continue;
+    const days = (Date.parse(second) - Date.parse(first)) / (24 * 60 * 60 * 1000);
+    assert(days >= NEIGHBOUR_GAP_DAYS, `${a} and ${b} are neighbours (similarity ${score.toFixed(2)}) published ${days} days apart: the later one waits until ${NEIGHBOUR_GAP_DAYS} days after the earlier`);
+  }
+});
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
   const domains = (f) => readFileSync(f, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   // The writer may add sites to its own list, each with a reason, but never the kinds of site that can't be trusted

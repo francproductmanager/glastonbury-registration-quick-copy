@@ -16,7 +16,7 @@ The merge workflow puts the label `seo-fix-needed` on a writer pull request once
 
 - If an open writer pull request has a reviewer **FAIL** verdict for its latest commit, fix it on that same branch:
   1. Read every point in both FAIL comments. For each one, open the source and decide: the reviewer is right (fix it), or the source supports what you wrote (don't change it). Never change correct text just to get a pass.
-  2. Make the fixes. Then check your whole pull request the way reviewer b will (the **Your role** section of `SEO-REVIEWER.md`): every claim you added or changed, not only the ones the reviewers named, matched to a line in its source. Fix or delete anything you can't point to.
+  2. Make the fixes. Then check your whole pull request the way reviewer b will (the **Your role** section of `SEO-REVIEWER.md`): every claim you added or changed, not only the ones the reviewers named, matched to a line in its source. Fix or delete anything you can't point to. Run the dead source check on every guide the pull request changes (**Dead sources**, below) and fix what it finds.
   3. Check (below) and push. Add `site-src/log/<today>-writer-fix.md` (or `-writer-fix-pm.md` on the 9:07pm run). The push sends it back to both reviewers.
   4. Straight after pushing, comment on the pull request with a reply to every point, numbered as the reviewers numbered them: `Fixed:` and what changed, or `Not changed:` with a short quote from the source line that supports the text. Name the new commit. Never start this comment with `SEO review `.
 - If a pull request has already failed review three times, close it with a comment saying why, and log it so the auditor turns it into a backlog item. Don't try again. Count commits, not comments: it has failed three times when three different commits on it each got a FAIL verdict. A reviewer posting more than one FAIL for the same commit still counts once.
@@ -29,7 +29,7 @@ Your branch is `seo-agent/<today>-am` on the morning run and `seo-agent/<today>-
 1. If an open writer pull request needs fixing (as the fix run defines it), fix it as the fix run would, and do nothing new this run.
 2. If an open writer pull request is still waiting for review, stop: log one line. Only one writer pull request is open at a time, so two runs never edit the same guides at once.
 3. Run `node scripts/ticket-moment.mjs`. If it says **active**, this is a ticket moment run: create your branch from the latest `main`; your only work is to open the source of every fact in `site-src/facts.mjs`, update anything that changed (and every guide sentence built on it), set each fact's `checked` to today, and write no new guide, then record, check and open the pull request as below. A test fails agent work in ticket moment mode if any fact wasn't checked in the last day.
-4. Otherwise create your branch from the latest `main` and work down the backlog in `seo-audit.md` from the top: **at most one new guide per run** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus every Urgent, Change and Optimise item in the backlog's top 10, wherever it sits, in one pull request. Skip items already done or in progress: check the writer logs and writer pull requests (merged and open) since the audit was written. If that would change more than 8 guides, do the highest items and leave the rest for the next run, saying so in your log. The weeks run Monday to Sunday. Fourteen new guides a week (two a day) is a target, not a quota: if the top Missing item can't be sourced and written to standard, take the next Missing item that can, or do refreshes only, and say why in the log. Never lower the standard to hit the number.
+4. Otherwise create your branch from the latest `main`. **Dead sources come first:** run `node scripts/check-sources.mjs`. If it lists anything DEAD or MOVED, fixing every guide that cites one (**Dead sources**, below) is this run's first job after any Urgent item, and you write no new guide this run. Then work down the backlog in `seo-audit.md` from the top: **at most one new guide per run** (and none if the backlog's `New guides this week` line is already used up by this week's merged writer pull requests), plus every Urgent, Change and Optimise item in the backlog's top 10, wherever it sits, in one pull request. Skip items already done or in progress: check the writer logs and writer pull requests (merged and open) since the audit was written. If that would change more than 25 guides, do the dead sources and then the highest items, and leave the rest for the next run, saying so in your log. The weeks run Monday to Sunday. Fourteen new guides a week (two a day) is a target, not a quota: if the top Missing item can't be sourced and written to standard, or is a neighbour of a guide published less than 15 days ago (**A new guide**, below), take the next Missing item that can, or do refreshes only, and say why in the log. Never lower the standard to hit the number.
 
 ### Reading sources
 
@@ -48,7 +48,19 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 - Fetch the official sources in `OFFICIAL` in `content.mjs` and the festival's news page (https://www.glastonburyfestivals.co.uk/news/) for anything announced since the guides were last checked. If something is confirmed, update every guide it affects and add the source to its `sources`.
 - Rewrite anything that has become past tense ("opens on 1 April" becomes "ran from 1 to 7 April").
 - Search titles (`seoTitle`, or `title` when there is none) 65 characters or fewer; summaries 110 to 165; at least two internal links in and out; no dead links or dead sources.
+- **Every source on a guide you change must still work, not only the ones you add.** A guide you touch carries all its sources into your pull request, and the reviewers fail it for an old dead one. Run `node scripts/check-sources.mjs --slug <every guide you changed>` and fix everything it lists, as below.
 - **Honest dates:** set a guide's own `updated` (like `"4 November 2026"`) and `isoDate` (like `"2026-11-04"`) to today only when you rechecked its facts or changed its substance. Never for a typo or link fix. Leave the shared `UPDATED`, `CHECKED` and `MODIFIED` constants alone.
+
+### Dead sources
+
+`node scripts/check-sources.mjs` opens every page the guides cite (their `sources` and the links in their text) and every fact's source, and marks each one:
+
+- **DEAD** (not found) or **MOVED** to a page that isn't the same article (often the festival's home page, or a newer article on another subject): the page no longer backs the guide. For each claim that rested on it, find another source that says the same thing and cite that, or delete the claim. Then remove the old source from every guide that cites it. If the source is in `OFFICIAL` or `NEWS` in `content.mjs` and nothing cites it any more, delete it there too.
+- **MOVED** to the same article at a new address: open the new address, check it still says what the guide claims, and change the address in `content.mjs`.
+- **BLOCKED**: the site refuses scripts or didn't answer, so the check can't tell. Open it yourself (with a browser if `curl` is refused too). If it really is gone, treat it as DEAD; if you can't tell, leave it and say so in your log.
+- **OK**: nothing to do.
+
+Fix sources in every guide that cites them, not just the guides your backlog items name: each changed guide counts towards the 25.
 
 ### A new guide
 
@@ -56,12 +68,14 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
   - **Already answered.** An existing guide answers the question. Don't write a new guide. If it's missing something the Missing item asked for, add it to that guide as a new section (with sources), and change its `target` or title only if that makes it a better answer. This counts as your new guide for the run.
   - **Partly answered.** Write the new guide only if it answers a clearly different question (a different intent, a different stage of the journey). Keep the shared background to a sentence and link to the other guide for it, and link back.
   - **Not answered.** Write it.
-- After writing, run `node scripts/guide-similarity.mjs --slug <slug>`. HIGH (0.5 or more) fails a test: fold the guide into the existing one instead. CHECK (0.3 to 0.5): cut any section that repeats the other guide and link to it instead.
+- **Neighbouring guides go live at least 15 days apart**, so two guides on nearly the same subject don't arrive together and compete. Before you choose a Missing item, look at the guides the overlap check marks HIGH or CHECK, and their `published` dates (it prints them): if any was published less than 15 days ago, skip the item, take the next one, and say in your log when it can go (15 days after that guide's date).
+- After writing, run `node scripts/guide-similarity.mjs --slug <slug>`. HIGH (0.5 or more) fails a test: fold the guide into the existing one instead. CHECK (0.3 to 0.5): cut any section that repeats the other guide and link to it instead. CHECK with a guide published less than 15 days ago also fails a test: cut the shared material until it drops below 0.3, or don't publish the guide this run (delete it) and say in your log when it can go.
+- Give it `published` (like `"2026-11-04"`): today, the day it first goes live. Never change a published guide's `published` date.
 - Write the top Missing item. It must help someone going through Glastonbury tickets, the queue, payments, the resale, travel packages, access or planning around them: no line-up rumours or general news.
 - Give it a `target`: the search phrase it answers, lower case, different from every other guide's (a test checks), and not the same question in other words.
 - **900 words or more** (a test checks) of genuinely useful text: answer the question in the first paragraph, then worked examples, steps, tables, and what to do if things go wrong. Short paragraphs that read well on a phone.
 - **Every fact from a source you opened and read**, listed in its `sources`, official sources first and reputable news second. If you can't source it, leave it out. Never present a past year's date or price as this year's: say which year every date and price is from.
-- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic. A guide marked `draft: true` is held back until something is announced (its comment says what). Publish one only when a backlog item says `Publish draft: <slug>`: then bring the whole guide up to the standard of a new guide (every fact rechecked from its source, the overlap check, links in and out), remove `draft: true`, and treat it as your new guide for the run. Never publish a draft whose comment says `owner hold`.
+- A short lowercase hyphenated `slug`, a `topic` from `TOPICS`, a place in `GUIDES` beside the guides on the same topic. A guide marked `draft: true` is held back until something is announced (its comment says what). Publish one only when a backlog item says `Publish draft: <slug>`: then bring the whole guide up to the standard of a new guide (every fact rechecked from its source, the overlap check, links in and out), remove `draft: true`, set `published` to today, and treat it as your new guide for the run. Never publish a draft whose comment says `owner hold`.
 - Link to at least two existing guides, and add a natural link to it from at least two.
 
 ### Record it
@@ -72,12 +86,13 @@ Every changeable date, price or age lives once in `site-src/facts.mjs`, with its
 ## Check, then open or update the pull request
 
 1. **Check every claim against its source.** Go through every sentence, table row and list item you added or changed. For each fact in it (a date, price, rule, step or "the festival says"), find the line in the source text that supports it. Fix or delete anything you can't point to. The reviewers fail any claim without a source.
-2. `node site-src/build.mjs`
-3. `node scripts/check-personal-data.mjs`
-4. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
-5. If nothing changed, stop: no pull request.
-6. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
-7. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
+2. `node scripts/check-sources.mjs --slug <every guide your pull request changes or adds>`: nothing may be DEAD or MOVED (**Dead sources**, above).
+3. `node site-src/build.mjs`
+4. `node scripts/check-personal-data.mjs`
+5. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
+6. If nothing changed, stop: no pull request.
+7. Commit and push everything first. Only then (normal run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
+8. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
 
 ## Files you may change
 

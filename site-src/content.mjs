@@ -116,6 +116,7 @@ export const TOPICS = [
 export const GUIDES = [
   {
     slug: "glastonbury-2027-key-dates",
+    published: "2026-10-20", // the day it first went live, for the rule that neighbouring guides go live at least 15 days apart
     target: "glastonbury 2027 dates", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "Glastonbury 2027: key dates, prices and what happens next",
@@ -175,6 +176,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-sale-history",
+    published: "2026-10-20",
     target: "how fast do glastonbury tickets sell out", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "How fast Glastonbury tickets sell out: recent sales compared",
@@ -228,6 +230,7 @@ export const GUIDES = [
     // One permanent address for "when's the next sale?", updated every cycle instead of starting a
     // new page each year. Keep the year out of the slug and the title.
     slug: "next-glastonbury-ticket-sale",
+    published: "2026-10-26",
     target: "next glastonbury ticket sale", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "When is the next Glastonbury ticket sale?",
@@ -286,6 +289,7 @@ export const GUIDES = [
   },
   {
     slug: "how-glastonbury-registration-works",
+    published: "2026-10-05",
     target: "glastonbury registration", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "How to register for Glastonbury: photo, number and deadlines",
@@ -355,6 +359,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-registration-number-lookup",
+    published: "2026-10-26",
     target: "glastonbury registration number lookup", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Lost your Glastonbury registration number? Find or change it",
@@ -401,6 +406,7 @@ export const GUIDES = [
   },
   {
     slug: "buying-tickets-for-a-group",
+    published: "2026-10-05",
     target: "glastonbury syndicate", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Glastonbury syndicate: how to buy tickets as a group",
@@ -458,6 +464,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-spreadsheet-template",
+    published: "2026-10-26",
     target: "glastonbury ticket spreadsheet template", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Free Glastonbury ticket spreadsheet template for your group",
@@ -517,6 +524,7 @@ export const GUIDES = [
   },
   {
     slug: "group-chat-messages",
+    published: "2026-10-20",
     target: "glastonbury group chat messages", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Messages to send your Glastonbury group",
@@ -559,6 +567,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-glossary",
+    published: "2026-10-20",
     target: "glastonbury ticket terms", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Glastonbury ticket terms explained",
@@ -614,6 +623,7 @@ export const GUIDES = [
   },
   {
     slug: "first-time-glastonbury-ticket-day",
+    published: "2026-10-26",
     target: "first time getting glastonbury tickets", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Your first go at Glastonbury tickets: what ticket morning is like",
@@ -669,6 +679,7 @@ export const GUIDES = [
   },
   {
     slug: "collect-registration-numbers-from-whatsapp",
+    published: "2026-10-26",
     target: "collect glastonbury registration numbers whatsapp", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Collecting your group's registration numbers from WhatsApp",
@@ -733,6 +744,7 @@ export const GUIDES = [
   },
   {
     slug: "how-to-get-glastonbury-tickets",
+    published: "2026-10-26",
     target: "glastonbury ticket tips", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury ticket tips 2027: what works under the new queue",
@@ -799,6 +811,7 @@ export const GUIDES = [
   },
   {
     slug: "ticket-day-checklist",
+    published: "2026-10-05",
     target: "glastonbury ticket day checklist", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury ticket day checklist",
@@ -886,6 +899,7 @@ export const GUIDES = [
   },
   {
     slug: "how-the-ticket-queue-works",
+    published: "2026-10-05",
     target: "glastonbury ticket queue", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "How the Glastonbury ticket queue works, and what its errors mean",
@@ -955,6 +969,7 @@ export const GUIDES = [
   },
   {
     slug: "paying-for-glastonbury-tickets",
+    published: "2026-10-20",
     target: "glastonbury checkout payment", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury checkout: paying for tickets and fixing problems",
@@ -1023,6 +1038,7 @@ export const GUIDES = [
   },
   {
     slug: "set-up-your-phone-for-ticket-day",
+    published: "2026-10-26",
     target: "phone or laptop for glastonbury tickets", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Phone or laptop for Glastonbury tickets? Setting up either",
@@ -1093,6 +1109,7 @@ export const GUIDES = [
   },
   {
     slug: "got-a-glastonbury-ticket-what-next",
+    published: "2026-10-20",
     target: "glastonbury 2027 balance payment", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
@@ -1182,6 +1199,7 @@ export const GUIDES = [
   },
   {
     slug: "deposits-and-balance-payments",
+    published: "2026-10-05",
     target: "glastonbury deposit", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury deposits and balance payments explained",
@@ -1227,6 +1245,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-refund",
+    published: "2026-10-28",
     target: "glastonbury ticket refund", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury ticket refunds: fees, deadline and protection",
@@ -1316,6 +1335,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-2027-cost",
+    published: "2026-10-26",
     target: "how much does glastonbury cost", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "How much does Glastonbury 2027 cost? Ticket, travel and more",
@@ -1379,6 +1399,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-2027-resale",
+    published: "2026-10-26",
     target: "glastonbury 2027 resale", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Glastonbury 2027 resale: date, rules and how to get ready",
@@ -1445,6 +1466,7 @@ export const GUIDES = [
   },
   {
     slug: "other-ways-to-get-to-glastonbury",
+    published: "2026-10-20",
     target: "other ways to get to glastonbury", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Missed out? Other ways to get to Glastonbury",
@@ -1486,6 +1508,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-local-resident-tickets",
+    published: "2026-10-29",
     target: "glastonbury local resident tickets", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Glastonbury 2027 local resident tickets: who qualifies and how to book",
@@ -1569,6 +1592,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-sunday-tickets",
+    published: "2026-10-29",
     target: "glastonbury sunday tickets", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Glastonbury 2027 Sunday tickets: who can buy them and how",
@@ -1673,6 +1697,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-volunteering-2027",
+    published: "2026-10-26",
     target: "glastonbury volunteering", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Volunteering at Glastonbury 2027: Oxfam, WaterAid and Greenpeace",
@@ -1723,6 +1748,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-ticket-scams",
+    published: "2026-10-20",
     target: "glastonbury ticket scams", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "How to spot Glastonbury ticket scams",
@@ -1778,6 +1804,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-coach-tickets",
+    published: "2026-10-20",
     target: "glastonbury coach tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Glastonbury coach tickets: how ticket and coach packages work",
@@ -1817,6 +1844,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-access-requirements",
+    published: "2026-10-20",
     target: "glastonbury access requirements", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Going to Glastonbury with access requirements",
@@ -1853,6 +1881,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-with-children",
+    published: "2026-10-20",
     target: "glastonbury children tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Taking children and teenagers to Glastonbury: tickets and registration",
@@ -1904,6 +1933,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-2027-campervans-and-camping",
+    published: "2026-10-26",
     target: "glastonbury campervan tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Glastonbury 2027 campervans, Worthy View, tipis and parking",
@@ -1956,6 +1986,7 @@ export const GUIDES = [
   },
   {
     slug: "glastonbury-car-parking",
+    published: "2026-10-28",
     target: "glastonbury car parking pass", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Glastonbury 2027 car parking: passes, prices and arriving",
@@ -2055,6 +2086,7 @@ export const GUIDES = [
   },
   {
     slug: "how-to-use-glasto-quick-copy",
+    published: "2026-10-05",
     target: "glasto quick copy", // the search phrase this guide answers; no two guides share one
     topic: "tool",
     title: "How to use Glasto Quick Copy, from setup to ticket day",
