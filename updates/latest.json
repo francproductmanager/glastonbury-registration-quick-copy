@@ -1,11 +1,27 @@
 {
- "updated": "2026-10-30",
+ "updated": "2026-10-31",
  "items": [
   {
-   "date": "2026-10-30",
+   "date": "2026-10-31",
+   "tag": "New",
+   "title": "Glastonbury tickets from abroad: cards, delivery and timing",
+   "summary": "Buying Glastonbury 2027 tickets from outside the UK: registering, the credit card rule, a UK friend booking for you, the balance and how tickets reach you.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-tickets-from-abroad/"
+  },
+  {
+   "date": "2026-10-31",
+   "tag": "Updated",
+   "title": "Taking children and teenagers to Glastonbury: tickets and registration",
+   "summary": "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/glastonbury-with-children/"
+  },
+  {
+   "date": "2026-10-31",
    "tag": "Updated",
    "title": "Glastonbury 2027 balance payment and what to do before June",
-   "summary": "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything else between booking and the festival, including when tickets arrive.",
+   "summary": "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
    "topic": "After you've booked",
    "href": "/guides/got-a-glastonbury-ticket-what-next/"
   },
@@ -13,7 +29,7 @@
    "date": "2026-10-30",
    "tag": "Updated",
    "title": "Glastonbury ticket tips 2027: what works under the new queue",
-   "summary": "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group across the coach sale, the general sale and the resale.",
+   "summary": "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
    "topic": "On ticket day",
    "href": "/guides/how-to-get-glastonbury-tickets/"
   },
@@ -40,22 +56,6 @@
    "summary": "What happens when the sale opens, why extra tabs no longer help, what the green blocks, \"access restricted\" and the holding page mean, and how a group should queue.",
    "topic": "On ticket day",
    "href": "/guides/how-the-ticket-queue-works/"
-  },
-  {
-   "date": "2026-10-29",
-   "tag": "New",
-   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
-   "summary": "Who can buy a Glastonbury 2027 Sunday ticket, when the sale opens, the price with the bus, children's bus seats, refunds, and how to get your booking ready.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-sunday-tickets/"
-  },
-  {
-   "date": "2026-10-29",
-   "tag": "Updated",
-   "title": "When is the next Glastonbury ticket sale?",
-   "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
-   "topic": "Glastonbury 2027: where things stand",
-   "href": "/guides/next-glastonbury-ticket-sale/"
   }
  ],
  "dates": [

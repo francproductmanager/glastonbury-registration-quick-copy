@@ -359,7 +359,7 @@ export const GUIDES = [
     target: "glastonbury registration number lookup", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Lost your Glastonbury registration number? Find or change it",
-    summary: "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, how to check a friend's number, and how to change your photo, postcode or email.",
+    summary: "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, and how to change your photo, postcode or email.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Your registration number is in the email See Tickets sent when your photo was accepted. If you can't find that email, you don't need to register again: the official **registration lookup** sends your number back to you. This page covers finding it, checking a friend's, and changing the details on your registration.",
@@ -406,7 +406,7 @@ export const GUIDES = [
     target: "glastonbury syndicate", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Glastonbury syndicate: how to buy tickets as a group",
-    summary: "How a Glastonbury ticket syndicate works under the current queue: who books whom, planning a group bigger than six, keeping everyone's details ready, the resale and splitting the cost.",
+    summary: "How a Glastonbury ticket syndicate works under the current queue: who books whom, groups bigger than six, keeping details ready, the resale and splitting the cost.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "A syndicate is what Glastonbury fans call a group that tries for tickets together: several people queue at the same time, and whoever gets through first books for the others. Time Out describes the method as a big spreadsheet of groups of six, all trying at once. It's still the best way for a group to get in, but the 2027 queue changed what makes a syndicate work.",
@@ -459,12 +459,103 @@ export const GUIDES = [
     sources: [OFFICIAL.info, NEWS.timeout2027queue, NEWS.radioxTips, OFFICIAL.resale],
   },
   {
+    slug: "glastonbury-tickets-from-abroad",
+    published: "2026-10-31",
+    target: "buy glastonbury tickets from abroad", // the search phrase this guide answers; no two guides share one
+    topic: "before",
+    title: "Glastonbury tickets from abroad: cards, delivery and timing",
+    seoTitle: "Buying Glastonbury tickets from abroad: cards and delivery",
+    summary: "Buying Glastonbury 2027 tickets from outside the UK: registering, the credit card rule, a UK friend booking for you, the balance and how tickets reach you.",
+    updated: "31 October 2026", isoDate: "2026-10-31",
+    body: [
+      "Yes, you can buy Glastonbury tickets if you live outside the UK. You register in the same way as UK buyers and book in the same online sales at glastonbury.seetickets.com, but for 2027 the festival says international purchases can only be made with a **Visa or Mastercard credit card**. Tickets for buyers in the EU go by registered international post, and tickets for buyers outside the EU are held for **box office collection**, unless you're told otherwise.",
+      "This guide takes each step in order, from registering to getting your ticket, plus the shortcut the festival itself suggests: a friend who lives in the UK booking for you. Everything comes from the international bookings, payment and ticket dispatch sections of the festival's information page, read in full on 31 October 2026. Where a rule is from an earlier year, we say which.",
+      { h2: "The 2027 rules for overseas buyers in one table" },
+      { table: {
+        head: ["Question", "2027 answer"],
+        rows: [
+          ["Do I need to register?", "Yes, in the same way as UK buyers. Everyone aged 13 or over needs their own registration number"],
+          ["Which cards work?", "Visa or Mastercard credit cards only, for international purchases. American Express isn't accepted"],
+          ["Can a friend in the UK book for me?", "Yes, as one of their ticket purchases, as long as you're registered"],
+          ["What does a ticket cost?", "{{fact:ticketPrice}}, including the £5 booking fee: a {{fact:deposit}} deposit, then the {{fact:balance}} balance plus postage"],
+          ["When is the balance due?", "9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time, the same as for UK buyers"],
+          ["Tickets for buyers in the EU", "Registered international post, tracked through Royal Mail, unless specified otherwise"],
+          ["Tickets for buyers outside the EU", "Box office collection, unless specified otherwise"],
+          ["Leaving home more than 28 days before the festival?", "Ask See Tickets for box office collection"],
+        ],
+      } },
+      { h2: "Step 1: register before registration closes" },
+      "The festival says all international ticket buyers must be registered in the same way as UK bookers. Registration is free and online, and needs basic contact details and a passport-style photo, which is printed on your ticket. The photo must be a jpeg, in portrait orientation, at least 900 pixels wide and 1,350 pixels tall, and to passport standard. The festival reviews photos within 48 hours in the working week, then emails you to say whether yours was accepted.",
+      "For the 2027 sales, registration closed at 5pm UK time on Friday 25 September 2026, and the festival says it will not reopen until after the October ticket sales. Those sales have now happened, but the information page doesn't yet give a date for it to reopen. From abroad, leave yourself time to submit a new photo if the first one is rejected, and use an email address you'll keep: the festival says you must have access to the email address you're registered to. Every step is in [how to register for Glastonbury](/guides/how-glastonbury-registration-works/).",
+      { h2: "Step 2: check the card you'll pay with" },
+      "For international purchases the festival accepts only **Visa or Mastercard credit cards**. A debit card issued outside the UK isn't on that list, and the festival says American Express isn't accepted from anyone. The 2025 resale had the same rule for international buyers: Visa or Mastercard credit cards only.",
+      "UK sales take more card types: Visa Debit, Visa Credit, Visa Electron, Switch/Maestro Domestic, Solo and Mastercard, and, depending on your device, Google Pay or Apple Pay. If you aren't a UK citizen but you're living in the UK, with a UK registered credit or debit card and a UK address, the festival says you can buy in the same way as a UK resident. For ticket sales, the UK includes Northern Ireland, the Isle of Man and the Channel Islands.",
+      "Expect your bank to check the payment. The festival says UK and European banks add an extra layer of protection to online payments, such as a one-time passcode sent to your phone or a fingerprint or face check, and that your card issuer decides whether you need it. Keep the device you use for those checks with you, even if you book on a laptop.",
+      "Prices are in pounds. The festival doesn't say how a payment from a card in another currency is converted, so ask your card provider what it charges for a payment in pounds, and check your limit covers a deposit for everyone you might book: {{fact:deposit}} a ticket, so £600 for six. More on cards, timers and declined payments is in [the checkout guide](/guides/paying-for-glastonbury-tickets/).",
+      { h2: "Or ask a friend in the UK to book you" },
+      "The festival describes two ways a UK resident can get you a ticket:",
+      { ul: [
+        "**Your friend buys on your behalf, using their UK address.** The festival says an overseas resident can ask a friend who lives in the UK to do this.",
+        "**Your friend books you as one of their tickets.** A UK resident can buy a ticket for an overseas resident as one of their own ticket purchases, as long as that person is registered.",
+      ] },
+      "Either way you still need your own registration, because your ticket carries your photo and nobody else can use it. On the booking page your friend enters the details from your registration, as they would for anyone else in a booking of up to six. If your friend is the first name on the booking, the tickets for the whole booking go to their address, unless balances are paid separately (see step 4). Agree before June how your ticket will get to you. How to plan a group booking is in [the Glastonbury syndicate guide](/guides/buying-tickets-for-a-group/).",
+      { h2: "Step 3: the sale runs on UK time" },
+      "Every sale time is UK time. For 2027 the ticket and coach sale opened at 6pm on Thursday 1 October 2026 and the general admission sale at 9am on Sunday 4 October, and tickets have now sold out. The festival says there will be a resale of cancelled and returned tickets in spring 2027. Its date hasn't been announced. In 2025 the resale opened at 6pm (BST) on Thursday 24 April for ticket and coach packages and at 9am (BST) on Sunday 27 April for general admission.",
+      "Work out the time where you'll be, and set your alarm by your local clock. The festival says to be online at least 10 minutes before the sale opens, because anyone who arrives after the start goes to the back of the queue. What each queue screen means is in [how the queue works](/guides/how-the-ticket-queue-works/).",
+      "Resale tickets bought after 8 April 2027 must be paid in full when you book, so the whole price goes on one card. In 2025 a general admission resale booking could cover up to 4 tickets: four at {{fact:ticketPrice}} is £1,632 plus postage, a big payment for a credit card limit.",
+      { h2: "Step 4: paying the balance from abroad" },
+      "The festival takes international balance payments at the same time as UK ones: from 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time. Remembering is up to you. Any ticket whose balance isn't paid by the end of the window is refunded less the administration charge, which for 2027 is {{fact:refundFee}}, so you'd get £75 back from a {{fact:deposit}} deposit.",
+      { calendar: ["glastonbury-2027-balance"] },
+      "A group's balances can be paid together, or separately from different cards. Each ticket whose balance is paid separately becomes its own booking, with its own {{fact:postage}} postage and packing charge, and the festival says that person then receives their own ticket. Here's how that works for four friends, one of whom lives in Spain:",
+      { table: {
+        head: ["How the balances are paid", "UK lead booker pays", "Friend in Spain pays", "Total"],
+        rows: [
+          ["All four together by the lead booker", "£1,243.25", "Nothing (pays the lead booker back)", "£1,243.25"],
+          ["The friend in Spain pays their own", "£935.25", "£319.25", "£1,254.50"],
+        ],
+      } },
+      "Paying separately costs one extra postage charge. Whichever you choose, write it down in the group chat before the window opens. What happens to a deposit if a balance is missed is in [deposits and balance payments](/guides/deposits-and-balance-payments/).",
+      { h2: "Step 5: how your ticket reaches you" },
+      "General admission tickets are physical tickets, and how they reach you depends on where you live:",
+      { table: {
+        head: ["Where you live", "How 2027 tickets are sent"],
+        rows: [
+          ["The UK", "Royal Mail, in late May to June, signed for on delivery"],
+          ["The EU", "Registered international post, unless specified otherwise. Track it at royalmail.com with the tracking number from See Tickets' order tracker"],
+          ["Outside the EU", "Box office collection, unless specified otherwise"],
+        ],
+      } },
+      "The international bookings section also says international tickets will be box office collection only unless specified otherwise, and to check the order tracker for the details of your order. So whichever applies to you, the order tracker is where to look. You need your email address and booking reference to use it, and the festival says only the lead booker can see the dispatch information.",
+      "If you're likely to set off for the festival more than 28 days before it starts, the festival says to contact See Tickets through its customer service form and request box office collection. Tickets are expected to arrive at least 7 days before the festival starts: if yours haven't, contact See Tickets. And if you move after booking, tell See Tickets, because changing the address on your registration doesn't change where your tickets are sent.",
+      { h2: "Collecting from the box office" },
+      "The information page doesn't say where the box office is or when it opens, so follow the instructions in your order tracker and in any email from See Tickets. Your ticket carries the photo from your registration: the festival says that as long as the photo is a good likeness, you don't need ID to enter, but every ticket holder must show their own ticket at the gates.",
+      { h2: "Ticket and coach packages" },
+      "Coach packages work differently. The travel voucher is emailed as an e-ticket, usually from mid-May, and your festival ticket is handed out on the coach once it has left the pick-up point, so have photo ID with you. You must travel on the coach you booked, from the departure town you chose, and coach tickets can't be changed to general admission. See [coach tickets](/guides/glastonbury-coach-tickets/).",
+      { h2: "Getting to the festival from abroad" },
+      "The festival's travel advice, which gives no year, says the closest international airport is Bristol, which serves a number of European destinations. From the airport, the A1 Bristol Airport Flyer bus goes to Bristol Temple Meads station; from the main road outside the station, buses 374, 375 and 376 go to Glastonbury town, where you can catch the GF1 bus to the Festival Bus Station on site. National Express also runs coaches from Heathrow Airport directly to the festival, with return tickets booked in advance. Check that advice again nearer June.",
+      "Once you're there, the festival says its cash machines accept all UK and international cards. If you look under 21 and want to buy alcohol, a valid passport is on its list of ID for proving you're over 18.",
+      { h2: "If things go wrong" },
+      { ul: [
+        "**Your card is declined.** Check it's a Visa or Mastercard credit card, not a debit card, that its limit covers every deposit, and approve the payment in your bank's app if asked. Then try a second credit card.",
+        "**You aren't registered in time.** Nobody can book you without a registration, from the UK or abroad. Register as soon as registration reopens, ready for the resale.",
+        "**Your tickets haven't arrived 7 days before the festival.** Contact See Tickets customer service.",
+        "**You can't come after all.** Refunds are open until 11.59pm UK time on {{fact:refundDeadline}}, with {{fact:refundFee}} kept from each ticket. Ticket and coach bookings also have a {{fact:coachCancelFee}} kept on top of that, and you can't cancel just the coach: it's the whole booking or nothing. See [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
+        "**Someone offers you a ticket.** Tickets carry the holder's photo, can't be transferred, and reselling them gets the order cancelled. Only buy at glastonbury.seetickets.com. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
+      ] },
+      { h2: "What we couldn't confirm" },
+      "The festival's information page doesn't say where the box office is, when it opens or what you need to collect tickets there. It doesn't explain how a registration works for an address with no UK postcode, or how a payment in another currency is converted. It gives one postage and packing charge, {{fact:postage}} per order, with no separate charge listed for sending tickets abroad. If any of these matter to you, ask See Tickets before the sale.",
+      { cta: "Put your group's details on one page" },
+    ],
+    related: ["paying-for-glastonbury-tickets", "buying-tickets-for-a-group", "got-a-glastonbury-ticket-what-next"],
+    sources: [OFFICIAL.info, OFFICIAL.resale],
+  },
+  {
     slug: "glastonbury-ticket-spreadsheet-template",
     published: "2026-10-26",
     target: "glastonbury ticket spreadsheet template", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Free Glastonbury ticket spreadsheet template for your group",
-    summary: "A free spreadsheet template for organising a Glastonbury syndicate: one row per person with their registration number, postcode and status, how to open it, and how to use it on ticket day.",
+    summary: "A free spreadsheet template for a Glastonbury syndicate: one row per person with their registration number, postcode and status, and how to use it on ticket day.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "Almost every guide to buying Glastonbury tickets as a group says the same thing: make a spreadsheet of everyone's names, registration numbers and postcodes. It's good advice for organising a syndicate. This page gives you a ready-made template, explains each column, and shows how to avoid the two ways spreadsheets go wrong on ticket day.",
@@ -524,7 +615,7 @@ export const GUIDES = [
     target: "glastonbury group chat messages", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Messages to send your Glastonbury group",
-    summary: "Ready-to-copy messages for collecting details, agreeing who books, ticket morning and paying each other back.",
+    summary: "Ready-to-copy messages for collecting details, agreeing who books, the ticket morning itself and paying each other back.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "Most ticket day chaos starts in the group chat: people reply in different ways, details get buried, and on the morning nobody knows who's booking. A few clear messages sent at the right time fix most of that. Copy these, change the names and dates, and send them.",
@@ -624,7 +715,7 @@ export const GUIDES = [
     topic: "before",
     title: "Your first go at Glastonbury tickets: what ticket morning is like",
     seoTitle: "First time getting Glastonbury tickets: what to expect",
-    summary: "A plain walk through a Glastonbury sale for first timers, from registering weeks before to the confirmation page, with what you'll see and how long each part took in 2027.",
+    summary: "A plain walk through a Glastonbury sale for first timers, from registering to the confirmation page, with what you'll see and how long each part took in 2027.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "If you've never tried for Glastonbury tickets, the stories from friends can make ticket morning sound like chaos: crashing pages, endless refreshing, a group chat in meltdown. In reality it's a handful of steps, most of which happen weeks before the sale. This guide walks through them in order, using the 2027 sale as the example, so you know what to expect and what's normal.",
@@ -744,7 +835,7 @@ export const GUIDES = [
     target: "glastonbury ticket tips", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury ticket tips 2027: what works under the new queue",
-    summary: "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group across the coach sale, the general sale and the resale.",
+    summary: "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "There's no trick that gets you to the front of the Glastonbury queue. Demand is many times the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked.",
@@ -811,7 +902,7 @@ export const GUIDES = [
     target: "glastonbury ticket day checklist", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury ticket day checklist",
-    summary: "A tickable, printable checklist for two weeks before, the night before and the minutes before the sale, who does what, what to do once you're through, and the ten mistakes to avoid.",
+    summary: "A printable checklist for two weeks before, the night before and the minutes before the Glastonbury sale, who does what, and the ten mistakes to avoid.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Glastonbury tickets usually sell out in under an hour. The queue is luck, but what happens after you get through isn't. This checklist covers the things you can control, in the order you'll need them. Tick the boxes as you go, or print it: nothing you tick is saved.",
@@ -969,7 +1060,7 @@ export const GUIDES = [
     target: "glastonbury checkout payment", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Glastonbury checkout: paying for tickets and fixing problems",
-    summary: "What happens once you're through the queue: the timers, which cards and wallets work, bank checks, and what to do when a name doesn't come up, a registration locks, the timer runs out or a card is declined.",
+    summary: "Once you're through the Glastonbury queue: the timers, which cards work, and what to do when a name doesn't come up, the timer runs out or a card is declined.",
     updated: "29 October 2026", isoDate: "2026-10-29",
     body: [
       "Getting to the front of the queue doesn't secure a ticket. Tickets are only allocated once payment has gone through, and there are time limits. This guide is the one place on this site that covers the checkout: how it runs, how to be ready, and what to do when it goes wrong. Where a rule comes from a particular year's official FAQ, we say which.",
@@ -986,7 +1077,7 @@ export const GUIDES = [
       ] },
       { h2: "Which cards work, including from outside the UK", id: "cards" },
       "For the 2025 resale, UK buyers could use UK debit cards or Visa and Mastercard credit cards. **International buyers could only use Visa or Mastercard credit cards**, so a non-UK debit card wasn't enough. **American Express wasn't accepted** from anyone. Check the official FAQ for each sale, as this can change.",
-      "If you're buying from abroad, a few more things are worth sorting before the day: prices are in pounds, so check your card's limit and foreign transaction fees against a deposit for everyone you're booking; tell your bank to expect a large payment to a UK company; and work out what time the sale opens where you are, since sale times are UK time.",
+      "If you're buying from abroad, a few more things are worth sorting before the day: prices are in pounds, so check your card's limit and foreign transaction fees against a deposit for everyone you're booking; tell your bank to expect a large payment to a UK company; and work out what time the sale opens where you are, since sale times are UK time. The rest of the 2027 rules for overseas buyers, from a UK friend booking you to how tickets reach you, are in [buying Glastonbury tickets from abroad](/guides/glastonbury-tickets-from-abroad/).",
       { h2: "During checkout" },
       { ol: [
         "Paste each registration number and registered postcode. Check the names that come back are the people you expect.",
@@ -1038,7 +1129,7 @@ export const GUIDES = [
     target: "phone or laptop for glastonbury tickets", // the search phrase this guide answers; no two guides share one
     topic: "ticketday",
     title: "Phone or laptop for Glastonbury tickets? Setting up either",
-    summary: "Whether to use a phone or a laptop for the Glastonbury sale, and the settings to change on iPhone, Android and laptops so your screen doesn't lock, your battery lasts and nothing pops up over the queue.",
+    summary: "Phone or laptop for the Glastonbury sale, and the settings to change on iPhone, Android and laptops so your screen doesn't lock and your battery lasts.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "A phone that locks, dims or runs out of battery in the queue is one of the few ticket day problems that's entirely in your hands. Setting it up takes about five minutes, and the best time is the evening before the sale, not the morning of it.",
@@ -1109,7 +1200,7 @@ export const GUIDES = [
     target: "glastonbury 2027 balance payment", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
-    summary: "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything else between booking and the festival, including when tickets arrive.",
+    summary: "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Getting through the queue is the hard part, but a deposit isn't a ticket yet. The one deadline that matters is the **balance payment window: 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time**. Any ticket whose balance isn't paid by then is cancelled. This guide covers that week first, then everything else between now and June.",
@@ -1143,7 +1234,7 @@ export const GUIDES = [
       { h2: "Over the winter" },
       { ul: [
         "**Check the card you'll pay the balance with** won't expire before April.",
-        "**Start putting money aside.** The 2027 balance is {{fact:balance}} per ticket plus postage. From October to early April that's about six months, or roughly £52 a month. For the whole trip, see [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
+        "**Start putting money aside.** The 2027 balance is {{fact:balance}} per ticket plus postage. From October to early April that's about six months, or roughly £51 a month. For the whole trip, see [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
         "**Decide how you're getting there.** Coach places only come as ticket and coach packages in their own sale, not as add-ons to a general admission ticket. See [coach tickets](/guides/glastonbury-coach-tickets/).",
         "**Keep your email address working.** Reminders and updates go to the email on your booking and registration.",
       ] },
@@ -1156,7 +1247,7 @@ export const GUIDES = [
         "Make sure the delivery address for your tickets is right.",
       ] },
       { h2: "When do tickets arrive?" },
-      "For 2027, the festival's information page says UK tickets will be sent by Royal Mail in late May to June, to the address given when booking, and someone will need to sign for them. See Tickets emails a tracking reference, and the lead booker can also find it in See Tickets' order tracker. A booking's tickets all go to the address for the first name on it, unless balances were paid separately, in which case each person gets their own. You should have them at least 7 days before the festival starts: if not, contact See Tickets customer service.",
+      "For 2027, the festival's information page says UK tickets will be sent by Royal Mail in late May to June, to the address given when booking, and someone will need to sign for them. See Tickets emails a tracking reference, and the lead booker can also find it in See Tickets' order tracker. A booking's tickets all go to the address for the first name on it, unless balances were paid separately, in which case each person gets their own. You should have them at least 7 days before the festival starts: if not, contact See Tickets customer service. Tickets for buyers outside the UK are sent differently: see [buying Glastonbury tickets from abroad](/guides/glastonbury-tickets-from-abroad/).",
       "Ticket and coach passengers get an e-ticket travel voucher, expected from mid-May, and are given their festival tickets on the coach, with photo ID.",
       "Keep everyone's tickets safe, and agree how they'll get to each person before travel day. Each ticket shows its holder's photo, so you can't swap tickets between yourselves.",
       { cta: "Add the balance week to your calendar", href: "/calendar/glastonbury-2027-balance.ics" },
@@ -1219,7 +1310,7 @@ export const GUIDES = [
         "**Postage and packing:** {{fact:postage}} per order, paid with the balance",
       ] },
       "For a lead booker buying six tickets, that's £600 on ticket day, then six balances of {{fact:balance}} and one postage charge in the spring: £1,859.25 in the April window for the whole booking.",
-      "With the 2027 sale in October and the balance due in early April, that's about six months. Putting aside around £52 a month covers a {{fact:balance}} balance. It's a small habit that saves a stressful week in March.",
+      "With the 2027 sale in October and the balance due in early April, that's about six months. Putting aside around £51 a month covers a {{fact:balance}} balance. It's a small habit that saves a stressful week in March.",
       { h2: "Who pays what in a group" },
       "However your group handles it, write it down once in the group chat after booking: who paid the deposits, who owes whom, and the balance dates. A message like this is enough:",
       { ul: [
@@ -1336,7 +1427,7 @@ export const GUIDES = [
     target: "how much does glastonbury cost", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "How much does Glastonbury 2027 cost? Ticket, travel and more",
-    summary: "What going to Glastonbury 2027 really costs: the ticket, deposit and balance, postage, parking and campervan passes, coach packages, and a worked example for a group of four.",
+    summary: "What Glastonbury 2027 really costs: the ticket, deposit and balance, postage, parking and campervan passes, coach packages, and a worked example for four.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "A Glastonbury 2027 ticket costs **{{fact:ticketPrice}}**, but that's not the whole bill. Postage, parking or a coach, and everything you spend getting there and while you're there all add up. This guide sets out the costs the festival has published for 2027, with a worked example for a group, and a list of the rest to budget for yourself.",
@@ -1383,7 +1474,7 @@ export const GUIDES = [
         "**Share a car and the parking pass.** One £60 pass split four ways is £15 each.",
         "**Book as one order** where you can: postage is charged per order, not per ticket.",
         "**Borrow camping kit** rather than buying it for one weekend.",
-        "**Spread the balance.** From October to early April is about six months, so roughly £52 a month covers a {{fact:balance}} balance.",
+        "**Spread the balance.** From October to early April is about six months, so roughly £51 a month covers a {{fact:balance}} balance.",
         "**Look at volunteering** if you didn't get a ticket: the charities' volunteers get in free in return for shifts. See [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/).",
       ] },
       { h2: "What a resale ticket costs" },
@@ -1400,7 +1491,7 @@ export const GUIDES = [
     target: "glastonbury 2027 resale", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Glastonbury 2027 resale: date, rules and how to get ready",
-    summary: "Everything known about the Glastonbury 2027 resale: when it's likely to be, the registration deadline, how many tickets per booking, paying in full, and how to get your group ready.",
+    summary: "What's known about the Glastonbury 2027 resale: when it's likely to be, the registration deadline, tickets per booking, paying in full and getting ready.",
     updated: "29 October 2026", isoDate: "2026-10-29",
     body: [
       "If you missed out in October, it isn't necessarily over. Tickets that aren't paid for in the April balance window, and tickets that are returned, are sold again in the official spring resale. It's smaller and faster than the main sale, and it works a little differently, so it's worth preparing for on its own terms. We update this page as soon as the festival announces anything new.",
@@ -1699,7 +1790,7 @@ export const GUIDES = [
     topic: "missed",
     title: "Volunteering at Glastonbury 2027: Oxfam, WaterAid and Greenpeace",
     seoTitle: "Volunteering at Glastonbury 2027: dates and how to apply",
-    summary: "How to volunteer at Glastonbury 2027 with Oxfam, WaterAid or Greenpeace: when applications open, how many shifts you work, deposits, what you get, and how to give yourself the best chance of a place.",
+    summary: "How to volunteer at Glastonbury 2027 with Oxfam, WaterAid or Greenpeace: when applications open, shifts, deposits, what you get and how to get a place.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "If you didn't get a ticket, volunteering for one of the festival's partner charities is the most reliable other way in. You work a set number of shifts and get festival entry, crew camping and meals in return. For 2027, none of the three big charity programmes is open yet: all three open in the new year, and places go quickly.",
@@ -1883,11 +1974,25 @@ export const GUIDES = [
     topic: "travel",
     title: "Taking children and teenagers to Glastonbury: tickets and registration",
     seoTitle: "Glastonbury with children: tickets, ages and registration",
-    summary: "Who needs a ticket, how the age rule works, what changes for teenagers, coach seats for children and how to book a family group.",
-    updated: CHECKED, isoDate: MODIFIED,
+    summary: "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
+    updated: "31 October 2026", isoDate: "2026-10-31",
     body: [
-      "Glastonbury is a family festival for a lot of people, and children are well catered for, with the Kidzfield area included in the ticket. But the ticket rules depend on age in a way that trips families up, especially with teenagers.",
-      { h2: "The age rule" },
+      "Children who are 12 or under on the day the gates open go free, with no ticket and no registration. Everyone 13 or over needs their own registration and ticket, and anyone under 16 must be with a responsible adult. Children are well catered for, with the Kidzfield area included in the ticket, but the age rules trip families up, especially with teenagers.",
+      { h2: "How old do you have to be to go to Glastonbury?" },
+      "The rules change at 13 (your age on the day the gates open) and at 16. This is what the festival's information page says for 2027:",
+      { table: {
+        head: ["Age", "Ticket and registration", "Can they go without an adult?"],
+        rows: [
+          ["12 or under", "No ticket and no registration needed", "No: they must come with a ticket holding adult"],
+          ["13, 14 or 15", "Their own registration and a TEEN ticket", "No: a responsible adult must be with them"],
+          ["16 or 17", "Their own registration and a ticket", "Yes, though the festival strongly advises a parent or guardian agrees"],
+          ["18 or over", "Their own registration and a ticket", "Yes"],
+        ],
+      } },
+      "A **responsible adult** is someone aged 18 or over, usually the parent, carer or legal guardian, who accepts full responsibility for, and supervises, every under 16 in their care at all times. Anyone under 16 can't enter, leave or re-enter the site without their responsible adult.",
+      "Teenagers aged 13 to 15 can get a **Parental Permission for Exit/Re-entry Wristband**, which lets them leave and come back in. It is collected from the public festival entrances or the Info Points, and the responsible adult and the teenager must both be there to collect it.",
+      "For children who don't need a ticket, you can pick up a child wristband from the Kidzfield or the Info Points once you are inside. If a child aged 12 or under looks older than 12, the festival says you **must** bring ID to prove their age. And anyone on an adult ticket who looks under 16 is advised to bring ID that shows their age.",
+      { h2: "The age rule for tickets" },
       "Anyone who will be **13 or over on the day the gates open** needs their own ticket and their own registration. Children who are **12 or under** on that day don't need a ticket and don't register.",
       "For 2027 the gates open on Wednesday 23 June, so anyone **born on or before {{fact:ticketAgeCutoff}}** needs a ticket. A child who is 12 on ticket day in October but turns 13 before 23 June needs one.",
       { h2: "Worked examples for 2027" },
@@ -1904,7 +2009,7 @@ export const GUIDES = [
       "A teenager registers exactly like an adult, with their own photo, and needs an email address. Their photo is printed on their ticket and checked at the gate, so use a recent one. Teenagers change fast, so it's worth updating the photo every year before the sale.",
       "On ticket day they take one of the six places in a booking, with their own registration number and registered postcode. In a family, the registered postcode is usually the same for everyone, which makes it easy, but check it really is: a teenager who registered at another parent's address will have a different one.",
       { h2: "Children on coaches" },
-      "Children aged 12 and under don't need a festival ticket, but they **do need a coach seat** if you travel by ticket and coach package. In 2025 those seats had to be booked during the coach booking. Seats added later were at standard fares and depended on availability.",
+      "Children aged 12 and under don't need a festival ticket, but they **do need a coach seat** if you travel by ticket and coach package. For 2027 the festival says to book those seats while making the ticket and coach booking. If they aren't available then, you contact the See Tickets coach team after booking: extra seats are at standard fares and depend on availability. The [coach tickets guide](/guides/glastonbury-coach-tickets/) has the rest of the coach rules.",
       { h2: "Booking a family group" },
       { ul: [
         "Count only the people who need tickets: everyone 13 or over on the gate opening day.",
@@ -1918,7 +2023,8 @@ export const GUIDES = [
       { h3: "Can a teenager queue for the family?" },
       "Anyone with their own registration can join the queue, which gives your family an extra chance. If you'd rather an adult pays, agree that a teenager who gets through hands over to a parent on the same device, or that the parent's card is to hand. Remember the clock is running once you're at the front.",
       { h3: "What about teenagers going without their parents?" },
-      "The festival has its own conditions for young people, so check the current terms on the official site before booking a teenager into a group of friends without a parent or guardian.",
+      "It depends on their age. A 13, 14 or 15 year old must be booked on the **TEEN** ticket option, which confirms they will come with a responsible adult who has a ticket, and TEEN ticket holders are not let in on their own. Whoever books for them confirms they are 18 or over and accepts responsibility for every under 16 in the group, and confirms a parent, carer or legal guardian has agreed to their details being used. A 16 or 17 year old can go without an adult, though the festival strongly advises it is with a parent or guardian's agreement.",
+      "The [group booking guide](/guides/buying-tickets-for-a-group/) explains how bookings of up to six work, and [how registration works](/guides/how-glastonbury-registration-works/) covers getting their registration and photo in place before the sale.",
       { h3: "We have a baby or toddler. Do we need to do anything?" },
       "Not for tickets: children 12 and under don't need one. You'll still want to look at the festival's family information nearer the time, and if you travel by coach, book them a seat.",
       { h2: "What's included for children" },
@@ -1926,7 +2032,7 @@ export const GUIDES = [
       { cta: "Set up your family's page" },
     ],
     related: ["how-glastonbury-registration-works", "glastonbury-2027-cost", "glastonbury-coach-tickets"],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2025],
+    sources: [OFFICIAL.info, OFFICIAL.y2027, OFFICIAL.sale2025],
   },
   {
     slug: "glastonbury-2027-campervans-and-camping",
@@ -1934,7 +2040,7 @@ export const GUIDES = [
     target: "glastonbury campervan tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
     title: "Glastonbury 2027 campervans, Worthy View, tipis and parking",
-    summary: "The extra places to stay and park at Glastonbury 2027: campervan pitches, Worthy View, tipis and car park passes, with 2027 prices where they're published, who can book, and when they've gone on sale.",
+    summary: "Campervan pitches, Worthy View, tipis and car park passes at Glastonbury 2027: prices where they're published, who can book, and when they've gone on sale.",
     updated: "28 October 2026", isoDate: "2026-10-28",
     body: [
       "A Glastonbury ticket includes camping in the general fields: you bring a tent and pitch it. Everything on this page is an extra, bought separately through See Tickets, and **every option needs a festival ticket first**. Most of them sell out, so it's worth knowing the prices and the rules before they go on sale.",
@@ -2087,7 +2193,7 @@ export const GUIDES = [
     target: "glasto quick copy", // the search phrase this guide answers; no two guides share one
     topic: "tool",
     title: "How to use Glasto Quick Copy, from setup to ticket day",
-    summary: "A step-by-step guide to putting your group on one page, sharing it with everyone who's queueing, filling in the booking form at the front of the queue, a timed practice run, and fixing common problems.",
+    summary: "How to put your Glastonbury group on one page, share it with everyone queueing, fill in the booking form at the front of the queue, and fix common problems.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "Glasto Quick Copy is a free tool that puts your whole group's registration numbers and postcodes on one page, so when you get through the Glastonbury queue you can tap to copy each one and paste it straight into the booking form.",
@@ -2308,6 +2414,13 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "31 October 2026" },
+      { ul: [
+        "**New:** [buying Glastonbury tickets from abroad](/guides/glastonbury-tickets-from-abroad/): registering from outside the UK, the credit card rule for international buyers, a UK friend booking for you, paying the balance, and how tickets reach the EU and the rest of the world.",
+        "**Updated:** [taking children and teenagers to Glastonbury](/guides/glastonbury-with-children/) now starts with how old you have to be: a table of the rules at 12 and under, 13 to 15, 16 and 17, what a responsible adult is, the TEEN ticket, the exit and re-entry wristband for 13 to 15 year olds, and the 2027 rules for children's coach seats.",
+        "**Corrected:** saving for the {{fact:balance}} balance over about six months comes to roughly £51 a month, not £52, in [the balance payment guide](/guides/got-a-glastonbury-ticket-what-next/), [deposits and balance payments](/guides/deposits-and-balance-payments/) and [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
+        "**Updated:** shorter summaries for fifteen guides, so they aren't cut off in search results.",
+      ] },
       { h2: "30 October 2026" },
       { ul: [
         "**Updated:** [Glastonbury 2027 balance payment and what to do before June](/guides/got-a-glastonbury-ticket-what-next/) now says when 2027 tickets will be posted (late May to June, signed for), where they go, and how coach passengers get theirs.",
