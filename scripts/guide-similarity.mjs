@@ -10,8 +10,9 @@ import { fileURLToPath } from "node:url";
 import { GUIDES } from "../site-src/content.mjs";
 
 // Bands, set from the guides as they stood in October 2026, where the closest pairs were known overlaps
-// (the highest full text pair was 0.44, and the balance and deposits guides, which repeat each other, 0.30)
-export const BANDS = { topic: { high: 0.75, check: 0.5 }, text: { high: 0.5, check: 0.3 } };
+// (the highest full text pair was 0.44, and the balance and deposits guides, which repeat each other, 0.30).
+// Since 31 October 2026 two guides' full texts may not reach 0.3 at all, so for text "check" and "high" are the same.
+export const BANDS = { topic: { high: 0.75, check: 0.5 }, text: { high: 0.3, check: 0.3 } };
 
 const STOP = new Set(("a an and are as at be been but by can do does for from get got has have how i if in into is it its " +
   "it's me more most my no not of on one or our so than that the their them then there these they this to up us was we " +
