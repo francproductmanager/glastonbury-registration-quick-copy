@@ -1886,7 +1886,7 @@ export const GUIDES = [
     summary: "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
     updated: "31 October 2026", isoDate: "2026-10-31",
     body: [
-      "Glastonbury is a family festival for a lot of people, and children are well catered for, with the Kidzfield area included in the ticket. But the ticket rules depend on age in a way that trips families up, especially with teenagers.",
+      "Children who are 12 or under on the day the gates open go free, with no ticket and no registration. Everyone 13 or over needs their own registration and ticket, and anyone under 16 must be with a responsible adult. Children are well catered for, with the Kidzfield area included in the ticket, but the age rules trip families up, especially with teenagers.",
       { h2: "How old do you have to be to go to Glastonbury?" },
       "The rules change at 13 (your age on the day the gates open) and at 16. This is what the festival's information page says for 2027:",
       { table: {
@@ -1900,7 +1900,7 @@ export const GUIDES = [
       } },
       "A **responsible adult** is someone aged 18 or over, usually the parent, carer or legal guardian, who accepts full responsibility for, and supervises, every under 16 in their care at all times. Anyone under 16 can't enter, leave or re-enter the site without their responsible adult.",
       "Teenagers aged 13 to 15 can get a **Parental Permission for Exit/Re-entry Wristband**, which lets them leave and come back in. It is collected from the public festival entrances or the Info Points, and the responsible adult and the teenager must both be there to collect it.",
-      "For children who don't need a ticket, you can pick up a child wristband from the Kidzfield or the Info Points once you are inside. And anyone on an adult ticket who looks under 16 is advised to bring ID that shows their age.",
+      "For children who don't need a ticket, you can pick up a child wristband from the Kidzfield or the Info Points once you are inside. If a child aged 12 or under looks older than 12, the festival says you **must** bring ID to prove their age. And anyone on an adult ticket who looks under 16 is advised to bring ID that shows their age.",
       { h2: "The age rule for tickets" },
       "Anyone who will be **13 or over on the day the gates open** needs their own ticket and their own registration. Children who are **12 or under** on that day don't need a ticket and don't register.",
       "For 2027 the gates open on Wednesday 23 June, so anyone **born on or before {{fact:ticketAgeCutoff}}** needs a ticket. A child who is 12 on ticket day in October but turns 13 before 23 June needs one.",
