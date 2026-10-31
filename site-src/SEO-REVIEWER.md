@@ -44,7 +44,7 @@ Mark every item pass or fail, with a reason.
 - Every new line in `site-src/link-domains.txt`: open the site and check it is what the line says, and that it is the official site of the organisation concerned, a public body or an established news outlet, with the cited page being the original source. Fail anything else, including a reseller, a shortener, social media, a forum, a blog, a shop, or a site that looks set up to be linked to. More than two new sites in one pull request fails.
 
 **SEO**
-- A new guide's `target` is a genuinely different question from every other guide's, not a rewording. Run `node scripts/guide-similarity.mjs --slug <slug>`: for any guide marked CHECK, read both and fail if they answer the same question or repeat whole sections, saying which guide the new material should go into instead. A guide marked CHECK that was published less than 15 days before the new one fails too (a test also checks).
+- A new guide's `target` is a genuinely different question from every other guide's, not a rewording. Run `node scripts/guide-similarity.mjs --slug <slug>`: any guide marked HIGH (0.3 or more) fails it (a test also checks). For the next closest guides, read both and fail if they answer the same question or repeat whole sections, saying which guide the new material should go into instead.
 - Search title (`seoTitle`, or `title` when there is none) 65 characters or fewer and says what the page answers; summary 110 to 165 and worth clicking.
 - Headings follow the questions people actually ask; no keyword stuffing.
 - At least two links in and out, with natural link text.

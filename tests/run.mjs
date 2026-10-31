@@ -415,13 +415,27 @@ await test("Every guide targets its own search phrase; guides added since launch
     assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
   }
 });
-await test("Guides added since launch aren't near copies of another guide", async () => {
+// Pairs that were already over the limit when it became 0.3 (31 October 2026). They may stay over it until they're
+// merged or rewritten to answer clearly different questions; a line can go once its pair is under the limit.
+// Only the owner adds to or removes from this list: nothing new is ever added to get round the check.
+const OVERLAP_WAITING = [
+  ["glastonbury-local-resident-tickets", "glastonbury-sunday-tickets"],          // 0.47
+  ["collect-registration-numbers-from-whatsapp", "how-to-use-glasto-quick-copy"], // 0.45
+  ["glastonbury-2027-key-dates", "next-glastonbury-ticket-sale"],                // 0.43
+  ["how-to-get-glastonbury-tickets", "how-the-ticket-queue-works"],              // 0.38
+  ["other-ways-to-get-to-glastonbury", "glastonbury-volunteering-2027"],         // 0.37
+  ["first-time-glastonbury-ticket-day", "how-the-ticket-queue-works"],           // 0.35
+  ["glastonbury-2027-campervans-and-camping", "glastonbury-car-parking"],        // 0.34
+  ["how-glastonbury-registration-works", "glastonbury-registration-number-lookup"], // 0.32
+  ["glastonbury-ticket-glossary", "glastonbury-access-requirements"],            // 0.32
+];
+await test("No two live guides are near copies of each other, apart from the pairs waiting to be merged", async () => {
   const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
-  const { closestToGuide, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
-  for (const g of GUIDES) {
-    if (FIRST_GUIDES.includes(g.slug) || g.draft) continue;
-    const [top] = closestToGuide(g.slug);
-    assert(top.score < BANDS.text.high, `${g.slug} overlaps ${top.slug} (similarity ${top.score.toFixed(2)}): add to that guide instead`);
+  const { allPairs, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  const waiting = new Set(OVERLAP_WAITING.flatMap(([a, b]) => [`${a} ${b}`, `${b} ${a}`]));
+  for (const { a, b, score } of allPairs(GUIDES)) {
+    if (score < BANDS.text.high || waiting.has(`${a} ${b}`)) continue;
+    assert(false, `${a} and ${b} overlap (similarity ${score.toFixed(2)}, the limit is ${BANDS.text.high}): merge them, or cut what one repeats from the other`);
   }
 });
 // Neighbouring guides (similarity "check" or above) go live at least 15 days apart, so two near neighbours
