@@ -1033,7 +1033,7 @@ export const GUIDES = [
       { h2: "While you wait" },
       { ul: [
         "Leave the page open and let it move on by itself.",
-        "Use one tab or device per IP address and don't refresh once you're in the queue. The 2025 sale FAQ asked for both, because refreshing the page, using multiple tabs or many devices can look like suspicious behaviour and trigger the anti-bot software.",
+        "Use just one browser tab on one device for your registration, and don't refresh once you're in the queue: the festival's information page says refreshing or using multiple devices or tabs will lose you your place. The 2025 sale FAQ added that these can look like suspicious behaviour and trigger the anti-bot software.",
         "Keep the device awake and plugged in. See [phone or laptop: setting up either](/guides/set-up-your-phone-for-ticket-day/).",
         "Have your group's numbers ready to paste the moment you get through.",
         "Keep the group chat quiet. A stream of \"still waiting\" messages makes the one that matters easy to miss.",
@@ -1857,7 +1857,7 @@ export const GUIDES = [
       "Banks see the same pattern around every big sell-out. Lloyds Bank says most of the ticket scams reported to it start with fake adverts, posts or listings on social media, that genuine ticket sellers never ask to be paid by bank transfer, and that paying by card gives you more protection if something goes wrong.",
       { h2: "Common scams" },
       { ul: [
-        "**\"I can't go, you can have my ticket.\"** Even if the ticket is real, it has someone else's photo on it. Someone who genuinely can't go can ask See Tickets to [cancel their ticket for a refund](/guides/glastonbury-ticket-refund/) instead, less a {{fact:refundFee}} administration charge (more for a ticket and coach package), until 11.59pm on {{fact:refundDeadline}}.",
+        "**\"I can't go, you can have my ticket.\"** Even if the ticket is real, it has someone else's photo on it. Someone who genuinely can't go can ask See Tickets to [cancel their ticket for a refund](/guides/glastonbury-ticket-refund/) instead, less a {{fact:refundFee}} administration charge (more for a ticket and coach package), until 11.59pm on {{fact:refundDeadline}}. Booking fees and postage aren't refunded.",
         "**\"I'll change the name and photo for a fee.\"** Only the festival's systems hold registrations, and a photo can't be changed while a booking is linked to it.",
         "**\"Guaranteed tickets\" or \"priority queue access\".** Nobody can guarantee a ticket or sell you a better place in the queue.",
         "**Fake booking sites.** Pages designed to look like See Tickets, often shared in ads or messages, that take your card details.",
@@ -2416,8 +2416,8 @@ export const PAGES = [
     body: [
       { h2: "1 November 2026" },
       { ul: [
-        "**Corrected:** [how the queue works](/guides/how-the-ticket-queue-works/) no longer says the anti-bot checks look for VPNs, which no source says. It now gives the official 2025 advice instead: one tab or device per IP address, and no refreshing once you're in the queue.",
-        "**Updated:** the [scams guide](/guides/glastonbury-ticket-scams/) now points people who can't go to the official refund, with its {{fact:refundFee}} charge and deadline.",
+        "**Corrected:** [how the queue works](/guides/how-the-ticket-queue-works/) no longer says the anti-bot checks look for VPNs, which no source says. It now gives the festival's own advice instead: one browser tab on one device, and no refreshing once you're in the queue.",
+        "**Updated:** the [scams guide](/guides/glastonbury-ticket-scams/) now points people who can't go to the official refund, with its {{fact:refundFee}} charge, what isn't refunded and the deadline.",
         "**Updated:** the FAQ answer on buying from outside the UK now gives the 2027 card rule (Visa or Mastercard credit cards only) and links to [buying Glastonbury tickets from abroad](/guides/glastonbury-tickets-from-abroad/).",
         "**Updated:** more links between guides, so [the glossary of ticket terms](/guides/glastonbury-ticket-glossary/), the scams guide and [your first go at Glastonbury tickets](/guides/first-time-glastonbury-ticket-day/) are easier to reach.",
       ] },
