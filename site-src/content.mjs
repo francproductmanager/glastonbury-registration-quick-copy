@@ -685,7 +685,7 @@ export const GUIDES = [
       { ul: [
         "**Deposit.** The part payment made on ticket day: {{fact:deposit}} per ticket for 2027.",
         "**Balance.** The rest of the ticket price, plus postage, paid in a set window in the spring.",
-        "**Balance payment window.** The week the balance must be paid. For 2027 it's 1 to 7 April. Unpaid tickets are cancelled. See [deposits and balance payments](/guides/deposits-and-balance-payments/).",
+        "**Balance payment window.** The week the balance must be paid. This time it's {{fact:balanceWindow}}. Unpaid tickets are cancelled. See [deposits and balance payments](/guides/deposits-and-balance-payments/).",
         "**Postage and packing.** A charge per order for posting the tickets: {{fact:postage}} for general admission in 2027.",
         "**Cancellation or refund protection.** Optional insurance, offered at checkout or with the balance, that can refund you in certain circumstances.",
         "**Non-transferable.** Your ticket can only be used by you, because it shows your photo.",
@@ -747,7 +747,7 @@ export const GUIDES = [
       "If you get through, the booking page opens and a timer starts. You enter your own details and each friend's registration number and postcode, check that the names shown are the people you expect, then pay a deposit for each ticket: **{{fact:deposit}} per ticket** for 2027. Tickets aren't yours until the payment has gone through.",
       "When the confirmation page appears, screenshot it and tell your group straight away, so nobody else books the same people. The timers, the cards that work and what to do if something fails are all in [the checkout guide](/guides/paying-for-glastonbury-tickets/).",
       { h2: "How it usually ends" },
-      "Be ready for this: **most people who try don't get a ticket.** Demand is many times the number of tickets, and every recent sale has sold out in under an hour. If you see \"SOLD OUT\", every ticket in that sale has gone, and there's nothing you did wrong. Close the page, and turn your attention to the spring resale.",
+      "Be ready for this: **most people who try don't get a ticket.** Demand is far higher than the number of tickets, and every recent sale has sold out in under an hour. If you see \"SOLD OUT\", every ticket in that sale has gone, and there's nothing you did wrong. Close the page, and turn your attention to the spring resale.",
       { h2: "Things first timers often don't know" },
       { ul: [
         "**Arriving early matters, but only up to the start.** In 2027, everyone in the waiting room before 9am got a random place. Being there at 8.20 instead of 8.50 didn't put you further forward.",
@@ -838,7 +838,7 @@ export const GUIDES = [
     summary: "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
-      "There's no trick that gets you to the front of the Glastonbury queue. Demand is many times the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked. If it's your first time, [what ticket morning is like](/guides/first-time-glastonbury-ticket-day/) walks through it step by step.",
+      "There's no trick that gets you to the front of the Glastonbury queue. Demand is far higher than the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked. If it's your first time, [what ticket morning is like](/guides/first-time-glastonbury-ticket-day/) walks through it step by step.",
       { h2: "What changed in 2027" },
       "In the 2027 sales, buyers entered their registration details **before** joining the queue: Time Out reported it for the coach sale, and NME for the general sale. In the coach sale, Time Out said, each person got a unique queue ID linked to their registration, so they could only enter the queue once and could no longer queue on several tabs or devices. NME reported that the general sale also tied each registration to a single place in the queue. The full detail, with the official advice, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
       "Time Out noted that the old approach, where friends each ran as many devices as they could, was likely to be far less successful under the new system. Time Out also said the new queue made the sale fairer.",
@@ -994,7 +994,7 @@ export const GUIDES = [
     summary: "What happens when the sale opens, why extra tabs no longer help, what the green blocks, \"access restricted\" and the holding page mean, and how a group should queue.",
     updated: "1 November 2026", isoDate: "2026-11-01",
     body: [
-      "Demand for Glastonbury tickets is many times the number available, so the sale runs through an online waiting room. This guide is the one place on this site that explains how the queue works: joining it, what each screen means, what to do when something looks wrong, and how a group can use it sensibly.",
+      "Demand for Glastonbury tickets is far higher than the number available, so the sale runs through an online waiting room. This guide is the one place on this site that explains how the queue works: joining it, what each screen means, what to do when something looks wrong, and how a group can use it sensibly.",
       { h2: "Joining the queue" },
       "In the 2027 sale, Time Out reported, buyers had to complete a captcha and then **enter their registration number before joining the queue**. Each person was given a unique queue ID linked to their registration, so each person could only enter the queue once.",
       "When the sale opens, everyone already waiting is given a place in the queue **at random**, and anyone arriving later joins the back. So be early, but there's no prize for being very early: the festival's information page says to be online at glastonbury.seetickets.com **at least 10 minutes before the sale opens**.",
@@ -1033,7 +1033,7 @@ export const GUIDES = [
       { h2: "While you wait" },
       { ul: [
         "Leave the page open and let it move on by itself.",
-        "Use your normal connection. The 2025 sale FAQ warned that refreshing the page, using multiple tabs or many devices can look like suspicious behaviour and trigger the anti-bot software.",
+        "Use one tab or device per IP address and don't refresh once you're in the queue. The 2025 sale FAQ asked for both, because refreshing the page, using multiple tabs or many devices can look like suspicious behaviour and trigger the anti-bot software.",
         "Keep the device awake and plugged in. See [phone or laptop: setting up either](/guides/set-up-your-phone-for-ticket-day/).",
         "Have your group's numbers ready to paste the moment you get through.",
         "Keep the group chat quiet. A stream of \"still waiting\" messages makes the one that matters easy to miss.",
@@ -1857,7 +1857,7 @@ export const GUIDES = [
       "Banks see the same pattern around every big sell-out. Lloyds Bank says most of the ticket scams reported to it start with fake adverts, posts or listings on social media, that genuine ticket sellers never ask to be paid by bank transfer, and that paying by card gives you more protection if something goes wrong.",
       { h2: "Common scams" },
       { ul: [
-        "**\"I can't go, you can have my ticket.\"** Even if the ticket is real, it has someone else's photo on it. Someone who genuinely can't go can [cancel their ticket for a refund](/guides/glastonbury-ticket-refund/) before the deadline instead.",
+        "**\"I can't go, you can have my ticket.\"** Even if the ticket is real, it has someone else's photo on it. Someone who genuinely can't go can ask See Tickets to [cancel their ticket for a refund](/guides/glastonbury-ticket-refund/) instead, less a {{fact:refundFee}} administration charge (more for a ticket and coach package), until 11.59pm on {{fact:refundDeadline}}.",
         "**\"I'll change the name and photo for a fee.\"** Only the festival's systems hold registrations, and a photo can't be changed while a booking is linked to it.",
         "**\"Guaranteed tickets\" or \"priority queue access\".** Nobody can guarantee a ticket or sell you a better place in the queue.",
         "**Fake booking sites.** Pages designed to look like See Tickets, often shared in ads or messages, that take your card details.",
@@ -1928,7 +1928,7 @@ export const GUIDES = [
       { cta: "Put your group on one page" },
     ],
     related: ["glastonbury-2027-cost", "buying-tickets-for-a-group", "glastonbury-access-requirements"],
-    sources: [OFFICIAL.y2027, OFFICIAL.sale2025, OFFICIAL.resale],
+    sources: [OFFICIAL.y2027, OFFICIAL.info, OFFICIAL.sale2025, OFFICIAL.resale, NEWS.nme2027],
   },
   {
     slug: "glastonbury-access-requirements",
@@ -2416,7 +2416,8 @@ export const PAGES = [
     body: [
       { h2: "1 November 2026" },
       { ul: [
-        "**Corrected:** [how the queue works](/guides/how-the-ticket-queue-works/) no longer says the anti-bot checks look for VPNs, which no source says. It now gives the official 2025 warning that refreshing, extra tabs or many devices can trigger the anti-bot software.",
+        "**Corrected:** [how the queue works](/guides/how-the-ticket-queue-works/) no longer says the anti-bot checks look for VPNs, which no source says. It now gives the official 2025 advice instead: one tab or device per IP address, and no refreshing once you're in the queue.",
+        "**Updated:** the [scams guide](/guides/glastonbury-ticket-scams/) now points people who can't go to the official refund, with its {{fact:refundFee}} charge and deadline.",
         "**Updated:** the FAQ answer on buying from outside the UK now gives the 2027 card rule (Visa or Mastercard credit cards only) and links to [buying Glastonbury tickets from abroad](/guides/glastonbury-tickets-from-abroad/).",
         "**Updated:** more links between guides, so [the glossary of ticket terms](/guides/glastonbury-ticket-glossary/), the scams guide and [your first go at Glastonbury tickets](/guides/first-time-glastonbury-ticket-day/) are easier to reach.",
       ] },
