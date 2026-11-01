@@ -1,13 +1,29 @@
 {
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "items": [
   {
-   "date": "2026-10-31",
-   "tag": "New",
+   "date": "2026-11-01",
+   "tag": "Updated",
+   "title": "How the Glastonbury ticket queue works, and what its errors mean",
+   "summary": "What happens when the sale opens, why extra tabs no longer help, what the green blocks, \"access restricted\" and the holding page mean, and how a group should queue.",
+   "topic": "On ticket day",
+   "href": "/guides/how-the-ticket-queue-works/"
+  },
+  {
+   "date": "2026-11-01",
+   "tag": "Updated",
    "title": "Glastonbury tickets from abroad: cards, delivery and timing",
    "summary": "Buying Glastonbury 2027 tickets from outside the UK: registering, the credit card rule, a UK friend booking for you, the balance and how tickets reach you.",
    "topic": "Before the sale",
    "href": "/guides/glastonbury-tickets-from-abroad/"
+  },
+  {
+   "date": "2026-11-01",
+   "tag": "Updated",
+   "title": "Glastonbury ticket terms explained",
+   "summary": "A plain English glossary of every term you'll meet in the Glastonbury ticket process, from registration number to resale.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-ticket-glossary/"
   },
   {
    "date": "2026-10-31",
@@ -40,22 +56,6 @@
    "summary": "Sell-out times, prices and deposits for the last three Glastonbury ticket sales and resales, and what the numbers mean for your group.",
    "topic": "Glastonbury 2027: where things stand",
    "href": "/guides/glastonbury-ticket-sale-history/"
-  },
-  {
-   "date": "2026-10-29",
-   "tag": "New",
-   "title": "Glastonbury 2027 local resident tickets: who qualifies and how to book",
-   "summary": "Glastonbury's 2027 local full weekend ticket sale: the inner and outer zone towns, sale times, the deposit and balance, proof of address and what to have ready.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-local-resident-tickets/"
-  },
-  {
-   "date": "2026-10-29",
-   "tag": "Updated",
-   "title": "How the Glastonbury ticket queue works, and what its errors mean",
-   "summary": "What happens when the sale opens, why extra tabs no longer help, what the green blocks, \"access restricted\" and the holding page mean, and how a group should queue.",
-   "topic": "On ticket day",
-   "href": "/guides/how-the-ticket-queue-works/"
   }
  ],
  "dates": [
