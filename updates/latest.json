@@ -1,6 +1,30 @@
 {
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "items": [
+  {
+   "date": "2026-11-02",
+   "tag": "Updated",
+   "title": "Glastonbury coach tickets: how ticket and coach packages work",
+   "summary": "What a ticket and coach package includes, how the coach sale differs from general admission, the rules that catch people out and whether it suits your group.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/glastonbury-coach-tickets/"
+  },
+  {
+   "date": "2026-11-02",
+   "tag": "Updated",
+   "title": "Going to Glastonbury with access requirements",
+   "summary": "How access works at Glastonbury: booking a ticket the normal way, the Access Pass, the personal assistant scheme, the application form and when to apply.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/glastonbury-access-requirements/"
+  },
+  {
+   "date": "2026-11-02",
+   "tag": "Updated",
+   "title": "How to register for Glastonbury: photo, number and deadlines",
+   "summary": "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to find or change your details.",
+   "topic": "Before the sale",
+   "href": "/guides/how-glastonbury-registration-works/"
+  },
   {
    "date": "2026-11-01",
    "tag": "Updated",
@@ -32,30 +56,6 @@
    "summary": "Buying Glastonbury 2027 tickets from outside the UK: registering, the credit card rule, a UK friend booking for you, the balance and how tickets reach you.",
    "topic": "Before the sale",
    "href": "/guides/glastonbury-tickets-from-abroad/"
-  },
-  {
-   "date": "2026-11-01",
-   "tag": "Updated",
-   "title": "Glastonbury ticket terms explained",
-   "summary": "A plain English glossary of every term you'll meet in the Glastonbury ticket process, from registration number to resale.",
-   "topic": "Before the sale",
-   "href": "/guides/glastonbury-ticket-glossary/"
-  },
-  {
-   "date": "2026-10-31",
-   "tag": "Updated",
-   "title": "Taking children and teenagers to Glastonbury: tickets and registration",
-   "summary": "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-with-children/"
-  },
-  {
-   "date": "2026-10-31",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 balance payment and what to do before June",
-   "summary": "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
-   "topic": "After you've booked",
-   "href": "/guides/got-a-glastonbury-ticket-what-next/"
   }
  ],
  "dates": [
