@@ -235,7 +235,7 @@ export const GUIDES = [
     summary: "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
     updated: "1 November 2026", isoDate: "2026-11-01",
     body: [
-      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. The most recent sale was only for people who live near the festival: local full weekend and Sunday tickets went on sale on **{{fact:localSaleDate}}**. When we checked the festival's information page on the afternoon of 1 November 2026, it still listed the sale times and hadn't said how the sale went or whether any tickets were left. This page always covers the next sale, and we update it the day the festival announces anything.",
+      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. This page focuses on the sales still to come and how to be ready for them, and we update it the day the festival announces anything. The 2027 sale dates so far, including the local and Sunday sales on {{fact:localSaleDate}}, are in [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
       { h2: "The next sales" },
       { table: {
         head: ["Sale", "When", "Status"],
@@ -245,8 +245,8 @@ export const GUIDES = [
           ["2028 coach and general sales", "Not announced. Recent main sales were in October or November of the year before", "Date to be announced"],
         ],
       } },
-      "The local and Sunday sales were only for people who live in the qualifying areas, and the festival may ask for proof of address. Who could book local full weekend tickets is in [Glastonbury local resident tickets](/guides/glastonbury-local-resident-tickets/). Sunday tickets cost {{fact:sundayPrice}} each, including the bus: see [Glastonbury Sunday tickets](/guides/glastonbury-sunday-tickets/). How the resale works, and how it differs from the main sale, is in [the 2027 resale](/guides/glastonbury-2027-resale/).",
-      { h2: "When recent sales have happened" },
+      "How the resale works, and how it differs from the main sale, is in [the 2027 resale](/guides/glastonbury-2027-resale/).",
+      { h2: "When recent main sales were held" },
       { table: {
         head: ["Festival", "Coach sale", "General sale"],
         rows: [
@@ -255,7 +255,7 @@ export const GUIDES = [
           ["2027", "Thursday 1 October 2026", "Sunday 4 October 2026"],
         ],
       } },
-      "There was no 2026 festival, so no sale for it. The 2027 sale came earlier in the autumn than the November sales before it. Registration has closed a week or so before each sale, so watch for that date as much as the sale itself. Sell-out times are in [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/).",
+      "There was no 2026 festival, so no sale for it. Registration has closed a week or so before each sale, so watch for that date as much as the sale itself. Sell-out times are in [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/).",
       { h2: "What to expect at the next sale" },
       "Each sale has had its own official FAQ, and the festival has changed the process before, so read the new one when it's published. Based on the most recent sales:",
       { table: {
@@ -1214,7 +1214,7 @@ export const GUIDES = [
       { tip: "Ask each person to reply in the group chat with \"PAID\" once their balance is done. The lead booker can then see at a glance who still needs reminding before the 7th." },
       { h2: "Parking and protection" },
       `For 2027, car park passes are sold during the balance window, for general admission ticket holders only. The [festival's information page](https://www.glastonburyfestivals.co.uk/info/) listed them at **{{fact:carParkPass}}** when we checked on ${CHECKED}, so check that page again before you pay. They can't be added to a ticket and coach booking. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none. More on passes, and on driving there, is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
-      "Campervan pitches, Worthy View and tipis are sold separately: see [campervans, camping and parking](/guides/glastonbury-2027-campervans-and-camping/).",
+      "Campervan pitches, Worthy View and tipis are sold separately: see [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/).",
       "Cancellation protection can also be added while you pay. Read what it covers before buying it: it refunds in certain circumstances, not for any change of plan. The refund deadline and charge are in [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
       { h2: "Straight after booking" },
       { ul: [
@@ -1440,7 +1440,7 @@ export const GUIDES = [
           ["Ticket and coach package", "The ticket plus a coach fare that depends on the departure town", "Ticket deposit plus the fare in October"],
         ],
       } },
-      `The car park and campervan prices are as listed on the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) on ${CHECKED}, not yet in a separate announcement, so check that page before you book. More on each extra, and when they go on sale, is in [campervans, camping and parking](/guides/glastonbury-2027-campervans-and-camping/), and buying a pass and driving there is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
+      `The car park and campervan prices are as listed on the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) on ${CHECKED}, not yet in a separate announcement, so check that page before you book. More on each extra, and when they go on sale, is in [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/), and buying a pass and driving there is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
       "Children who'll be 12 or under when the gates open don't need a ticket, though they do need a seat if you book [coach tickets](/guides/glastonbury-coach-tickets/). See [taking children to Glastonbury](/guides/glastonbury-with-children/).",
       { h2: "A worked example: four friends driving" },
       "Four friends book in one order and share one car. Using the 2027 prices:",
@@ -2064,8 +2064,8 @@ export const GUIDES = [
     published: "2026-10-26",
     target: "glastonbury campervan tickets", // the search phrase this guide answers; no two guides share one
     topic: "travel",
-    title: "Glastonbury 2027 campervans, Worthy View, tipis and parking",
-    summary: "Campervan pitches, Worthy View, tipis and car park passes at Glastonbury 2027: prices where they're published, who can book, and when they've gone on sale.",
+    title: "Glastonbury 2027 campervans, Worthy View and tipis",
+    summary: "Campervan pitches, Worthy View and tipis at Glastonbury 2027: prices where they're published, who can book, what's included, and when they've gone on sale.",
     updated: "28 October 2026", isoDate: "2026-10-28",
     body: [
       "A Glastonbury ticket includes camping in the general fields: you bring a tent and pitch it. Everything on this page is an extra, bought separately through See Tickets, and **every option needs a festival ticket first**. Most of them sell out, so it's worth knowing the prices and the rules before they go on sale.",
@@ -2073,7 +2073,6 @@ export const GUIDES = [
       { table: {
         head: ["Option", "2027 price", "Who can book", "On sale"],
         rows: [
-          ["Car park pass", "{{fact:carParkPass}}", "General admission ticket holders, not ticket and coach bookings", "During the balance window, {{fact:balanceWindow}}"],
           ["Campervan or caravan pitch", "£225 standard, £350 large (vehicles 8m or longer)", "General admission ticket holders", "Later in the autumn; date not announced yet"],
           ["Worthy View", "Not published yet", "Holders of a 2027 festival ticket", "Not announced yet"],
           ["Tipi", "£2,000 for five nights, up to six adults", "Holders of 2027 festival tickets; the price doesn't include them", "Not announced yet"],
@@ -2085,11 +2084,9 @@ export const GUIDES = [
       "The festival said 2027 campervan and caravan tickets would go on sale later in the autumn. They have sold out quickly in recent years, so if you're planning one, agree as a group who's booking it and have their card ready before the date is announced.",
       "There's also an accessible campervan field, which in 2025 had sold out by the time of the spring resale. See [going to Glastonbury with access requirements](/guides/glastonbury-access-requirements/).",
       { h2: "Worthy View" },
-      "Worthy View is the festival's own campsite on **Pennard Hill, south of the main site**, with tents already put up for you when you arrive, so you only bring your bags. Bedding isn't provided. It's booked only through See Tickets, and you need a valid 2027 festival ticket to book. The 2027 price hasn't been published yet.",
+      "Worthy View is the festival's own campsite on **Pennard Hill, south of the main site**, with tents already put up for you when you arrive, so you only bring your bags. Bedding isn't provided. It's booked only through See Tickets, and you need a valid 2027 festival ticket to book. The 2027 price hasn't been published yet. Driving there? Worthy View needs its own car parking pass, booked with the accommodation, not a general one: see [Glastonbury car parking](/guides/glastonbury-car-parking/).",
       { h2: "Tipis" },
       "For 2027 the festival's information page lists tipis at **£2,000 for five nights**, from Wednesday 23 to Sunday 27 June, for up to six adults. The price doesn't include festival tickets, so everyone staying in a tipi needs their own.",
-      { h2: "Car park passes" },
-      "A car park pass is {{fact:carParkPass}}, and it's sold during the balance window from {{fact:balanceWindow}}, only to general admission ticket holders. If you're staying at Worthy View, you need its own car parking pass, booked with the accommodation, not a general one. How to buy a pass, friends driving separately to a campervan and the festival's advice on arriving by car are in [Glastonbury car parking](/guides/glastonbury-car-parking/).",
       { h2: "When accommodation goes on sale" },
       "The festival hasn't announced 2027 dates yet. In recent years, its accommodation went on sale in late November or early December, a few weeks after the main ticket sale:",
       { table: {
@@ -2103,10 +2100,10 @@ export const GUIDES = [
       "To hear about new dates without giving anyone your email address, [subscribe to the 2027 dates calendar](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics): we add each date as it's announced, and your calendar app picks it up.",
       { h2: "Booking as a group" },
       { ul: [
-        "**Decide who books what** before the sale: one person for the campervan, one for the car park pass. Two people booking the same thing is easy to do and slow to undo.",
+        "**Decide who books what** before the sale: one person for the campervan pitch, one for the tipi. Two people booking the same thing is easy to do and slow to undo.",
         "**Check everyone has a ticket first.** None of these options gets anyone into the festival on its own.",
-        "**Split the cost per head.** A £60 car park pass shared four ways is £15 each. See [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
-        "**Book the festival's own options through See Tickets.** Be wary of anyone else offering a pitch in the festival's own fields or a car park pass. See [ticket scams](/guides/glastonbury-ticket-scams/).",
+        "**Split the cost per head.** A £2,000 tipi shared by six adults is about £333 each, before their festival tickets. See [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
+        "**Book the festival's own options through See Tickets.** Be wary of anyone else offering a pitch in the festival's own fields. See [ticket scams](/guides/glastonbury-ticket-scams/).",
       ] },
     ],
     related: ["glastonbury-2027-cost", "glastonbury-coach-tickets", "glastonbury-access-requirements"],
@@ -2441,6 +2438,8 @@ export const PAGES = [
     body: [
       { h2: "4 November 2026" },
       { ul: [
+        "**Updated:** [when is the next Glastonbury ticket sale](/guides/next-glastonbury-ticket-sale/) now focuses on the sales still to come (the spring resale and the 2028 sale) and how to get ready, with a link to [2027 key dates](/guides/glastonbury-2027-key-dates/) for the 2027 sale dates so far.",
+        "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now leaves car park passes to [Glastonbury car parking](/guides/glastonbury-car-parking/), which has the full rules, so each guide answers its own question.",
         "**Corrected:** [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) no longer says the festival doesn't hire staff itself. Its info page says most departments recruit temporary staff from late autumn into the new year and advertise on the festival's own website first. The volunteering section is now shorter, with a link to the full volunteering guide.",
         "**Updated:** [how to register for Glastonbury](/guides/how-glastonbury-registration-works/) now keeps its advice on updating your registration short and links to [finding or changing your registration](/guides/glastonbury-registration-number-lookup/) for the details.",
       ] },
