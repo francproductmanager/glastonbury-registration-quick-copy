@@ -1,6 +1,22 @@
 {
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "items": [
+  {
+   "date": "2026-11-04",
+   "tag": "Updated",
+   "title": "Missed out? Other ways to get to Glastonbury",
+   "summary": "Your realistic options if you didn't get a ticket: the spring resale, volunteering, working, and what to avoid.",
+   "topic": "Missed out?",
+   "href": "/guides/other-ways-to-get-to-glastonbury/"
+  },
+  {
+   "date": "2026-11-04",
+   "tag": "Updated",
+   "title": "How to register for Glastonbury: photo, number and deadlines",
+   "summary": "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to check your whole group is ready.",
+   "topic": "Before the sale",
+   "href": "/guides/how-glastonbury-registration-works/"
+  },
   {
    "date": "2026-11-03",
    "tag": "Updated",
@@ -40,22 +56,6 @@
    "summary": "How access works at Glastonbury: booking a ticket the normal way, the Access Pass, the personal assistant scheme, the application form and when to apply.",
    "topic": "Coaches, access and families",
    "href": "/guides/glastonbury-access-requirements/"
-  },
-  {
-   "date": "2026-11-02",
-   "tag": "Updated",
-   "title": "How to register for Glastonbury: photo, number and deadlines",
-   "summary": "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to find or change your details.",
-   "topic": "Before the sale",
-   "href": "/guides/how-glastonbury-registration-works/"
-  },
-  {
-   "date": "2026-11-01",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
-   "summary": "Who could buy a Glastonbury 2027 Sunday ticket, when the sale was, the price with the bus, children's bus seats, refunds and the rules for the day itself.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-sunday-tickets/"
   }
  ],
  "dates": [
