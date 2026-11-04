@@ -235,7 +235,7 @@ export const GUIDES = [
     summary: "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
     updated: "1 November 2026", isoDate: "2026-11-01",
     body: [
-      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. This page only covers the sales still to come and how to be ready for them, and we update it the day the festival announces anything. Every 2027 date so far, including the local and Sunday sales on {{fact:localSaleDate}}, is in [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
+      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. This page focuses on the sales still to come and how to be ready for them, and we update it the day the festival announces anything. The 2027 sale dates so far, including the local and Sunday sales on {{fact:localSaleDate}}, are in [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
       { h2: "The next sales" },
       { table: {
         head: ["Sale", "When", "Status"],
@@ -2438,7 +2438,7 @@ export const PAGES = [
     body: [
       { h2: "4 November 2026" },
       { ul: [
-        "**Updated:** [when is the next Glastonbury ticket sale](/guides/next-glastonbury-ticket-sale/) now sticks to the sales still to come (the spring resale and the 2028 sale) and how to get ready, with a link to [2027 key dates](/guides/glastonbury-2027-key-dates/) for every date so far.",
+        "**Updated:** [when is the next Glastonbury ticket sale](/guides/next-glastonbury-ticket-sale/) now focuses on the sales still to come (the spring resale and the 2028 sale) and how to get ready, with a link to [2027 key dates](/guides/glastonbury-2027-key-dates/) for the 2027 sale dates so far.",
         "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now leaves car park passes to [Glastonbury car parking](/guides/glastonbury-car-parking/), which has the full rules, so each guide answers its own question.",
         "**Corrected:** [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) no longer says the festival doesn't hire staff itself. Its info page says most departments recruit temporary staff from late autumn into the new year and advertise on the festival's own website first. The volunteering section is now shorter, with a link to the full volunteering guide.",
         "**Updated:** [how to register for Glastonbury](/guides/how-glastonbury-registration-works/) now keeps its advice on updating your registration short and links to [finding or changing your registration](/guides/glastonbury-registration-number-lookup/) for the details.",
