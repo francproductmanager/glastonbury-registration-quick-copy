@@ -3,6 +3,14 @@
  "items": [
   {
    "date": "2026-11-04",
+   "tag": "New",
+   "title": "When do Glastonbury 2027 tickets arrive?",
+   "summary": "When Glastonbury 2027 tickets are posted, who receives them in a group booking, tracking them, coach tickets, and what to do if yours haven't arrived.",
+   "topic": "After you've booked",
+   "href": "/guides/when-do-glastonbury-tickets-arrive/"
+  },
+  {
+   "date": "2026-11-04",
    "tag": "Updated",
    "title": "When is the next Glastonbury ticket sale?",
    "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
@@ -48,14 +56,6 @@
    "summary": "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
    "topic": "Coaches, access and families",
    "href": "/guides/glastonbury-with-children/"
-  },
-  {
-   "date": "2026-11-03",
-   "tag": "Updated",
-   "title": "Glastonbury checkout: paying for tickets and fixing problems",
-   "summary": "Once you're through the Glastonbury queue: the timers, which cards work, and what to do when a name doesn't come up, the timer runs out or a card is declined.",
-   "topic": "On ticket day",
-   "href": "/guides/paying-for-glastonbury-tickets/"
   }
  ],
  "dates": [
