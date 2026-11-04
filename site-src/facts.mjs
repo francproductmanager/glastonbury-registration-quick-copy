@@ -41,6 +41,9 @@ export const FACTS = {
   sundayProtection: { value: "£4.10", meaning: "Optional TicketPlan Booking Refund Protection per 2027 Sunday ticket", source: INFO, checked: "2026-10-29", recheckBy: "2027-05-07" },
   sundayPickups: { value: "9am and 11am", meaning: "2027 Sunday ticket bus morning pick-up times from each town", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
   sundayReturns: { value: "10pm and 12.30am", meaning: "2027 Sunday ticket return bus times from the festival (22:00 and 00:30)", source: INFO, checked: "2026-10-29", recheckBy: "2027-06-27" },
+  ticketDispatch: { value: "late May to June 2027", meaning: "When UK general admission tickets for 2027 are sent out by Royal Mail, signed for", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
+  ticketsArriveBy: { value: "Wednesday 16 June 2027", meaning: "7 days before the 2027 festival starts on 23 June: the festival expects tickets to have arrived by then, and to contact See Tickets if not", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
+  coachVoucher: { value: "mid-May 2027", meaning: "When 2027 ticket and coach travel vouchers are expected to be sent, as e-tickets", source: INFO, checked: "2026-11-04", recheckBy: "2027-05-31" },
   sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-10-29", recheckBy: "2027-06-27" },
 };
 
