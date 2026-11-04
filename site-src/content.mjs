@@ -287,7 +287,7 @@ export const GUIDES = [
     target: "glastonbury registration", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "How to register for Glastonbury: photo, number and deadlines",
-    summary: "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to find or change your details.",
+    summary: "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to check your whole group is ready.",
     updated: "29 October 2026", isoDate: "2026-10-29",
     body: [
       "You can't buy a Glastonbury ticket for anyone who hasn't registered first. Registration links a photo to each person, and that photo is printed on their ticket. It's how the festival stops touts: tickets are non-transferable, and security checks that the person at the gate matches the photo.",
@@ -327,13 +327,9 @@ export const GUIDES = [
       "After you submit, your photo is checked by hand. The festival says this happens **within about 48 hours in the working week**. If it's accepted, you get an email with your registration number and registered postcode.",
       "If your photo is rejected, you'll get an email telling you. If you haven't heard anything within a further 48 hours, the advice is to register again.",
       { tip: "Register weeks before the sale, not days. Registration is usually paused around ticket sales, and you may need time to resubmit a photo." },
-      { h2: "Keeping your photo up to date" },
-      "Your confirmation email includes links to view, edit or delete your registration and to update your photo. The festival encourages updating the photo every year so it still looks like you.",
-      "You **can't change your photo while you have a booking linked to your registration**, so update it before ticket day if it's out of date. The official advice is to check your registration at least 7 days before registration closes.",
-      { h2: "Moved house since you registered?" },
-      "On ticket day the lead booker enters the postcode that's on your registration, not your current one. If you've moved, either tell the lead booker your old registered postcode, or update your registration before the sale so the new one is on record. What matters is that the postcode they type matches the registration exactly.",
-      { h2: "Lost your number, or need to change something?" },
-      "The official **registration lookup** on See Tickets sends your registration number to the email address you registered with, along with links to update your photo and details. What to do if it finds nothing, and how to change your photo, postcode or email, is in [finding or changing your registration](/guides/glastonbury-registration-number-lookup/).",
+      { h2: "Keeping your registration up to date" },
+      "The festival encourages updating your photo every year so it still looks like you, and you **can't change your photo while you have a booking linked to your registration**, so do it before ticket day. The official advice is to check your registration at least 7 days before registration closes.",
+      "If you've moved, remember the lead booker types the postcode on your registration, not your current one. Lost your number, or need to change your photo, postcode or email? That's all in [finding or changing your registration](/guides/glastonbury-registration-number-lookup/).",
       { h2: "A five minute check for every friend" },
       "If you're the one organising, ask each person to forward you their latest confirmation email, or send you a screenshot of it. Then check four things:",
       { ol: [
@@ -1197,7 +1193,7 @@ export const GUIDES = [
     target: "glastonbury 2027 balance payment", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
-    summary: "The 2027 balance window (1 to 7 April), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
+    summary: "The 2027 balance window ({{fact:balanceWindow}}), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Getting through the queue is the hard part, but a deposit isn't a ticket yet. The one deadline that matters is the **balance payment window: 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time**. Any ticket whose balance isn't paid by then is cancelled. This guide covers that week first, then everything else between now and June.",
@@ -1561,15 +1557,15 @@ export const GUIDES = [
     topic: "missed",
     title: "Missed out? Other ways to get to Glastonbury",
     summary: "Your realistic options if you didn't get a ticket: the spring resale, volunteering, working, and what to avoid.",
-    updated: "29 October 2026", isoDate: "2026-10-29",
+    updated: "4 November 2026", isoDate: "2026-11-04",
     body: [
       "Most people who try for Glastonbury tickets don't get them, so if you missed out you're in good company. There are still a few genuine routes in. None is guaranteed, and each has its own trade-offs.",
       { h2: "1. The spring resale" },
       "The obvious second chance. Tickets that weren't paid for in the April balance window, and tickets that were returned, are sold again in the spring. It's usually in late April, with a coach resale first and a general admission resale a few days later. It's smaller and faster than the main sale, and tickets are paid in full rather than with a deposit. See [how the spring resale works](/guides/glastonbury-2027-resale/).",
       { h2: "2. Volunteering" },
-      "The festival's partner charities, including **Oxfam**, **WaterAid** and **Greenpeace**, recruit volunteers to work shifts in return for entry, crew camping and meals. Applications for 2027 open in the new year, and places go fast. Each charity's dates, shifts and terms are in [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/).",
+      "Some of the organisations and charities that work at the festival let people work for their ticket. The festival says this normally means three 8 hour stints, though it varies. Which ones take people, when they open for 2027 and what each asks of you are in [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/).",
       { h2: "3. Paid work" },
-      "Traders, bars, security firms and contractors hire staff for the festival. These roles usually ask for more experience than volunteering and give you less free time, but you're paid. Jobs come through the companies themselves and staffing agencies, not the festival.",
+      "The festival itself employs only a small number of people full time, mostly in its offices. For temporary staff, it says most departments start recruiting in the late autumn and into the early new year, for jobs starting in the spring, and advertise them on the festival's own website first. Outside firms hire for the festival too: its info page lists car parking staff, and says market traders need staff. You need the right to work in the UK, and the festival warns that none of these jobs is an easy way in: they mean hard work and not much time off.",
       { h2: "4. Sunday tickets for local residents" },
       "If you live in the Mendip and Central Somerset area, the festival sold Sunday tickets for 2027: {{fact:sundayPrice}} each, including a bus to the festival and back from one of eight local towns, on sale from {{fact:sundaySale}}. Earlier the same morning, residents of a smaller local area had a second chance at full weekend tickets: see [Glastonbury local resident tickets](/guides/glastonbury-local-resident-tickets/). Neither was a general sale: if you don't live in the qualifying area, they're not a route for you. When we checked on the afternoon of 1 November 2026, the festival hadn't said whether any of these tickets were left. Who qualifies, the bus and the refund rules are in [Glastonbury Sunday tickets](/guides/glastonbury-sunday-tickets/).",
       { h2: "5. Charity competitions" },
@@ -2443,6 +2439,11 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "4 November 2026" },
+      { ul: [
+        "**Corrected:** [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) no longer says the festival doesn't hire staff itself. Its info page says most departments recruit temporary staff from late autumn into the new year and advertise on the festival's own website first. The volunteering section is now shorter, with a link to the full volunteering guide.",
+        "**Updated:** [how to register for Glastonbury](/guides/how-glastonbury-registration-works/) now keeps its advice on updating your registration short and links to [finding or changing your registration](/guides/glastonbury-registration-number-lookup/) for the details.",
+      ] },
       { h2: "3 November 2026" },
       { ul: [
         "**Updated:** [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/) now answers whether you can sell or give your ticket to someone else (no: tickets, wristbands, car park passes and campervan tickets are non-transferable) and explains the honest route, cancelling before {{fact:refundDeadline}} so the ticket goes back into the official resale.",
