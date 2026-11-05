@@ -1,6 +1,22 @@
 {
- "updated": "2026-11-04",
+ "updated": "2026-11-05",
  "items": [
+  {
+   "date": "2026-11-05",
+   "tag": "Updated",
+   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
+   "summary": "Who could buy a Glastonbury 2027 Sunday ticket, when the sale was, the price with the bus, children's bus seats, refunds and the rules for the day itself.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-sunday-tickets/"
+  },
+  {
+   "date": "2026-11-05",
+   "tag": "Updated",
+   "title": "Glastonbury 2027 local resident tickets: who qualifies and how to book",
+   "summary": "Glastonbury's 2027 local full weekend ticket sale: the inner and outer zone towns, sale times, the deposit and balance, proof of address and what happens next.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-local-resident-tickets/"
+  },
   {
    "date": "2026-11-04",
    "tag": "New",
@@ -40,22 +56,6 @@
    "summary": "Who needs to register, how to do it step by step, what makes a photo pass, when registration reopens, and how to check your whole group is ready.",
    "topic": "Before the sale",
    "href": "/guides/how-glastonbury-registration-works/"
-  },
-  {
-   "date": "2026-11-03",
-   "tag": "Updated",
-   "title": "Glastonbury ticket refunds: fees, deadline and protection",
-   "summary": "How to get a refund on a Glastonbury 2027 ticket: the deadline, the administration fee, what Refund Protection covers, and what to do when someone drops out.",
-   "topic": "After you've booked",
-   "href": "/guides/glastonbury-ticket-refund/"
-  },
-  {
-   "date": "2026-11-03",
-   "tag": "Updated",
-   "title": "Taking children and teenagers to Glastonbury: tickets and registration",
-   "summary": "How old you have to be to go to Glastonbury, who needs a ticket, the rules for under 16s and teenagers, coach seats for children and booking a family group.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-with-children/"
   }
  ],
  "dates": [
