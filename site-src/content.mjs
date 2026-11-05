@@ -1735,12 +1735,12 @@ export const GUIDES = [
     updated: "5 November 2026", isoDate: "2026-11-05",
     body: [
       "Glastonbury's Sunday ticket is the only one day ticket on the festival's information page, and it isn't on general sale: it's only for people who live in the **Mendip and Central Somerset** area. For 2027, Sunday tickets went on sale at **{{fact:sundaySale}}** on glastonbury.seetickets.com. They cost **{{fact:sundayPrice}} per person**, plus {{fact:postage}} postage and packing per order, and the price includes a bus to the festival and back from one of eight local towns. The ticket is for Sunday 27 June 2027 only. When we checked the festival's information page on the morning of 5 November 2026, it still listed the sale times and hadn't said how the sale went or whether any tickets were left.",
-      "The sale is over, so this guide is for people who booked, and for readers thinking about next time: what a booking costs, the bus, children, refunds and the day itself. Everything comes from the festival's information page and its 2027 Sunday ticket terms, both read in full again on 5 November 2026. If that isn't you, the Sunday ticket isn't a route for you: see [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) instead.",
+      "The sale is over, so this guide is for people who booked, and for readers thinking about next time: what a booking costs, the bus, children, refunds and the day itself. Everything comes from the festival's information page and its 2027 Sunday ticket terms, both read in full again on 5 November 2026. If you don't live in Mendip and Central Somerset, the Sunday ticket isn't a route for you: see [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) instead.",
       { h2: "The 2027 Sunday ticket in one table" },
       { table: {
         head: ["Question", "2027 answer"],
         rows: [
-          ["Who can buy one?", "People based in Mendip and Central Somerset full time, and registered there"],
+          ["Who can buy one?", "Full time, permanent residents registered within the Mendip and Central Somerset area at the time of booking"],
           ["When was the sale?", "{{fact:sundaySale}}, on glastonbury.seetickets.com"],
           ["What does it cost?", "{{fact:sundayPrice}} per person, plus {{fact:postage}} postage and packing per order"],
           ["What's included?", "Entry on Sunday 27 June 2027, and the bus to and from the site from one of eight local towns"],
@@ -1755,7 +1755,7 @@ export const GUIDES = [
       } },
       { h2: "Who can buy one" },
       "The festival says Sunday tickets are available exclusively to Mendip and Central Somerset residents. That's a wider area than the one for local full weekend tickets: the festival gives **Bruton, Frome and Radstock** as examples of towns outside the list for full weekend tickets whose residents can still buy Sunday tickets, because they may still be inconvenienced by the festival.",
-      "Everyone in a booking had to be registered at an address there when it was made, and the festival may ask for evidence of where each person lives, and cancel a booking that can't show it: those checks are explained in [Glastonbury local resident tickets](/guides/glastonbury-local-resident-tickets/), which also covers the full weekend tickets sold earlier the same morning.",
+      "The festival may ask for evidence of where each person lives, and cancel a booking that can't show it: those checks are explained in [Glastonbury local resident tickets](/guides/glastonbury-local-resident-tickets/), which also covers the full weekend tickets sold earlier the same morning.",
       "The festival pitches the Sunday ticket at local people who can't go for the whole event, or who didn't manage to buy a full weekend ticket.",
       { h2: "Registration" },
       "Every person aged 13 or over who wants a Sunday ticket must have their **own valid registration number**, and each ticket shows the holder's registered photo. Registration closed on 25 September 2026, so anyone 13 or over without a registration by then had no way into a 1 November booking. How registration works is in [how to register for Glastonbury](/guides/how-glastonbury-registration-works/).",
