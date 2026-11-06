@@ -20,6 +20,7 @@ permissions:
   actions: write
   checks: read
   statuses: read
+  issues: write # an issue for an agent pull request stuck for hours
 
 concurrency:
   group: seo-agent-merge

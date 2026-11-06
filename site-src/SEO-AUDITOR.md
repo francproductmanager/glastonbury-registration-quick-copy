@@ -95,6 +95,6 @@ After wrong facts and upcoming deadlines, order the backlog by the clicks each i
 
 ### Finish
 
-1. `node scripts/check-personal-data.mjs`, and `npm test` if you can install the browsers (CI runs it anyway).
+1. `node scripts/check-personal-data.mjs`, and `bash scripts/run-tests.sh` (if it can't run, say why; CI runs it anyway).
 2. Branch `seo-audit/<today>`, commit, push, and open a pull request into `main` titled `SEO audit: <today>`, summarising the top three items in plain English for the owner, a product manager.
 3. Don't merge. You may only change `site-src/seo-audit.md` and your own log file, or it won't merge.

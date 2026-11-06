@@ -100,7 +100,7 @@ Fix sources in every guide that cites them, not just the guides your backlog ite
 2. `node scripts/check-sources.mjs --slug <every guide your pull request changes or adds>`: nothing may be DEAD or MOVED (**Dead sources**, above).
 3. `node site-src/build.mjs`
 4. `node scripts/check-personal-data.mjs`
-5. `npm ci && npx playwright install --with-deps chromium && npm test`. If the browsers can't be installed, say so in the pull request; CI runs the same tests.
+5. `bash scripts/run-tests.sh`. In the cloud it uses the browser already on the machine, so don't install another or work round a version mismatch yourself. If it still can't run, say why in the pull request; CI runs the same tests.
 6. If nothing changed, stop: no pull request.
 7. Commit and push everything first. Only then (normal or new guide run) open a pull request into `main`: the reviewers start the moment it opens, and again on every push to it. Don't push to an open pull request again in the same run. Title it `SEO writer: <today> am` (or `pm`, or `new guide`) and describe in plain English what changed, the new guide's title if any, and anything you weren't sure about. The description is checked for personal data too.
 8. Don't merge, don't label, don't set statuses, and never post a comment starting `SEO review `.
