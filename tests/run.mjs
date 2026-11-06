@@ -216,6 +216,10 @@ await test("No real registration numbers or postcodes: only approved made-up val
   const n = ["4815", "162", "342"], pc = [["N7", "9AB"], ["SW9", "8JX"], ["EH1", "2NG"]];
   for (const t of [n.join(""), n.join(" "), n.join("-"), n.join("") + "00", `Postcode: ${pc[0].join(" ")}`, pc[0].join("").toLowerCase(), pc[1].join(" "), pc[2].join(" ")]) assert(findPersonalData(t).length, `missed ${t}`);
   for (const t of ["1029384756", "BS1 4DJ", "sw1a1aa", "2026-10-06", "#e3f6eb", "ca-pub-2229524942259780", "1234567", 'href="data:image/svg+xml,%3Csvg viewBox=%220 0 100 100%22%3E"']) eq(findPersonalData(t), [], t);
+  // a short commit ID beside its full ID (as in Dependabot's notes) isn't a postcode; on its own it is still checked
+  const sha = "fc4f4fe398107157069afa954bafa81c0d52a32e";
+  eq(findPersonalData(`<a href="https://github.com/o/r/commit/${sha}"><code>${sha.slice(0, 7)}</code></a>`), [], "commit ID");
+  assert(findPersonalData(sha.slice(0, 7)).length, "missed a short commit ID shaped like a postcode, on its own");
 });
 await test("Fonts are self-hosted and present", () => {
   const css = readFileSync(join(ROOT, "style.css"), "utf8");
