@@ -587,7 +587,10 @@
   function viewCreate() {
     if (draft && draft.edited) { location.replace("#/add"); return null; }
     if (!draft) draft = newDraft();
-    const ta = h("textarea", { class: "import", rows: "6", placeholder: "e.g. Alex 1029384756 BS1 4DJ", spellcheck: "false", autocomplete: "off", maxlength: "6000" });
+    // The empty box shows a made-up chat, so it's clear what to paste and that messy messages are fine
+    const EXAMPLE = ["[03/10, 18:07] Alex: Alex 1029384756 BS1 4DJ", "[03/10, 18:09] Sam: here's mine! Sam 5647382910 BS1 4DJ", "[03/10, 18:12] Jo: Jo Clarke",
+      "[03/10, 18:12] Jo: 3141592653", "[03/10, 18:12] Jo: M4 1HN", "[03/10, 18:15] Priya: thanks all, can't wait"].join("\n");
+    const ta = h("textarea", { class: "import", rows: "6", placeholder: EXAMPLE, spellcheck: "false", autocomplete: "off", maxlength: "6000" });
     ta.value = draft.text;
     const review = h("button", { type: "button", class: "btn btn-primary" }, "Review details");
     const hint = h("p", { class: "help hint", role: "status" });
@@ -611,7 +614,7 @@
       back("#/", "Back"),
       h("h1", null, "Add your group's details"),
       h("label", { class: "import-label" }, "Paste your group chat messages", ta),
-      h("p", { class: "help" }, "Paste messages to fill in details faster. You can check and edit everything next."),
+      h("p", { class: "help" }, "Copy the messages where friends sent their details, like the example above, and paste them in. Messy is fine. You can check and edit everything next."),
       hint,
       review,
       manual);
