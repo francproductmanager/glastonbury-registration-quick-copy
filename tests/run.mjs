@@ -216,6 +216,10 @@ await test("No real registration numbers or postcodes: only approved made-up val
   const n = ["4815", "162", "342"], pc = [["N7", "9AB"], ["SW9", "8JX"], ["EH1", "2NG"]];
   for (const t of [n.join(""), n.join(" "), n.join("-"), n.join("") + "00", `Postcode: ${pc[0].join(" ")}`, pc[0].join("").toLowerCase(), pc[1].join(" "), pc[2].join(" ")]) assert(findPersonalData(t).length, `missed ${t}`);
   for (const t of ["1029384756", "BS1 4DJ", "sw1a1aa", "2026-10-06", "#e3f6eb", "ca-pub-2229524942259780", "1234567", 'href="data:image/svg+xml,%3Csvg viewBox=%220 0 100 100%22%3E"']) eq(findPersonalData(t), [], t);
+  // a short commit ID beside its full ID (as in Dependabot's notes) isn't a postcode; on its own it is still checked
+  const sha = "fc4f4fe398107157069afa954bafa81c0d52a32e";
+  eq(findPersonalData(`<a href="https://github.com/o/r/commit/${sha}"><code>${sha.slice(0, 7)}</code></a>`), [], "commit ID");
+  assert(findPersonalData(sha.slice(0, 7)).length, "missed a short commit ID shaped like a postcode, on its own");
 });
 await test("Fonts are self-hosted and present", () => {
   const css = readFileSync(join(ROOT, "style.css"), "utf8");
@@ -415,13 +419,56 @@ await test("Every guide targets its own search phrase; guides added since launch
     assert(words >= 900, `${g.slug} is a new guide with only ${words} words`);
   }
 });
-await test("Guides added since launch aren't near copies of another guide", async () => {
+// Pairs that were already over the limit when it became 0.3 (31 October 2026). They may stay over it until they're
+// merged or rewritten to answer clearly different questions; a line can go once its pair is under the limit.
+// Only the owner adds to or removes from this list: nothing new is ever added to get round the check.
+const OVERLAP_WAITING = [
+  ["glastonbury-local-resident-tickets", "glastonbury-sunday-tickets"],          // 0.47
+  ["collect-registration-numbers-from-whatsapp", "how-to-use-glasto-quick-copy"], // 0.45
+  ["glastonbury-2027-key-dates", "next-glastonbury-ticket-sale"],                // 0.43
+  ["how-to-get-glastonbury-tickets", "how-the-ticket-queue-works"],              // 0.38
+  ["other-ways-to-get-to-glastonbury", "glastonbury-volunteering-2027"],         // 0.37
+  ["first-time-glastonbury-ticket-day", "how-the-ticket-queue-works"],           // 0.35
+  ["glastonbury-2027-campervans-and-camping", "glastonbury-car-parking"],        // 0.34
+  ["how-glastonbury-registration-works", "glastonbury-registration-number-lookup"], // 0.32
+  ["glastonbury-ticket-glossary", "glastonbury-access-requirements"],            // 0.32
+];
+await test("No two live guides are near copies of each other, apart from the pairs waiting to be merged", async () => {
   const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
-  const { closestToGuide, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  const { allPairs, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  const waiting = new Set(OVERLAP_WAITING.flatMap(([a, b]) => [`${a} ${b}`, `${b} ${a}`]));
+  for (const { a, b, score } of allPairs(GUIDES)) {
+    if (score < BANDS.text.high || waiting.has(`${a} ${b}`)) continue;
+    assert(false, `${a} and ${b} overlap (similarity ${score.toFixed(2)}, the limit is ${BANDS.text.high}): merge them, or cut what one repeats from the other`);
+  }
+});
+// Neighbouring guides (similarity "check" or above) go live at least 15 days apart, so two near neighbours
+// don't arrive together and compete. The rule started on 30 October 2026; pairs from before then stay.
+const NEIGHBOUR_GAP_DAYS = 15, NEIGHBOUR_RULE_FROM = "2026-10-30";
+await test("Every live guide has a published date; neighbouring guides go live at least 15 days apart", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const { allPairs, BANDS } = await import(join(ROOT, "scripts", "guide-similarity.mjs"));
+  const published = new Map();
   for (const g of GUIDES) {
-    if (FIRST_GUIDES.includes(g.slug) || g.draft) continue;
-    const [top] = closestToGuide(g.slug);
-    assert(top.score < BANDS.text.high, `${g.slug} overlaps ${top.slug} (similarity ${top.score.toFixed(2)}): add to that guide instead`);
+    if (g.draft) continue;
+    assert(/^\d{4}-\d{2}-\d{2}$/.test(g.published || "") && !isNaN(Date.parse(g.published)), `${g.slug}: needs published: "YYYY-MM-DD", the day it first went live`);
+    published.set(g.slug, g.published);
+  }
+  for (const { a, b, score } of allPairs(GUIDES)) {
+    if (score < BANDS.text.check) continue;
+    const [first, second] = [published.get(a), published.get(b)].sort();
+    if (second < NEIGHBOUR_RULE_FROM) continue;
+    const days = (Date.parse(second) - Date.parse(first)) / (24 * 60 * 60 * 1000);
+    assert(days >= NEIGHBOUR_GAP_DAYS, `${a} and ${b} are neighbours (similarity ${score.toFixed(2)}) published ${days} days apart: the later one waits until ${NEIGHBOUR_GAP_DAYS} days after the earlier`);
+  }
+});
+await test("New guides go live only in their random slots: no more on a day than it has slots (20 a month)", async () => {
+  const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
+  const { START, slotsOn } = await import(join(ROOT, "scripts", "new-guide-slots.mjs"));
+  const perDay = new Map();
+  for (const g of GUIDES) if (!g.draft && g.published >= START) perDay.set(g.published, [...(perDay.get(g.published) || []), g.slug]);
+  for (const [date, slugs] of perDay) {
+    assert(slugs.length <= slotsOn(date), `${slugs.join(", ")} published on ${date}, which has ${slotsOn(date)} new guide slot(s) (node scripts/new-guide-slots.mjs --list)`);
   }
 });
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
