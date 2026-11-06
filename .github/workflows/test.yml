@@ -15,7 +15,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-24.04 # Playwright 1.56 has no browsers for the newer image ubuntu-latest points to
-    timeout-minutes: 10
+    timeout-minutes: 20 # a slow package mirror once made the browser download alone take 9.5 minutes
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

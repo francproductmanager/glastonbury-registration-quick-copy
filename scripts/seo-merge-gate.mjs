@@ -10,6 +10,10 @@
 //     the reviewers' own cloud environment holds: every agent acts on GitHub as the owner, so this is what
 //     stops the writer recording a pass for its own work
 //   it is up to date with main; if not, the gate merges main in and reruns the tests
+// A test run that was stopped before it finished (its time limit hit while a download crawled, or GitHub cancelled
+// it) says nothing about the change, so the gate starts it again, up to RERUNS times, instead of leaving it stuck.
+// On the sweep it also opens an issue for any agent pull request open longer than STUCK_HOURS, saying why it
+// hasn't gone live, and closes that issue once the pull request is merged or closed.
 // When all that's missing is tests it started or approved itself, it waits for them (up to WAIT_MINUTES) and
 // checks again in the same run, because tests started by a workflow don't send the signal that would wake it.
 // It never merges a writer branch opened by GitHub Actions: that is the monthly reviewer canary.
@@ -38,6 +42,10 @@ class Wait extends Stop {}
 const wait = (why) => { throw new Wait(why); };
 const WAIT_MINUTES = 12;
 const FIX_LABEL = "seo-fix-needed";
+const RERUNS = 2;
+const STOPPED = ["cancelled", "timed_out"];
+const STUCK_HOURS = 12;
+const STUCK_TITLE = "SEO agent pull request stuck: #";
 
 const BOT = "github-actions[bot]";
 const GENERATED = "(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\\.html|sitemap\\.xml|robots\\.txt";
@@ -64,7 +72,19 @@ function gate(pr) {
 
   const checks = api(`${R}/commits/${head}/check-runs?check_name=test`).check_runs;
   if (!checks.length || checks.some((c) => c.status !== "completed")) wait(`the tests are still running on ${head}`);
-  if (!checks.every((c) => c.conclusion === "success")) stop(`the test check hasn't passed on ${head}`);
+  if (!checks.every((c) => c.conclusion === "success")) {
+    const stopped = checks.filter((c) => STOPPED.includes(c.conclusion));
+    const ids = [...new Set(stopped.map((c) => c.details_url?.match(/\/actions\/runs\/(\d+)/)?.[1]))];
+    if (stopped.length && checks.every((c) => c.conclusion === "success" || STOPPED.includes(c.conclusion)) && ids.every(Boolean)) {
+      const runs = ids.map((id) => api(`${R}/actions/runs/${id}`));
+      if (runs.every((r) => r.run_attempt <= RERUNS)) {
+        for (const r of runs) run("gh", ["api", "-X", "POST", `${R}/actions/runs/${r.id}/rerun`]);
+        wait(`the tests were stopped before finishing on ${head}; started them again`);
+      }
+      stop(`the tests were stopped before finishing on ${head}, ${RERUNS + 1} times; they need a look`);
+    }
+    stop(`the test check hasn't passed on ${head}`);
+  }
 
   const files = all(`${R}/pulls/${n}/files?per_page=100`);
   const outside = files.map((f) => f.filename).filter((f) => !role.allowed.test(f));
@@ -141,12 +161,35 @@ if (!prs.length) console.log("No agent pull request to check");
 const testsSettled = (sha) => api(`${R}/actions/runs?head_sha=${sha}&per_page=50`).workflow_runs
   .filter((r) => r.name === "Tests").every((r) => r.status === "completed");
 const deadline = Date.now() + WAIT_MINUTES * 60_000;
+const sweep = !process.env.SHA;
+const stuckIssues = sweep ? all(`${R}/issues?state=open&creator=github-actions%5Bbot%5D&per_page=100`)
+  .filter((i) => !i.pull_request && i.title.startsWith(STUCK_TITLE)) : [];
+// On the sweep: an agent pull request open for more than STUCK_HOURS gets one issue, so a stuck one doesn't sit
+// unnoticed (the writer starts nothing new while its pull request is open). The monthly canary is left out
+function noteIfStuck(pr, why) {
+  const hours = Math.floor((Date.now() - Date.parse(pr.created_at)) / 36e5);
+  if (pr.state !== "open" || hours < STUCK_HOURS || (pr.user.login === BOT && pr.head.ref.startsWith("seo-agent/"))) return;
+  if (stuckIssues.some((i) => i.title === `${STUCK_TITLE}${pr.number}`)) return;
+  const body = [
+    `#${pr.number} (\`${pr.head.ref}\`) has been open for ${hours} hours without going live. The merge gate's last check said: ${why}`,
+    "",
+    "What usually helps:",
+    "- Tests stopped or failed: open the pull request, go to its Checks tab and click Re-run jobs.",
+    "- Waiting for a reviewer pass: check the reviewer routines ran, at https://claude.ai/code/routines.",
+    "- Reviewers failed it: the writer's fix run should pick it up; if it hasn't, check that routine ran.",
+    "",
+    "While a writer pull request is open the writer starts no new work. This issue closes itself within a few hours of the pull request being merged or closed.",
+  ].join("\n");
+  run("gh", ["api", `${R}/issues`, "-f", `title=${STUCK_TITLE}${pr.number}`, "-f", `body=${body}`]);
+}
 for (let pr of prs) {
+  let why = "";
   for (;;) {
-    try { console.log(`#${pr.number}: ${gate(pr)}`); break; }
+    try { console.log(`#${pr.number}: ${gate(pr)}`); pr = { ...pr, state: "merged" }; break; }
     catch (e) {
       if (!(e instanceof Stop)) throw e;
       console.log(`#${pr.number}: ${e.message}`);
+      why = e.message;
       if (!(e instanceof Wait)) break;
       // Give new or approved runs time to appear, then wait for every test run on the head to finish
       run("sleep", ["20"]);
@@ -157,4 +200,12 @@ for (let pr of prs) {
       if (pr.state !== "open") break;
     }
   }
+  if (sweep) noteIfStuck(pr, why);
+}
+// Close stuck issues whose pull request has since been merged or closed
+for (const i of stuckIssues) {
+  const n = Number(i.title.slice(STUCK_TITLE.length));
+  if (api(`${R}/pulls/${n}`).state === "open") continue;
+  run("gh", ["api", "-X", "POST", `${R}/issues/${i.number}/comments`, "-f", `body=#${n} is no longer open, so this is done.`]);
+  run("gh", ["api", "-X", "PATCH", `${R}/issues/${i.number}`, "-f", "state=closed", "-f", "state_reason=completed"]);
 }

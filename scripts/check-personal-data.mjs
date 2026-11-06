@@ -35,7 +35,12 @@ const POSTCODE = /(?<![0-9A-Za-z])([A-Za-z]{1,2}\d[A-Za-z\d]?) ?(\d[A-Za-z]{2})(
 
 // Returns the values in `text` that look like reg numbers or postcodes and aren't approved
 export function findPersonalData(text) {
+  // Git commit IDs, which Dependabot's release notes are full of. A short ID can have the shape of a postcode
+  // (letters, digits, letters), so one is skipped only when a full 40 character ID in the same text starts with it, as Dependabot
+  // always prints them: a short ID on its own is still checked
+  const shas = String(text).match(/\b[0-9a-f]{40}\b/g) || [];
   const clean = String(text)
+    .replace(/\b[0-9a-f]{7,40}\b/g, (h) => shas.some((s) => s.startsWith(h)) ? " " : h)
     .replace(/data:[^"')]+/g, " ")              // inline images (the favicon's viewBox digits)
     .replace(/\b\d{4}-\d{2}-\d{2}\b/g, " ")   // ISO dates
     .replace(/;VALUE=DATE:\d{8}\b/g, " ")       // all-day dates in calendar files
