@@ -922,7 +922,7 @@ export const GUIDES = [
         ],
       } },
       { h2: "What the queue looks like" },
-      "Mostly, nothing happens, sometimes for a long time. What each screen means, and what to do if one looks wrong, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
+      "Mostly, nothing happens, sometimes for a long time. That's normal: don't refresh or open extra tabs or devices, as the festival says that will lose you your place. What each screen means, and what to do if one looks wrong, is in [how the queue works](/guides/how-the-ticket-queue-works/).",
       { h2: "What happens at the front" },
       "If you get through, the booking page opens and a timer starts. You enter your own details and each friend's registration number and postcode, check that the names shown are the people you expect, then pay a deposit for each ticket: **{{fact:deposit}} per ticket** for 2027. Tickets aren't yours until the payment has gone through.",
       "When the confirmation page appears, screenshot it and tell your group straight away, so nobody else books the same people. The timers, the cards that work and what to do if something fails are all in [the checkout guide](/guides/paying-for-glastonbury-tickets/).",
@@ -960,7 +960,7 @@ export const GUIDES = [
       "Three things make the replies much easier to use:",
       { ul: [
         "**A name in every message.** WhatsApp shows who sent a message, but a name written in the message itself is what lets one person send details for a partner or a teenager.",
-        "**Text, not a screenshot.** A photo of an email has to be typed out by hand. Ask people to copy and paste their number from the confirmation email.",
+        "**Text, not a screenshot.** Glasto Quick Copy reads text, not pictures, so a screenshot of an email can't be pasted in. Ask people to copy and paste their number from the confirmation email.",
         "**The registered postcode.** Ask for \"the postcode on your registration\", not \"your postcode\". Students and people who've moved are the usual mix-ups.",
       ] },
       "For more messages like this one, see [messages to send your Glastonbury group](/guides/group-chat-messages/).",
@@ -978,8 +978,7 @@ export const GUIDES = [
       "Once you have the replies, paste them into Glasto Quick Copy. What it picks out, how to check the list and how to share the page with your group are all in [how to use Glasto Quick Copy](/guides/how-to-use-glasto-quick-copy/).",
       "Before you share the page, check the things no app can: that each person's photo was **accepted**, not just submitted, and that the number is from their most recent confirmation email. See [how registration works](/guides/how-glastonbury-registration-works/) for a five minute check.",
       { h2: "Keeping the numbers private" },
-      { ul: [
-        "**Ask in your own group chat**, not in a big community group or a public post. Registration numbers and postcodes are what someone needs to book in your name.",      ] },
+      "Ask in your own group chat, not in a big community group or a public post. Registration numbers and postcodes are what someone needs to book in your name.",
       "What Glasto Quick Copy keeps and who can see a shared group is in [how to use Glasto Quick Copy](/guides/how-to-use-glasto-quick-copy/).",
       { h2: "Not using WhatsApp?" },
       "Glasto Quick Copy reads plain text, so details from another messaging app, an email or a notes app usually work too, as long as each person's name, number and postcode are together. If your group sends everything in a different way, you can type the details in instead.",
@@ -999,7 +998,7 @@ export const GUIDES = [
     body: [
       "There's no trick that gets you to the front of the Glastonbury queue. Demand is far higher than the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked. If it's your first time, [what ticket morning is like](/guides/first-time-glastonbury-ticket-day/) walks through it step by step.",
       { h2: "What changed in 2027" },
-      "Since the 2027 sales, each registration gets one place in the queue. Time Out said that made the sale a lot fairer, with no more multiple tabs, but that the \"syndicate method\" may be far less successful. How that works, and what each queue screen means, is in [how the queue works](/guides/how-the-ticket-queue-works/). This guide is about what your group should decide because of it.",
+      "Since the 2027 sales, each registration gets one place in the queue. Time Out said that made the sale a lot fairer, with no more multiple tabs. How that works, and what each queue screen means, is in [how the queue works](/guides/how-the-ticket-queue-works/). This guide is about what your group should decide because of it.",
       { h2: "The one thing that really raises your odds" },
       "If each registration gets one place, then the number of chances your group has is simply **the number of people with their own registration who queue**. Six friends queueing on one device each have six places. One person with six devices has one.",
       "Whoever gets through first can book up to six people, so every extra person queueing is an extra chance for the whole group, not just for themselves. That changes what's worth doing weeks before the sale:",
