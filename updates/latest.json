@@ -1,6 +1,14 @@
 {
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "items": [
+  {
+   "date": "2026-11-10",
+   "tag": "New",
+   "title": "Are there Glastonbury VIP tickets? Hospitality and backstage explained",
+   "summary": "There are no VIP or backstage tickets for Glastonbury. What hospitality tickets really are, who can buy them, and how to spot a fake VIP or concierge offer.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-vip-tickets/"
+  },
   {
    "date": "2026-11-09",
    "tag": "Updated",
@@ -48,14 +56,6 @@
    "summary": "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
    "topic": "On ticket day",
    "href": "/guides/how-to-get-glastonbury-tickets/"
-  },
-  {
-   "date": "2026-11-07",
-   "tag": "Updated",
-   "title": "Collecting your group's registration numbers from WhatsApp",
-   "summary": "How to ask your group for registration numbers and postcodes so the replies are easy to use, and how to get them out of a WhatsApp chat on iPhone and Android.",
-   "topic": "Before the sale",
-   "href": "/guides/collect-registration-numbers-from-whatsapp/"
   }
  ],
  "dates": [
