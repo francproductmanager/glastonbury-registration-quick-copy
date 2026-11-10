@@ -1,6 +1,6 @@
 name: Merge SEO agent pull requests
 
-# The only thing that publishes the SEO agents' work (see site-src/SEO-AUDITOR.md). The rules are in
+# The only thing that publishes the SEO agents' work (see site-src/SEO-AUDITOR.md), and Dependabot's minor tool updates. The rules are in
 # scripts/seo-merge-gate.mjs, always run from main so no agent can change them.
 # Kill switch: does nothing unless the repo variable AUTOMERGE_ENABLED is "true".
 on:

@@ -1,5 +1,6 @@
 // The SEO agents' merge gate (see site-src/SEO-AUDITOR.md). Run by .github/workflows/seo-agent-merge.yml
-// from main, so no agent can change it. It is the only thing that publishes agent work, and only when:
+// from main, so no agent can change it. It is the only thing that publishes agent work, and it also merges
+// Dependabot's weekly tool updates (see "Dependabot updates" below). It merges only when:
 //   the pull request comes from this repo, on an agent branch, by the expected author, and isn't a draft
 //   the test check passed on its exact head commit
 //   it only changes files that agent may touch
@@ -17,16 +18,21 @@
 // When all that's missing is tests it started or approved itself, it waits for them (up to WAIT_MINUTES) and
 // checks again in the same run, because tests started by a workflow don't send the signal that would wake it.
 // It never merges a writer branch opened by GitHub Actions: that is the monthly reviewer canary.
+// Dependabot updates: merged like agent work once the tests pass, if every commit is Dependabot's own (or this
+// gate's merges of main), the change is a minor or patch version (a major one can break things, so it waits for
+// the owner), package.json only changes version numbers and workflow files only change the pinned action. GitHub
+// doesn't let a workflow merge changes to workflow files, so those wait for the owner's click, with a comment.
 // With SHA set it checks the pull request at that commit; without, it sweeps every open agent pull
 // request (hourly, as a backup).
 import { execFileSync } from "node:child_process";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 const REPO = process.env.REPO, R = `repos/${REPO}`;
+// Runs started by a Dependabot test run get no secrets, so the key is only required where a review is checked
 const SIGNED = process.env.REQUIRE_SIGNED_REVIEWS === "true", KEY = process.env.REVIEW_SIGNING_KEY || "";
-if (SIGNED && !KEY) throw new Error("REQUIRE_SIGNED_REVIEWS is on but the REVIEW_SIGNING_KEY secret is missing");
 // A reviewer signs "<context>:<commit sha>:<state>" and puts sig=<hex> in the status description
 const signedBy = (s, sha) => {
+  if (!KEY) throw new Error("REQUIRE_SIGNED_REVIEWS is on but the REVIEW_SIGNING_KEY secret is missing");
   const sig = (s.description || "").match(/sig=([0-9a-f]{64})/)?.[1];
   if (!sig) return false;
   const want = createHmac("sha256", KEY).update(`${s.context}:${sha}:${s.state}`).digest();
@@ -45,15 +51,52 @@ const FIX_LABEL = "seo-fix-needed";
 const RERUNS = 2;
 const STOPPED = ["cancelled", "timed_out"];
 const STUCK_HOURS = 12;
-const STUCK_TITLE = "SEO agent pull request stuck: #";
+const STUCK_TITLE = "Pull request stuck: #"; // none was open under the old title, "SEO agent pull request stuck: #"
 
 const BOT = "github-actions[bot]";
+const DEPENDABOT = "dependabot[bot]";
 const GENERATED = "(guides|faq|about|contact|privacy|terms|updates|calendar|downloads)/.+|404\\.html|sitemap\\.xml|robots\\.txt";
 const ROLES = {
   "seo-agent/": { author: "agent", reviewed: true, allowed: new RegExp(`^(site-src/(content|facts)\\.mjs|site-src/link-domains\\.txt|site-src/log/\\d{4}-\\d\\d-\\d\\d-writer[0-9a-z-]*\\.md|${GENERATED})$`) },
   "seo-audit/": { author: "agent", allowed: /^(site-src\/seo-audit\.md|site-src\/log\/\d{4}-\d\d-\d\d-(auditor|regression)\.md)$/ },
   "seo-data/": { author: BOT, allowed: /^site-src\/data\/.+$/ },
+  "dependabot/": { author: DEPENDABOT, allowed: /^(package\.json|package-lock\.json|\.github\/workflows\/[\w-]+\.yml)$/ },
 };
+
+// Leaves a comment starting "Not merged automatically" on a pull request, once
+function sayOnce(n, text) {
+  const said = api(`${R}/issues/${n}/comments?per_page=100`).some((c) => c.user.login === BOT && c.body.startsWith("Not merged automatically"));
+  if (!said) run("gh", ["api", `${R}/issues/${n}/comments`, "-f", `body=Not merged automatically: ${text}`]);
+}
+// GitHub refuses a workflow's push or merge that changes workflow files
+const workflowRefused = (e) => /workflow/i.test(`${e.stdout}${e.stderr}`);
+const HAND = "it changes a GitHub workflow file, and GitHub doesn't let the merge gate merge those. The tests passed, so it's safe to click Merge (or close it if you don't want this update).";
+
+// Dependabot's own checks: who made the commits, how big the version jump is, and what changed
+function checkDependabot(pr, files) {
+  const n = pr.number;
+  for (const c of all(`${R}/pulls/${n}/commits?per_page=100`)) {
+    const gateMerge = c.parents.length === 2 && c.author?.login === BOT && c.commit.message.startsWith("Merge branch 'main' into ");
+    if (!gateMerge && !(c.author?.login === DEPENDABOT && c.commit.verification?.verified)) stop(`commit ${c.sha} isn't Dependabot's own; never merged`);
+  }
+  const m = pr.title.match(/^Bump (\S+) from v?(\d+)\.(\d+)\S* to v?(\d+)\.(\d+)\S*$/);
+  if (!m) stop("not a single version update; never merged automatically");
+  const [, name, fromMajor, fromMinor, toMajor, toMinor] = m;
+  // Before 1.0, a minor version can break things just like a major one
+  if (fromMajor !== toMajor || (fromMajor === "0" && fromMinor !== toMinor)) {
+    sayOnce(n, `${name} moves to a new major version, which can break things. Please check the tests passed and merge it by hand, or close it.`);
+    stop(`a major version update of ${name}; waits for the owner`);
+  }
+  const changed = (f) => (f.patch || "").split("\n").filter((l) => /^[+-]/.test(l));
+  for (const f of files) {
+    if (f.filename === "package-lock.json") continue;
+    // Only "name": "version" lines (package.json) or pinned "uses:" lines (workflows), each swapped one for one
+    const line = f.filename === "package.json" ? /^[+-]\s*"([^"]+)":\s*"[\w.^~-]+",?\s*$/ : /^[+-]\s*(?:- )?uses:\s*([\w./-]+)@[0-9a-f]{40}(?:\s*#\s*v?[\w.-]+)?\s*$/;
+    const lines = changed(f), keys = (sign) => lines.filter((l) => l[0] === sign).map((l) => l.match(line)?.[1]);
+    const removed = keys("-"), added = keys("+");
+    if (!lines.length || lines.some((l) => !line.test(l)) || removed.join() !== added.join()) stop(`${f.filename} changes more than a version number; never merged automatically`);
+  }
+}
 
 function gate(pr) {
   const n = pr.number, branch = pr.head.ref, head = pr.head.sha, author = pr.user.login;
@@ -62,6 +105,7 @@ function gate(pr) {
   const role = ROLES[prefix];
   if (pr.head.repo?.full_name !== REPO) stop("from a fork, never merged");
   if ((author === BOT) !== (role.author === BOT)) stop(`opened by ${author}, never merged (a canary, or not the expected agent)`);
+  if ((author === DEPENDABOT) !== (role.author === DEPENDABOT)) stop(`opened by ${author} on ${branch}, never merged`);
   if (pr.draft) stop("still a draft");
   // GitHub holds test runs for approval on pull requests GitHub Actions opened (the search data), and on any
   // pull request once this gate has pushed a merge of main into it. A held run blocks the merge even after the
@@ -89,10 +133,10 @@ function gate(pr) {
   const files = all(`${R}/pulls/${n}/files?per_page=100`);
   const outside = files.map((f) => f.filename).filter((f) => !role.allowed.test(f));
   if (outside.length) {
-    const said = api(`${R}/issues/${n}/comments?per_page=100`).some((c) => c.user.login === BOT && c.body.startsWith("Not merged automatically"));
-    if (!said) run("gh", ["api", `${R}/issues/${n}/comments`, "-f", "body=Not merged automatically: this changes files outside what the agent may touch. Please review it by hand."]);
+    sayOnce(n, "this changes files outside what the agent may touch. Please review it by hand.");
     stop(`changes files this agent may not touch:\n${outside.join("\n")}`);
   }
+  if (role.author === DEPENDABOT) checkDependabot(pr, files);
 
   if (role.reviewed) {
     // The reviewed commit is the newest one that isn't this gate's own "merge main in" commit
@@ -136,7 +180,8 @@ function gate(pr) {
 
   // Publish only what was tested against the current main
   if (api(`${R}/compare/main...${head}`).behind_by > 0) {
-    run("gh", ["api", "-X", "PUT", `${R}/pulls/${n}/update-branch`, "-f", `expected_head_sha=${head}`]);
+    try { run("gh", ["api", "-X", "PUT", `${R}/pulls/${n}/update-branch`, "-f", `expected_head_sha=${head}`]); }
+    catch (e) { if (workflowRefused(e)) { sayOnce(n, HAND); stop("changes a workflow file; waits for the owner's click"); } throw e; }
     for (let t = 0; t < 30 && api(`${R}/pulls/${n}`).head.sha === head; t++) run("sleep", ["4"]);
     // Pushes made by this workflow don't start other workflows, so start the tests directly
     run("gh", ["workflow", "run", "test.yml", "--repo", REPO, "--ref", branch]);
@@ -144,7 +189,11 @@ function gate(pr) {
   }
 
   try { run("gh", ["api", "-X", "PUT", `${R}/pulls/${n}/merge`, "-f", "merge_method=squash", "-f", `sha=${head}`]); }
-  catch (e) { if (/status check/i.test(`${e.stdout}${e.stderr}`)) wait("GitHub is still waiting for the test check"); throw e; }
+  catch (e) {
+    if (/status check/i.test(`${e.stdout}${e.stderr}`)) wait("GitHub is still waiting for the test check");
+    if (workflowRefused(e)) { sayOnce(n, HAND); stop("changes a workflow file; waits for the owner's click"); }
+    throw e;
+  }
   run("gh", ["api", "-X", "DELETE", `${R}/git/refs/heads/${branch}`]);
   return "merged";
 }
@@ -170,7 +219,11 @@ function noteIfStuck(pr, why) {
   const hours = Math.floor((Date.now() - Date.parse(pr.created_at)) / 36e5);
   if (pr.state !== "open" || hours < STUCK_HOURS || (pr.user.login === BOT && pr.head.ref.startsWith("seo-agent/"))) return;
   if (stuckIssues.some((i) => i.title === `${STUCK_TITLE}${pr.number}`)) return;
-  const body = [
+  const body = pr.head.ref.startsWith("dependabot/") ? [
+    `#${pr.number} (a Dependabot update: ${pr.title}) has been open for ${hours} hours without going live. The merge gate's last check said: ${why}`,
+    "",
+    "If the pull request has a comment saying it needs you, open it, check the tests passed and click Merge, or close it if you don't want the update. This issue closes itself within a few hours of the pull request being merged or closed.",
+  ].join("\n") : [
     `#${pr.number} (\`${pr.head.ref}\`) has been open for ${hours} hours without going live. The merge gate's last check said: ${why}`,
     "",
     "What usually helps:",
