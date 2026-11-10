@@ -180,9 +180,9 @@ export const GUIDES = [
     title: "How fast Glastonbury tickets sell out: recent sales compared",
     seoTitle: "Glastonbury sell out times: 2027 sold out in 42 minutes",
     summary: "Glastonbury 2027 tickets sold out in about 42 minutes and coach packages in under 30. Sell-out times, prices and deposits for recent sales and resales compared.",
-    updated: "30 October 2026", isoDate: "2026-10-30",
+    updated: "10 November 2026", isoDate: "2026-11-10",
     body: [
-      "Every Glastonbury sale in recent years has sold out in under an hour. Looking at the last few side by side shows how quickly things move, how the price has changed, and why the minutes straight after you get through the queue matter so much.",
+      "Glastonbury 2027 general admission tickets sold out in about **42 minutes** on Sunday 4 October 2026, NME reported, after the ticket and coach packages sold out in **under 30 minutes** on Thursday 1 October. Every Glastonbury sale in recent years has sold out in under an hour. Looking at the last few side by side shows how quickly things move, how the price has changed, and why the minutes straight after you get through the queue matter so much.",
       { h2: "General admission sales" },
       { table: {
         head: ["Festival", "Sale", "Ticket price", "Deposit", "Sold out in"],
@@ -310,7 +310,7 @@ export const GUIDES = [
         "**2023 to 2027:** with the booking fee included each time, from £340 to £360 to £378.50 to {{fact:ticketPrice}}: rises of about 6%, 5% and 8%.",
       ] },
       "How long each of the recent sales took to sell out, and how the queue has changed, is in [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/).",
-      { h2: "What the price has included" },
+      { h2: "What does a Glastonbury ticket include?" },
       "The festival's 2027 ticket announcement says a ticket includes entry to over 4,000 performances on more than 100 stages, five nights camping with no early entry fees, a free programme, the free mobile app and phone charging, Kidzfield entertainment, rides and activities free of charge, and support for Oxfam, Greenpeace, WaterAid and hundreds of other causes.",
       "The programme has a history of its own. In the 1980s and early 1990s the history pages give it a separate price (50p in 1983, £5 by 1994). From 1997 to 2008 they list it as included in the ticket.",
       "Some things are paid for on top. For 2027 that's postage, a car park pass ({{fact:carParkPass}}), a campervan pitch (£225 standard or £350 large, on the festival's info page) and optional Refund Protection, added when you pay the balance. A full 2027 budget, with a worked example for a group, is in [how much Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
@@ -340,9 +340,10 @@ export const GUIDES = [
     title: "When is the next Glastonbury ticket sale?",
     seoTitle: "Next Glastonbury ticket sale: dates and how to prepare",
     summary: "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
-    updated: "1 November 2026", isoDate: "2026-11-01",
+    updated: "10 November 2026", isoDate: "2026-11-10",
     body: [
-      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. This page focuses on the sales still to come and how to be ready for them, and we update it the day the festival announces anything. The 2027 sale dates so far, including the local and Sunday sales on {{fact:localSaleDate}}, are in [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
+      "The 2027 local and Sunday ticket sale was on **{{fact:localSaleDate}}**, and is over. Who could buy is in [the local guide](/guides/glastonbury-local-resident-tickets/) and [the Sunday guide](/guides/glastonbury-sunday-tickets/).",
+      "For most people, the next chance to buy Glastonbury tickets is the **2027 spring resale**, after the April balance window. After that comes the main sale for **2028**. Neither date has been announced. This page focuses on the sales still to come and how to be ready for them, and we update it the day the festival announces anything. The 2027 sale dates so far are in [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
       { h2: "The next sales" },
       { table: {
         head: ["Sale", "When", "Status"],
@@ -401,7 +402,7 @@ export const GUIDES = [
       "For a group, registration is where most ticket day problems actually start. Someone registered years ago with an old email, someone's photo was rejected and they never noticed, someone moved house. This guide covers how registration works and how to check your whole group is ready, well before the sale.",
       { h2: "When does registration reopen?" },
       "Registration is paused around each sale. For 2027, it closed at **5pm on Friday 25 September 2026**, and the festival said it would not reopen until after the October ticket sales. It was also suspended before and during the sale for local residents on {{fact:localSaleDate}}, and the festival says it **will reopen later in the autumn**. The exact date hasn't been announced yet. We add it to [the 2027 key dates](/guides/glastonbury-2027-key-dates/) as soon as it is.",
-      "If you already have a registration, you don't need a new one for the resale or for the next festival: it carries over. You only need to check that the photo still looks like you and that the details are right while registration is open.",
+      "If you already have a registration, you don't need a new one for the resale or for the next festival: it carries over. You only need to check that the photo still looks like you and that the details are right while registration is open: see [how to check your Glastonbury registration](/guides/glastonbury-registration-number-lookup/#how-to-check-your-glastonbury-registration).",
       { h2: "Who needs to register" },
       "Everyone who will be **13 or over on the day the gates open** needs a ticket, and so needs to be registered. Children aged 12 and under don't need a ticket and don't register.",
       "Watch the birthday rule if you have teenagers in the group: it's their age on the day the gates open that counts, not their age on ticket day. A 12 year old who turns 13 before the festival needs registering.",
@@ -464,7 +465,8 @@ export const GUIDES = [
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Your registration number is in the email See Tickets sent when your photo was accepted. If you can't find that email, you don't need to register again: the official **registration lookup** sends your number back to you. This page covers finding it, checking a friend's, and changing the details on your registration.",
-      { h2: "Find your number with the lookup" },
+      { h2: "How to check your Glastonbury registration" },
+      "Checking your registration and finding a lost number are the same steps. The festival says you look up your registration using the email address you registered with.",
       { ol: [
         "Go to the **registration lookup** on glastonbury.seetickets.com. Start from the festival's own website if you want to be sure you're in the right place.",
         "Enter the email address you registered with.",
@@ -1173,7 +1175,7 @@ export const GUIDES = [
         "**You can't control** where you land in the queue, how fast it moves or whether tickets last until you reach the front.",
         "**You can control** whether everyone is registered, whether the details are ready to paste, whether your device stays awake, and whether your group knows who's booking for whom.",
       ] },
-      "Everything in the second list can be done days before. That's where the time is best spent.",
+      "Everything in the second list can be done days before. That's where the time is best spent. Start with [how to check your Glastonbury registration](/guides/glastonbury-registration-number-lookup/#how-to-check-your-glastonbury-registration) for everyone in your group.",
       { h2: "How a group should queue" },
       "Every person in your group who has their own registration can queue on their own device. More people queueing means more chances that someone gets through. The catch is that once someone does, everyone else needs to know.",
       { ol: [
@@ -1567,9 +1569,10 @@ export const GUIDES = [
     title: "Glastonbury deposits and balance payments explained",
     seoTitle: "Glastonbury deposit 2027: {{fact:deposit}} a ticket, balance in April",
     summary: "The 2027 Glastonbury deposit was {{fact:deposit}} a ticket, with the {{fact:balance}} balance due {{fact:balanceWindow}}. A worked example, and what to do if you can't pay or go.",
-    updated: "29 October 2026", isoDate: "2026-10-29",
+    updated: "10 November 2026", isoDate: "2026-11-10",
     body: [
       "Glastonbury general admission tickets are bought in two parts: a deposit when you book, and the balance in the spring. This spreads the cost, but it also means there's a deadline to remember, and in a group, money to sort out between friends.",
+      "**Do you get your deposit back?** For 2027, most of it, if you act in time. A deposit whose balance isn't paid by the end of the balance window is refunded automatically to the card it was booked on, with a {{fact:refundFee}} administration charge kept. If you can't go, ask See Tickets for a refund before 11.59pm on {{fact:refundDeadline}}, UK time; {{fact:refundFee}} is kept from every refunded ticket, and after that deadline tickets are non-refundable. The details are below and in [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
       { h2: "The deposit" },
       "When you book, the lead booker pays a deposit for each person in the booking. In the 2027 sale the deposit was **{{fact:deposit}} per ticket**, on a ticket price of {{fact:ticketPrice}} including a £5 booking fee. For ticket and coach packages, the coach fare is added to the deposit. In 2025 the deposit was £75.",
       { h2: "The balance" },
@@ -1709,7 +1712,7 @@ export const GUIDES = [
     summary: "What Glastonbury 2027 really costs: the ticket, deposit and balance, postage, parking and campervan passes, coach packages, and a worked example for four.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
-      "A Glastonbury 2027 ticket costs **{{fact:ticketPrice}}**, but that's not the whole bill. Postage, parking or a coach, and everything you spend getting there and while you're there all add up. This guide sets out the costs the festival has published for 2027, with a worked example for a group, and a list of the rest to budget for yourself. How the ticket price has changed since 1970 is in [Glastonbury ticket prices by year](/guides/glastonbury-ticket-price-history/).",
+      "A Glastonbury 2027 ticket costs **{{fact:ticketPrice}}**, but that's not the whole bill. Postage, parking or a coach, and everything you spend getting there and while you're there all add up. This guide sets out the costs the festival has published for 2027, with a worked example for a group, and a list of the rest to budget for yourself. How the ticket price has changed since 1970 is in [Glastonbury ticket prices by year](/guides/glastonbury-ticket-price-history/), along with [what does a Glastonbury ticket include?](/guides/glastonbury-ticket-price-history/#what-does-a-glastonbury-ticket-include)",
       { h2: "The fixed costs for 2027" },
       { table: {
         head: ["Item", "2027 price", "When you pay"],
@@ -2821,6 +2824,10 @@ export const PAGES = [
       { ul: [
         "**New:** [can you change a Glastonbury booking?](/guides/change-glastonbury-ticket-details/): once you've booked, most details are fixed. How to change your address (with See Tickets, not your registration), what you can add at the balance, and why names, photos and coach bookings can't change.",
         "**New:** [are there Glastonbury VIP tickets?](/guides/glastonbury-vip-tickets/): no, there are no VIP or backstage tickets. What hospitality tickets really are, who can buy them, and how to check a VIP, hospitality or concierge offer against what the festival says.",
+        "**Updated:** [Glastonbury deposits and balance payments](/guides/deposits-and-balance-payments/) now answers at the top whether you get your deposit back: most of it, if the balance isn't paid or you cancel by {{fact:refundDeadline}}, with {{fact:refundFee}} kept per ticket.",
+        "**Updated:** [how fast Glastonbury tickets sell out](/guides/glastonbury-ticket-sale-history/) now starts with the 2027 answer: about 42 minutes for general admission, and under 30 for the ticket and coach packages.",
+        "**Updated:** [when is the next Glastonbury ticket sale?](/guides/next-glastonbury-ticket-sale/) now says the 2027 local and Sunday sale took place on {{fact:localSaleDate}}, with links to the local and Sunday guides.",
+        "**Updated:** [finding or changing your registration](/guides/glastonbury-registration-number-lookup/) now has a section on how to check your Glastonbury registration, and [ticket prices by year](/guides/glastonbury-ticket-price-history/) a heading that answers what a Glastonbury ticket includes.",
       ] },
       { h2: "9 November 2026" },
       { ul: [
