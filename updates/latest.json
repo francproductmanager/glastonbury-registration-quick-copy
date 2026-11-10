@@ -1,6 +1,54 @@
 {
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "items": [
+  {
+   "date": "2026-11-10",
+   "tag": "New",
+   "title": "Can you change a Glastonbury booking? Address, name and photo",
+   "summary": "Once you've booked Glastonbury 2027, most details are fixed. How to change your address, what you can add later, and what can't change at all.",
+   "topic": "After you've booked",
+   "href": "/guides/change-glastonbury-ticket-details/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "New",
+   "title": "Are there Glastonbury VIP tickets? Hospitality and backstage explained",
+   "summary": "There are no VIP or backstage tickets for Glastonbury. What hospitality tickets really are, who can buy them, and how to spot a fake VIP or concierge offer.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-vip-tickets/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "Glastonbury deposits and balance payments explained",
+   "summary": "The 2027 Glastonbury deposit was £100 a ticket, with the £308 balance due 1 to 7 April 2027. A worked example, and what to do if you can't pay or go.",
+   "topic": "After you've booked",
+   "href": "/guides/deposits-and-balance-payments/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "How fast Glastonbury tickets sell out: recent sales compared",
+   "summary": "Glastonbury 2027 tickets sold out in about 42 minutes and coach packages in under 30. Sell-out times, prices and deposits for recent sales and resales compared.",
+   "topic": "Glastonbury 2027: where things stand",
+   "href": "/guides/glastonbury-ticket-sale-history/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "When is the next Glastonbury ticket sale?",
+   "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
+   "topic": "Glastonbury 2027: where things stand",
+   "href": "/guides/next-glastonbury-ticket-sale/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "Lost your Glastonbury registration number? Find or change it",
+   "summary": "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, and how to change your photo, postcode or email.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-registration-number-lookup/"
+  },
   {
    "date": "2026-11-09",
    "tag": "Updated",
@@ -8,54 +56,6 @@
    "summary": "Campervan pitches, Worthy View and tipis at Glastonbury 2027: prices where they're published, who can book, what's included, and when they've gone on sale.",
    "topic": "Coaches, access and families",
    "href": "/guides/glastonbury-2027-campervans-and-camping/"
-  },
-  {
-   "date": "2026-11-09",
-   "tag": "Updated",
-   "title": "Glastonbury coach tickets: how ticket and coach packages work",
-   "summary": "What a ticket and coach package includes, how the coach sale differs from general admission, the rules that catch people out, and coaches without a package.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-coach-tickets/"
-  },
-  {
-   "date": "2026-11-09",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
-   "summary": "Only Mendip and Central Somerset residents could buy a Glastonbury 2027 Sunday ticket. When the sale was, the price with the bus, children, refunds and the day.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-sunday-tickets/"
-  },
-  {
-   "date": "2026-11-09",
-   "tag": "Updated",
-   "title": "Going to Glastonbury with access requirements",
-   "summary": "Glastonbury 2027 accessibility: booking a ticket the normal way, the Access Pass, the personal assistant scheme, and the access form from the end of November.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-access-requirements/"
-  },
-  {
-   "date": "2026-11-09",
-   "tag": "Updated",
-   "title": "Taking children and teenagers to Glastonbury: tickets and registration",
-   "summary": "13 or over on 23 June 2027 needs a ticket; 12 and under go free. The rules for under 16s and teenagers, coach seats for children and booking a family group.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-with-children/"
-  },
-  {
-   "date": "2026-11-07",
-   "tag": "Updated",
-   "title": "Glastonbury ticket tips 2027: what works under the new queue",
-   "summary": "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
-   "topic": "On ticket day",
-   "href": "/guides/how-to-get-glastonbury-tickets/"
-  },
-  {
-   "date": "2026-11-07",
-   "tag": "Updated",
-   "title": "Collecting your group's registration numbers from WhatsApp",
-   "summary": "How to ask your group for registration numbers and postcodes so the replies are easy to use, and how to get them out of a WhatsApp chat on iPhone and Android.",
-   "topic": "Before the sale",
-   "href": "/guides/collect-registration-numbers-from-whatsapp/"
   }
  ],
  "dates": [
