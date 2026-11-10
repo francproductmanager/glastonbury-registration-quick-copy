@@ -1,40 +1,40 @@
 {
- "updated": "2026-11-05",
+ "updated": "2026-11-10",
  "items": [
   {
-   "date": "2026-11-05",
+   "date": "2026-11-10",
    "tag": "New",
-   "title": "How many Glastonbury tickets can you buy? Every limit explained",
-   "summary": "How many Glastonbury tickets one person can buy: 6 in the main sale, 4 in the 2025 resale, the coach, local and Sunday limits, one ticket each, and children.",
-   "topic": "Before the sale",
-   "href": "/guides/how-many-glastonbury-tickets-can-you-buy/"
-  },
-  {
-   "date": "2026-11-05",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
-   "summary": "Who could buy a Glastonbury 2027 Sunday ticket, when the sale was, the price with the bus, children's bus seats, refunds and the rules for the day itself.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-sunday-tickets/"
-  },
-  {
-   "date": "2026-11-05",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 local resident tickets: who qualifies and how to book",
-   "summary": "Glastonbury's 2027 local full weekend ticket sale: the inner and outer zone towns, sale times, the deposit and balance, proof of address and what happens next.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-local-resident-tickets/"
-  },
-  {
-   "date": "2026-11-04",
-   "tag": "New",
-   "title": "When do Glastonbury 2027 tickets arrive?",
-   "summary": "When Glastonbury 2027 tickets are posted, who receives them in a group booking, tracking them, coach tickets, and what to do if yours haven't arrived.",
+   "title": "Can you change a Glastonbury booking? Address, name and photo",
+   "summary": "Once you've booked Glastonbury 2027, most details are fixed. How to change your address, what you can add later, and what can't change at all.",
    "topic": "After you've booked",
-   "href": "/guides/when-do-glastonbury-tickets-arrive/"
+   "href": "/guides/change-glastonbury-ticket-details/"
   },
   {
-   "date": "2026-11-04",
+   "date": "2026-11-10",
+   "tag": "New",
+   "title": "Are there Glastonbury VIP tickets? Hospitality and backstage explained",
+   "summary": "There are no VIP or backstage tickets for Glastonbury. What hospitality tickets really are, who can buy them, and how to spot a fake VIP or concierge offer.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-vip-tickets/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "Glastonbury deposits and balance payments explained",
+   "summary": "The 2027 Glastonbury deposit was £100 a ticket, with the £308 balance due 1 to 7 April 2027. A worked example, and what to do if you can't pay or go.",
+   "topic": "After you've booked",
+   "href": "/guides/deposits-and-balance-payments/"
+  },
+  {
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "How fast Glastonbury tickets sell out: recent sales compared",
+   "summary": "Glastonbury 2027 tickets sold out in about 42 minutes and coach packages in under 30. Sell-out times, prices and deposits for recent sales and resales compared.",
+   "topic": "Glastonbury 2027: where things stand",
+   "href": "/guides/glastonbury-ticket-sale-history/"
+  },
+  {
+   "date": "2026-11-10",
    "tag": "Updated",
    "title": "When is the next Glastonbury ticket sale?",
    "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
@@ -42,20 +42,20 @@
    "href": "/guides/next-glastonbury-ticket-sale/"
   },
   {
-   "date": "2026-11-04",
+   "date": "2026-11-10",
+   "tag": "Updated",
+   "title": "Lost your Glastonbury registration number? Find or change it",
+   "summary": "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, and how to change your photo, postcode or email.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-registration-number-lookup/"
+  },
+  {
+   "date": "2026-11-09",
    "tag": "Updated",
    "title": "Glastonbury 2027 campervans, Worthy View and tipis",
    "summary": "Campervan pitches, Worthy View and tipis at Glastonbury 2027: prices where they're published, who can book, what's included, and when they've gone on sale.",
    "topic": "Coaches, access and families",
    "href": "/guides/glastonbury-2027-campervans-and-camping/"
-  },
-  {
-   "date": "2026-11-04",
-   "tag": "Updated",
-   "title": "Missed out? Other ways to get to Glastonbury",
-   "summary": "Your realistic options if you didn't get a ticket: the spring resale, volunteering, working, and what to avoid.",
-   "topic": "Missed out?",
-   "href": "/guides/other-ways-to-get-to-glastonbury/"
   }
  ],
  "dates": [

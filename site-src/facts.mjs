@@ -44,6 +44,9 @@ export const FACTS = {
   ticketDispatch: { value: "late May to June 2027", meaning: "When UK general admission tickets for 2027 are sent out by Royal Mail, signed for", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
   ticketsArriveBy: { value: "Wednesday 16 June 2027", meaning: "7 days before the 2027 festival starts on 23 June: the festival expects tickets to have arrived by then, and to contact See Tickets if not", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
   coachVoucher: { value: "mid-May 2027", meaning: "When 2027 ticket and coach travel vouchers are expected to be sent, as e-tickets", source: INFO, checked: "2026-11-04", recheckBy: "2027-05-31" },
+  worthyViewParking: { value: "£70", meaning: "2027 Worthy View car parking ticket, booked with the accommodation (a general car park pass can't be used there)", source: INFO, checked: "2026-11-09", recheckBy: "2027-06-27" },
+  accomCancelDeadline: { value: "7 May 2027", meaning: "Last day to cancel a 2027 Worthy View or Sticklinch accommodation booking for a refund (the info page says \"up until May 7th\"); non-refundable after it", source: INFO, checked: "2026-11-09", recheckBy: "2027-05-07" },
+  accomCancelFee: { value: "£25", meaning: "Administration fee per unit kept from a cancelled 2027 Worthy View or Sticklinch accommodation booking", source: INFO, checked: "2026-11-09", recheckBy: "2027-05-07" },
   sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-11-05", recheckBy: "2027-06-27" },
 };
 
