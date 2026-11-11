@@ -136,7 +136,7 @@ export const GUIDES = [
           ["End of November 2026", "Access Application Form link available", "Announced"],
           ["{{fact:balanceWindowDays}}", "Balance payment window (9am on the 1st to 11.59pm on the 7th, UK time)", "Announced"],
           ["Spring 2027", "Resale of cancelled and returned tickets", "Date to be announced"],
-          ["Fri {{fact:refundDeadline}}, 11.59pm", "Last moment to cancel a ticket for a refund, less a {{fact:refundFee}} charge per ticket", "Announced"],
+          ["Fri {{fact:refundDeadline}}, 11.59pm", "Last moment to cancel a ticket for a refund, less a {{fact:refundFee}} charge per ticket (plus a {{fact:coachCancelFee}} on a ticket and coach booking)", "Announced"],
           ["{{fact:accessDeadline}} 2027", "Final deadline for Access Applications", "Announced"],
           ["{{fact:festivalDatesShort}}", "Glastonbury Festival 2027", "Confirmed"],
         ],
