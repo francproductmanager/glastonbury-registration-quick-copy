@@ -118,10 +118,10 @@ export const GUIDES = [
     target: "glastonbury 2027 dates", // the search phrase this guide answers; no two guides share one
     topic: "now",
     title: "Glastonbury 2027: key dates, prices and what happens next",
-    summary: "Every confirmed date for Glastonbury 2027 in one place: the sales that have happened, the balance window, access applications, the resale and the festival itself.",
-    updated: "1 November 2026", isoDate: "2026-11-01",
+    summary: "The key confirmed dates for Glastonbury 2027 in one place: past sales, the balance window, refunds, access applications, the resale and the festival.",
+    updated: "11 November 2026", isoDate: "2026-11-11",
     body: [
-      "Glastonbury took 2026 as a fallow year, so 2027 is the first festival since 2025. Tickets went on sale in October 2026, earlier in the autumn than the November sales of recent years, and sold out in 42 minutes. This page brings together every confirmed date and price, and what's still to be announced. We update it as the festival publishes new information.",
+      "Glastonbury took 2026 as a fallow year, so 2027 is the first festival since 2025. Tickets went on sale in October 2026, earlier in the autumn than the November sales of recent years, and sold out in 42 minutes. This page brings together the key confirmed dates and prices, and what's still to be announced. We update it as the festival publishes new information.",
       { h2: "The dates at a glance" },
       { table: {
         head: ["When", "What", "Status"],
@@ -136,6 +136,8 @@ export const GUIDES = [
           ["End of November 2026", "Access Application Form link available", "Announced"],
           ["{{fact:balanceWindowDays}}", "Balance payment window (9am on the 1st to 11.59pm on the 7th, UK time)", "Announced"],
           ["Spring 2027", "Resale of cancelled and returned tickets", "Date to be announced"],
+          ["Fri {{fact:refundDeadline}}, 11.59pm", "Last moment to cancel a ticket for a refund, less a {{fact:refundFee}} charge per ticket (plus a {{fact:coachCancelFee}} on a ticket and coach booking)", "Announced"],
+          ["{{fact:accessDeadline}} 2027", "Final deadline for Access Applications", "Announced"],
           ["{{fact:festivalDatesShort}}", "Glastonbury Festival 2027", "Confirmed"],
         ],
       } },
@@ -663,8 +665,8 @@ export const GUIDES = [
     updated: "5 November 2026", isoDate: "2026-11-05",
     body: [
       "In the main Glastonbury sale you can buy **up to 6 tickets in one booking**: your own and up to five for other people. Each person can only have **one ticket**, and everyone you book needs their own registration. Some sales have lower limits: up to 4 in the 2027 local resident sale, and in the 2025 resale up to 4 general admission tickets or 2 ticket and coach packages per booking.",
-      "This page puts every limit in one place, with the year each one comes from, so you can plan your group before the next sale. The facts come from the festival's information page, its 2027 ticket announcement and its 2025 sale and resale FAQs, read in full on 5 November 2026.",
-      { h2: "Every limit in one table" },
+      "This page puts the limits in one place, with the year each one comes from, so you can plan your group before the next sale. The facts come from the festival's information page, its 2027 ticket announcement and its 2025 sale and resale FAQs, read in full on 5 November 2026.",
+      { h2: "Booking limits in one table" },
       { table: {
         head: ["What you're booking", "Most per booking", "From"],
         rows: [
@@ -841,7 +843,7 @@ export const GUIDES = [
     target: "glastonbury ticket terms", // the search phrase this guide answers; no two guides share one
     topic: "before",
     title: "Glastonbury ticket terms explained",
-    summary: "A plain English glossary of every term you'll meet in the Glastonbury ticket process, from registration number to resale.",
+    summary: "A plain English glossary of the terms you'll meet in the Glastonbury ticket process, from registration number to resale.",
     updated: CHECKED, isoDate: MODIFIED,
     body: [
       "The Glastonbury ticket process has its own vocabulary. If you're new to it, or explaining it to friends, this is what each term means.",
@@ -996,9 +998,9 @@ export const GUIDES = [
     topic: "ticketday",
     title: "Glastonbury ticket tips 2027: what works under the new queue",
     summary: "The tips that really improve your chances of Glastonbury tickets under the queue used since 2027, the ones that don't, and a simple plan for a group.",
-    updated: "30 October 2026", isoDate: "2026-10-30",
+    updated: "11 November 2026", isoDate: "2026-11-11",
     body: [
-      "There's no trick that gets you to the front of the Glastonbury queue. Demand is far higher than the number of tickets, and every recent sale has sold out in under an hour. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked. If it's your first time, [what ticket morning is like](/guides/first-time-glastonbury-ticket-day/) walks through it step by step.",
+      "There's no trick that gets you to the front of the Glastonbury queue. Demand is far higher than the number of tickets: the 2027 general ticket sale sold out in 42 minutes, NME reported. But the groups that get tickets tend to have done the same few things, and the groups that miss out often lose a real chance to something they could have fixed a week earlier. This guide puts those things in one place, based on how the 2027 sale worked. If it's your first time, [what ticket morning is like](/guides/first-time-glastonbury-ticket-day/) walks through it step by step.",
       { h2: "What changed in 2027" },
       "Since the 2027 sales, each registration gets one place in the queue. Time Out said that made the sale a lot fairer, with no more multiple tabs. How that works, and what each queue screen means, is in [how the queue works](/guides/how-the-ticket-queue-works/). This guide is about what your group should decide because of it.",
       { h2: "The one thing that really raises your odds" },
@@ -1355,7 +1357,7 @@ export const GUIDES = [
     target: "glastonbury 2027 balance payment", // the search phrase this guide answers; no two guides share one
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
-    summary: "The 2027 balance window ({{fact:balanceWindow}}), how paying it works, parking and protection, and a month by month list of everything between booking and the festival.",
+    summary: "The 2027 balance window ({{fact:balanceWindow}}), how paying it works, parking and protection, and a month by month list of what to do between booking and the festival.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
       "Getting through the queue is the hard part, but a deposit isn't a ticket yet. The one deadline that matters is the **balance payment window: 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time**. Any ticket whose balance isn't paid by then is cancelled. This guide covers that week first, then everything else between now and June.",
@@ -2114,10 +2116,10 @@ export const GUIDES = [
     target: "glastonbury ticket scams", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "How to spot Glastonbury ticket scams",
-    summary: "Why genuine Glastonbury tickets can't be resold, the scams that appear after every sell-out, and how to protect your group's details.",
-    updated: CHECKED, isoDate: MODIFIED,
+    summary: "Why genuine Glastonbury tickets can't be resold, the scams to watch for after a sell-out, and how to protect your group's details.",
+    updated: "11 November 2026", isoDate: "2026-11-11",
     body: [
-      "Every time Glastonbury sells out, posts appear offering spare tickets. Glastonbury's ticket system makes almost all of them impossible, which is the easiest way to spot a scam: you don't need to judge whether the seller seems genuine, only whether what they're offering could exist.",
+      "Before the 2025 resale, Nationwide warned that high demand and low availability create a \"perfect storm for scammers\". Glastonbury's ticket system makes almost all of the tickets scammers offer impossible, which is the easiest way to spot a scam: you don't need to judge whether the seller seems genuine, only whether what they're offering could exist.",
       { h2: "Why a Glastonbury ticket can't be sold on" },
       { ul: [
         "**Every ticket carries the holder's photo**, taken from their registration.",
@@ -2820,6 +2822,11 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "11 November 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/) now lists the refund deadline (11.59pm on {{fact:refundDeadline}}) and the final deadline for Access Applications ({{fact:accessDeadline}} 2027).",
+        "**Corrected:** [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/) and [how to get Glastonbury tickets](/guides/how-to-get-glastonbury-tickets/) now open with sourced facts instead of claims about every sale, and a few other summaries and headings no longer say \"every\" where a guide doesn't cover everything.",
+      ] },
       { h2: "10 November 2026" },
       { ul: [
         "**New:** [can you change a Glastonbury booking?](/guides/change-glastonbury-ticket-details/): once you've booked, most details are fixed. How to change your address (with See Tickets, not your registration), what you can add at the balance, and why names, photos and coach bookings can't change.",
