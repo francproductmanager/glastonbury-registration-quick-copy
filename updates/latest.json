@@ -1,6 +1,14 @@
 {
- "updated": "2026-11-11",
+ "updated": "2026-11-12",
  "items": [
+  {
+   "date": "2026-11-12",
+   "tag": "New",
+   "title": "How to get to Glastonbury Festival: train, bus, bike and drop off",
+   "summary": "Getting to Glastonbury 2027 without a car: the train to Castle Cary and free shuttle bus, local buses, cycling, the Drop and Collect point and private coaches.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/how-to-get-to-glastonbury/"
+  },
   {
    "date": "2026-11-11",
    "tag": "Updated",
@@ -48,14 +56,6 @@
    "summary": "Glastonbury 2027 tickets sold out in about 42 minutes and coach packages in under 30. Sell-out times, prices and deposits for recent sales and resales compared.",
    "topic": "Glastonbury 2027: where things stand",
    "href": "/guides/glastonbury-ticket-sale-history/"
-  },
-  {
-   "date": "2026-11-10",
-   "tag": "Updated",
-   "title": "When is the next Glastonbury ticket sale?",
-   "summary": "The next Glastonbury ticket sales, what's been announced, when recent sales have happened, and the steps to take now so your group is ready.",
-   "topic": "Glastonbury 2027: where things stand",
-   "href": "/guides/next-glastonbury-ticket-sale/"
   }
  ],
  "dates": [
