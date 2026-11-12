@@ -760,6 +760,22 @@ await test("Guide pages fit phones: header on one line, nothing wider than the s
   }
   noErrors(p); await p.context().close();
 });
+await test("Home: the date line stays on one line on the longest dates, at every phone width", async () => {
+  // Fixed dates, so this doesn't depend on the day the tests run. "Wednesday 30 September" is the longest
+  for (const iso of ["2026-09-30T12:00:00Z", "2026-11-11T12:00:00Z", "2027-09-29T12:00:00Z"]) {
+    const p = await page(await context()); await p.clock.setFixedTime(new Date(iso)); await p.goto(B);
+    await p.waitForSelector(".dateline .weekday"); await p.evaluate(() => document.fonts.ready);
+    for (const width of [320, 359, 360, 375, 390, 399, 400, 412, 430, 768]) {
+      await p.setViewportSize({ width, height: 800 });
+      eq(await p.evaluate(() => document.querySelector(".dateline").getBoundingClientRect().height), 20, `dateline on one line at ${width}px on ${iso.slice(0, 10)}`);
+    }
+    const shown = async (width) => { await p.setViewportSize({ width, height: 800 }); return (await p.evaluate(() => document.querySelector(".dateline .today").innerText)).trim(); };
+    assert(/^Wednesday \d/.test(await shown(412)), "full weekday from 400px");
+    assert(/^Wed \d/.test(await shown(375)), "short weekday under 400px");
+    assert(/^\d/.test(await shown(320)), "no weekday under 360px");
+    noErrors(p); await p.context().close();
+  }
+});
 await test("Home: latest guides and countdown come from the build, after the questions and before the explanation", async () => {
   const p = await page(await context()); await p.goto(B);
   await p.waitForSelector(".latest:not([hidden]) .story-lead");

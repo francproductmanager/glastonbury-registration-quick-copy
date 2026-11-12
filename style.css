@@ -164,6 +164,8 @@ footer a { color: var(--muted); }
 /* home: dateline, masthead and the hero band holding the main action */
 .dateline { display: flex; justify-content: space-between; gap: 12px; min-height: 20px; font-size: 12.5px; line-height: 20px; color: var(--muted); }
 .dateline .today { font-family: var(--mono); white-space: nowrap; }
+.dateline .wd-short { display: none; }
+@media (max-width: 399px) { .dateline .wd-long { display: none; } .dateline .wd-short { display: inline; } }
 @media (max-width: 359px) { .dateline .weekday { display: none; } }
 .masthead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: calc(6px - var(--gap)); padding: 6px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .masthead .wordmark { font-size: clamp(22px, 6.6vw, 28px); line-height: 1.2; letter-spacing: -0.02em; white-space: nowrap; }

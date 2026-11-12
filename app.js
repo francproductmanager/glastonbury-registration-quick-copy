@@ -510,9 +510,10 @@
       h("div", { class: "hero" },
         h("h1", { class: "display" }, "Glastonbury group booking: everyone's registration numbers on one page."),
         h("p", { class: "lead" }, "Save everyone's registration number and postcode on one page. On the day, tap to copy each one.")));
-    // today's date, like a newspaper's (the weekday is dropped on the narrowest phones)
+    // today's date, like a newspaper's. Phones under 400px get the short weekday ("Wed") and the
+    // narrowest drop it, so the longest dates ("Wednesday 30 September") still fit on one line
     const now = new Date(), day = (o) => now.toLocaleDateString("en-GB", o);
-    homeEl.querySelector(".today").replaceChildren(h("span", { class: "weekday" }, day({ weekday: "long" }) + " "), day({ day: "numeric", month: "long", year: "numeric" }));
+    homeEl.querySelector(".today").replaceChildren(h("span", { class: "weekday" }, h("span", { class: "wd-long" }, day({ weekday: "long" })), h("span", { class: "wd-short" }, day({ weekday: "short" })), " "), day({ day: "numeric", month: "long", year: "numeric" }));
     const hero = homeEl.querySelector(":scope > .hero"), lead = hero.querySelector(":scope > .lead");
     while (lead.nextSibling) lead.nextSibling.remove();
     while (hero.nextSibling) hero.nextSibling.remove();
