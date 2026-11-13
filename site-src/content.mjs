@@ -931,7 +931,7 @@ export const GUIDES = [
       "If you get through, the booking page opens and a timer starts. You enter your own details and each friend's registration number and postcode, check that the names shown are the people you expect, then pay a deposit for each ticket: **{{fact:deposit}} per ticket** for 2027. Tickets aren't yours until the payment has gone through.",
       "When the confirmation page appears, screenshot it and tell your group straight away, so nobody else books the same people. The timers, the cards that work and what to do if something fails are all in [the checkout guide](/guides/paying-for-glastonbury-tickets/).",
       { h2: "How it usually ends" },
-      "Be ready for this: **most people who try don't get a ticket.** Demand is far higher than the number of tickets, and every recent sale has sold out in under an hour. If you see \"SOLD OUT\", every ticket in that sale has gone, and there's nothing you did wrong. Close the page, and turn your attention to the spring resale.",
+      "Be ready for this: **most people who try don't get a ticket.** Demand is far higher than the number of tickets: NME reported that the 2027 general sale sold out in 42 minutes, and the 2025 one in 35. If you see \"SOLD OUT\", every ticket in that sale has gone, and there's nothing you did wrong. Close the page, and turn your attention to the spring resale.",
       { h2: "Things first timers often don't know" },
       { ul: [
         "**Reaching the front isn't the same as having a ticket.** Tickets are only allocated once payment goes through.",
@@ -1063,7 +1063,7 @@ export const GUIDES = [
     summary: "A printable checklist for two weeks before, the night before and the minutes before the Glastonbury sale, who does what, and the ten mistakes to avoid.",
     updated: "30 October 2026", isoDate: "2026-10-30",
     body: [
-      "Glastonbury tickets usually sell out in under an hour. The queue is luck, but what happens after you get through isn't. This checklist covers the things you can control, in the order you'll need them. Tick the boxes as you go, or print it: nothing you tick is saved.",
+      "Glastonbury 2027 general tickets sold out in 42 minutes, NME reported, and the 2025 ones in 35. The queue is luck, but what happens after you get through isn't. This checklist covers the things you can control, in the order you'll need them. Tick the boxes as you go, or print it: nothing you tick is saved.",
       { h2: "Two weeks or more before" },
       { checks: [
         "**Everyone is registered** with an accepted photo, and has their confirmation email.",
@@ -2910,6 +2910,10 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "13 November 2026" },
+      { ul: [
+        "**Corrected:** [your first go at Glastonbury tickets](/guides/first-time-glastonbury-ticket-day/) and the [ticket day checklist](/guides/ticket-day-checklist/) now give the real sell-out times NME reported (42 minutes in 2027, 35 in 2025) instead of a general claim about recent sales.",
+      ] },
       { h2: "12 November 2026" },
       { ul: [
         "**New:** [how to get to Glastonbury](/guides/how-to-get-to-glastonbury/): the train to Castle Cary and the free shuttle bus, local buses, cycling, the Drop and Collect point for lifts, and private hire coaches, with the 2025 timetables until the 2027 ones are out.",
