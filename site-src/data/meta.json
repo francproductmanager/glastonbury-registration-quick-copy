@@ -1,18 +1,18 @@
 {
-  "generated": "2026-11-08",
+  "generated": "2026-11-15",
   "period": {
-    "start": "2026-10-09",
-    "end": "2026-11-05"
+    "start": "2026-10-16",
+    "end": "2026-11-12"
   },
   "previous": {
-    "start": "2026-09-11",
-    "end": "2026-10-08"
+    "start": "2026-09-18",
+    "end": "2026-10-15"
   },
   "property": "sc-domain:glastobolt.co.uk",
   "min_impressions_for_flags": 100,
   "traffic": {
-    "clicks_28d": 168,
-    "impressions_28d": 5785,
+    "clicks_28d": 180,
+    "impressions_28d": 6722,
     "clicks_prev_28d": 0,
     "impressions_prev_28d": 0,
     "clicks_change_pct": null
