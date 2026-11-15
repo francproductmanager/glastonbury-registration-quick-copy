@@ -1,6 +1,14 @@
 {
- "updated": "2026-11-13",
+ "updated": "2026-11-15",
  "items": [
+  {
+   "date": "2026-11-15",
+   "tag": "New",
+   "title": "Where to camp at Glastonbury: the free camping fields",
+   "summary": "Where to pitch your tent at Glastonbury: the lively and quiet camping fields, family and accessible camping, the festival's camping tips and what to avoid.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/where-to-camp-at-glastonbury/"
+  },
   {
    "date": "2026-11-13",
    "tag": "Updated",
@@ -48,14 +56,6 @@
    "summary": "There are no VIP or backstage tickets for Glastonbury. What hospitality tickets really are, who can buy them, and how to spot a fake VIP or concierge offer.",
    "topic": "Missed out?",
    "href": "/guides/glastonbury-vip-tickets/"
-  },
-  {
-   "date": "2026-11-10",
-   "tag": "Updated",
-   "title": "Glastonbury deposits and balance payments explained",
-   "summary": "The 2027 Glastonbury deposit was £100 a ticket, with the £308 balance due 1 to 7 April 2027. A worked example, and what to do if you can't pay or go.",
-   "topic": "After you've booked",
-   "href": "/guides/deposits-and-balance-payments/"
   }
  ],
  "dates": [
