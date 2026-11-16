@@ -12,6 +12,6 @@
     "playwright": "1.65.0"
   },
   "dependencies": {
-    "@netlify/blobs": "11.1.7"
+    "@netlify/blobs": "11.1.9"
   }
 }
