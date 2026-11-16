@@ -2120,7 +2120,7 @@ export const GUIDES = [
     topic: "missed",
     title: "How to spot Glastonbury ticket scams",
     summary: "Why genuine Glastonbury tickets can't be resold, the scams to watch for after a sell-out, and how to protect your group's details.",
-    updated: "11 November 2026", isoDate: "2026-11-11",
+    updated: "16 November 2026", isoDate: "2026-11-16",
     body: [
       "Before the 2025 resale, Nationwide warned that high demand and low availability create a \"perfect storm for scammers\". Glastonbury's ticket system makes almost all of the tickets scammers offer impossible, which is the easiest way to spot a scam: you don't need to judge whether the seller seems genuine, only whether what they're offering could exist.",
       { h2: "Why a Glastonbury ticket can't be sold on" },
@@ -2164,7 +2164,7 @@ export const GUIDES = [
       ] },
       "Anything that skips one of these steps, or adds a person or website in between, isn't how Glastonbury tickets work.",
       { h2: "If you've been caught out" },
-      "Contact your bank straight away, as they may be able to stop or reverse the payment. You can report fraud to Action Fraud, the UK's national reporting centre, and report fake sites and posts to the platform they appeared on.",
+      "Paid someone who may not be genuine? The festival's advice is to contact your payment card issuer as soon as possible, and the police too if you believe there is criminality involved. It says you can also report a seller you have concerns about to [Action Fraud](https://www.actionfraud.police.uk/).",
       { tip: "If in doubt, start from the official Glastonbury website and follow its links to See Tickets. Never follow a ticket link from a message or an ad." },
     ],
     related: ["glastonbury-2027-resale", "other-ways-to-get-to-glastonbury", "buying-tickets-for-a-group"],
@@ -3015,6 +3015,7 @@ export const PAGES = [
     body: [
       { h2: "16 November 2026" },
       { ul: [
+        "**Updated:** [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/) now gives the festival's own advice if you've paid a seller who may not be genuine: who to contact first, and where to report it.",
         "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now covers Sticklinch, the festival's second campsite with tents already up, how to get there from the coach station, and how fast some of its tents are expected to sell out.",
         "**Updated:** [Glastonbury accessibility](/guides/glastonbury-access-requirements/) now says at the top that the 2027 Access Application Form isn't open yet, and when the festival expects it.",
         "**Updated:** [how to register for Glastonbury](/guides/how-glastonbury-registration-works/) answers when registration reopens in its first lines, and [the 2027 key dates](/guides/glastonbury-2027-key-dates/) link to that answer.",
