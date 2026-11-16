@@ -2484,7 +2484,7 @@ export const GUIDES = [
       { ul: [
         "**The same booking rules as Worthy View:** up to 2 units per booking, the registration number you used for your festival ticket, the ticket shown at check in, a confirmation email within 24 hours, and cancelling until {{fact:accomCancelDeadline}} with a {{fact:accomCancelFee}} fee per unit.",
         "**Some tent types sell out fast.** The festival says some structure types have very limited availability and are expected to sell out very quickly.",
-        "**Very little parking.** The festival encourages Sticklinch guests to come by public transport where they can. Its parking rules are in [Glastonbury car parking](/guides/glastonbury-car-parking/).",
+        "**Very little parking.** There's a very limited amount of parking a short walk from the accommodation, with a reserved area for Blue Badge holders, but the festival encourages Sticklinch guests to come by public transport where they can. Its parking rules are in [Glastonbury car parking](/guides/glastonbury-car-parking/).",
         "**No shuttle.** There's no festival bus to Sticklinch from the Festival Coach Station: you walk there through the festival site, via Pedestrian Gate A.",
       ] },
       { h2: "Tipis" },
