@@ -471,6 +471,29 @@ await test("New guides go live only in their random slots: no more on a day than
     assert(slugs.length <= slotsOn(date), `${slugs.join(", ")} published on ${date}, which has ${slotsOn(date)} new guide slot(s) (node scripts/new-guide-slots.mjs --list)`);
   }
 });
+await test("Search export adds a guide's jump link rows to its total instead of replacing it", async () => {
+  const { combine } = await import(join(ROOT, "scripts", "search-rows.mjs"));
+  const guide = `${SITE_URL}/guides/example/`;
+  const rows = [
+    { page: guide, query: "a", clicks: 30, impressions: 1000, position: 7 },
+    { page: `${guide}#zones`, query: "a", clicks: 4, impressions: 400, position: 10.5 },
+    { page: `${guide}#costs`, query: "b", clicks: 0, impressions: 15, position: 3 },
+    { page: `${SITE_URL}/guides/other/`, query: "a", clicks: 1, impressions: 50, position: 12 },
+  ];
+  const pages = combine(rows), g = pages.find((r) => r.page === guide);
+  eq(pages.length, 2, "one row per guide");
+  eq([g.clicks, g.impressions], [34, 1415], "clicks and impressions summed");
+  eq(g.position.toFixed(2), ((7 * 1000 + 10.5 * 400 + 3 * 15) / 1415).toFixed(2), "position weighted by impressions");
+  eq(g.ctr.toFixed(4), (34 / 1415).toFixed(4), "click rate recalculated");
+  eq(combine(rows, ["page", "query"]).filter((r) => r.page === guide).map((r) => [r.query, r.impressions]), [["a", 1400], ["b", 15]], "per search, too");
+});
+await test("Scorecard asks GitHub for numbered pages until a short page comes back", async () => {
+  const { ghAll } = await import(join(ROOT, "scripts", "seo-scorecard.mjs"));
+  const asked = [], call = (path) => { asked.push(path); return path.endsWith("page=3") ? [5] : [1, 2]; };
+  eq(ghAll("repos/x/pulls?state=all&per_page=2", call), [1, 2, 1, 2, 5], "all pages joined");
+  eq(asked, ["repos/x/pulls?state=all&per_page=2&page=1", "repos/x/pulls?state=all&per_page=2&page=2", "repos/x/pulls?state=all&per_page=2&page=3"], "page numbers, not GitHub's next links");
+  eq(ghAll("repos/x/issues/1/comments?per_page=100", () => []), [], "an empty list stops at once");
+});
 await test("Guide content is only content: no code, embeds or links to unapproved sites", async () => {
   const domains = (f) => readFileSync(f, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   // The writer may add sites to its own list, each with a reason, but never the kinds of site that can't be trusted

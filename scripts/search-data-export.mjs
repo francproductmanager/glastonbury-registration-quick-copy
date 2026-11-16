@@ -10,6 +10,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { GUIDES, SITE } from "../site-src/content.mjs";
+import { norm, combine } from "./search-rows.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "site-src", "data");
@@ -36,12 +37,13 @@ async function query(dimensions, startDate, endDate) {
 // The last 28 days of final data (Search Console runs about 3 days behind), and the 28 days before
 const day = (offset) => new Date(Date.now() - offset * 864e5).toISOString().slice(0, 10);
 const [end, start, prevEnd, prevStart] = [day(3), day(30), day(31), day(58)];
-const [pages, prevPages, pageQueries, queries] = await Promise.all([
+const [rawPages, rawPrevPages, rawPageQueries, queries] = await Promise.all([
   query(["page"], start, end), query(["page"], prevStart, prevEnd), query(["page", "query"], start, end), query(["query"], start, end),
 ]);
+// A guide's "#section" jump links count towards the guide (see scripts/search-rows.mjs)
+const pages = combine(rawPages), prevPages = combine(rawPrevPages), pageQueries = combine(rawPageQueries, ["page", "query"]);
 
-const norm = (u) => u.replace(/^https?:\/\/(www\.)?/, "https://").replace(/[?#].*$/, "");
-const byUrl = (rows) => Object.fromEntries(rows.map((r) => [norm(r.page), r]));
+const byUrl = (rows) => Object.fromEntries(rows.map((r) => [r.page, r]));
 const now = byUrl(pages), prev = byUrl(prevPages);
 const firstPublished = (slug) => {
   try { return execFileSync("git", ["log", "--diff-filter=A", "--format=%as", "--", `guides/${slug}/index.html`], { cwd: ROOT, encoding: "utf8" }).trim().split("\n").pop() || ""; } catch { return ""; }
@@ -95,7 +97,8 @@ const csv = (list) => {
 mkdirSync(join(OUT, "archive"), { recursive: true });
 writeFileSync(join(OUT, "scorecard.csv"), csv(rows));
 writeFileSync(join(OUT, "unmatched-queries.csv"), csv(unmatched) || "query,impressions_28d,clicks_28d,position_28d,flags\n");
-writeFileSync(join(OUT, "archive", `${day(0)}.csv`), csv(pageQueries.map((q) => ({ ...q, ctr: q.ctr.toFixed(4), position: q.position.toFixed(1) }))) || "page,query,clicks,impressions,ctr,position\n");
+// The archive keeps Google's rows as they came, jump links included
+writeFileSync(join(OUT, "archive", `${day(0)}.csv`), csv(rawPageQueries.map((q) => ({ ...q, ctr: q.ctr.toFixed(4), position: q.position.toFixed(1) }))) || "page,query,clicks,impressions,ctr,position\n");
 // The site's main measure: search clicks across every page (the site lives on ad views from search traffic)
 const sum = (list, k) => list.reduce((t, r) => t + r[k], 0);
 const traffic = { clicks_28d: sum(pages, "clicks"), impressions_28d: sum(pages, "impressions"), clicks_prev_28d: sum(prevPages, "clicks"), impressions_prev_28d: sum(prevPages, "impressions") };

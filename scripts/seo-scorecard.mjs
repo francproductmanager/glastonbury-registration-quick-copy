@@ -14,7 +14,19 @@ import { slots, START } from "./new-guide-slots.mjs";
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const R = "repos/francproductmanager/glastonbury-registration-quick-copy";
 const DAY = 24 * 60 * 60 * 1000;
-const gh = (path) => JSON.parse(execFileSync("gh", ["api", "--paginate", "--slurp", path], { encoding: "utf8", maxBuffer: 64 << 20 })).flat();
+// Every page of a GitHub list, asked for by number (&page=2, 3, ...) until a short page comes back.
+// Not "gh api --paginate": that follows GitHub's own next-page links, which the cloud machines' proxy refuses.
+const ghCall = (path) => JSON.parse(execFileSync("gh", ["api", path], { encoding: "utf8", maxBuffer: 64 << 20 }));
+export function ghAll(path, call = ghCall) {
+  const perPage = Number((path.match(/[?&]per_page=(\d+)/) || [])[1] || 30), all = [];
+  for (let page = 1; page <= 100; page++) {
+    const rows = call(`${path}${path.includes("?") ? "&" : "?"}page=${page}`);
+    all.push(...rows);
+    if (rows.length < perPage) return all;
+  }
+  throw new Error(`${path}: more than 100 pages, stopped`);
+}
+const gh = (path) => ghAll(path);
 const ukDate = (t) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit" }).format(t);
 const addDays = (date, n) => ukDate(Date.parse(`${date}T12:00:00Z`) + n * DAY);
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b); return s.length ? s[Math.floor((s.length - 1) / 2)] : null; };
