@@ -53,7 +53,7 @@ const NEWS = {
   gff2024resale: ["Glasto Fest Feed: 2024 resale tickets sold out in 22 minutes", "https://www.glastofestfeed.com/news/information/glastonbury-2024-resale-tickets-sold-out-22-minutes/"],
   wiki2024: ["Wikipedia: Glastonbury Festival 2024", "https://en.wikipedia.org/wiki/Glastonbury_Festival_2024"],
   nimbus: ["Criplife: Glastonbury partners with Nimbus Disability", "https://criplife.co.uk/glastonbury-festival-partners-with-nimbus-disability/"],
-  timeout2027other: ["Time Out: Glastonbury 2027 resale and volunteering guide", "https://www.timeout.com/uk/news/glastonbury-2027-ticket-resale-volunteering-guide-100526"],
+  timeout2027other: ["Time Out: Glastonbury 2027 resale and volunteering guide", "https://www.timeout.com/uk/news/glastonbury-2027-ticket-resale-volunteering-work-111826"],
   actionfraud: ["Action Fraud: report fraud and cyber crime", "https://www.actionfraud.police.uk/"],
   timeout2027queue: ["Time Out: Glastonbury 2027 sale time, prices and the new queue system", "https://www.timeout.com/uk/news/glastonbury-tickets-this-weekend-sale-time-prices-queue-guide-100226"],
   nationwide2025: ["Nationwide: 1 in 4 snared by ticket scams ahead of the Glastonbury resale (April 2025)", "https://www.nationwide.co.uk/media/news/1-in-4-snared-by-ticket-scams-as-peak-fomo-sets-in-due-to-imminent-glastonbury-resale"],
