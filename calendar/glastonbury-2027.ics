@@ -44,6 +44,26 @@ DESCRIPTION:Glastonbury 2027 local and Sunday ticket sale (local residents
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
+UID:glastonbury-2027-accommodation-sale@glastobolt.co.uk
+DTSTAMP:20261026T000000Z
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+SUMMARY:Glastonbury 2027 accommodation sale (official campsites with tents
+  already up)
+DESCRIPTION:Accommodation at the festival's four official pre-erected camp
+ sites (Worthy View\, Sticklinch\, Pylon Field and Holt Farm) goes on sale 
+ at 6pm on Thursday 19 November 2026\, through See Tickets. You must alread
+ y have a 2027 ticket booking. Details: glastobolt.co.uk/guides/glastonbury
+ -2027-campervans-and-camping/
+URL:https://glastobolt.co.uk/guides/glastonbury-2027-key-dates/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Glastonbury 2027 accommodation sale (official campsites with t
+ ents already up)
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
 UID:glastonbury-2027-festival@glastobolt.co.uk
 DTSTAMP:20261026T000000Z
 DTSTART;VALUE=DATE:20270623
