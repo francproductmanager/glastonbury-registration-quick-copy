@@ -3,6 +3,14 @@
  "items": [
   {
    "date": "2026-11-20",
+   "tag": "Updated",
+   "title": "Where to camp at Glastonbury: the free camping fields",
+   "summary": "Where to pitch your tent at Glastonbury: the lively and quiet camping fields, family and accessible camping, the festival's camping tips and what to avoid.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/where-to-camp-at-glastonbury/"
+  },
+  {
+   "date": "2026-11-20",
    "tag": "New",
    "title": "How to split Glastonbury ticket costs fairly in a group",
    "summary": "Splitting Glastonbury 2027 ticket costs in a group: paying back the lead booker, balances together or separately, a worked example for six, and dropouts.",
@@ -48,14 +56,6 @@
    "summary": "Why genuine Glastonbury tickets can't be resold, the scams to watch for after a sell-out, and how to protect your group's details.",
    "topic": "Missed out?",
    "href": "/guides/glastonbury-ticket-scams/"
-  },
-  {
-   "date": "2026-11-16",
-   "tag": "Updated",
-   "title": "Going to Glastonbury with access requirements",
-   "summary": "Glastonbury 2027 accessibility: booking a ticket the normal way, the Access Pass, the personal assistant scheme, and the access form from the end of November.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-access-requirements/"
   }
  ],
  "dates": [

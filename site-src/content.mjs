@@ -2397,7 +2397,7 @@ export const GUIDES = [
       { h2: "Want a more comfortable Glastonbury?" },
       "What people often mean by VIP is somewhere nicer to sleep. That part is real, and the festival sells it itself:",
       { ul: [
-        "**Worthy View, tipis and other accommodation**, booked through the festival once it opens. You must already have a valid ticket booking to book accommodation.",
+        "**The festival's four campsites with tents already up** (Worthy View, Sticklinch, Pylon Field and Holt Farm), which went on sale at {{fact:accomSale}} (check See Tickets for what is left), and **tipis**, which the festival says open later in the autumn. All bookings are taken by See Tickets, and you must already have a valid ticket booking for Glastonbury 2027.",
         "**Campervan and caravan pitches**, sold in their own sale for general admission ticket holders.",
         "**Rooms and houses near the site**, which a limited number of local property owners rent out. The festival's information page asks people interested to contact it through its contact form.",
       ] },
@@ -2710,7 +2710,7 @@ export const GUIDES = [
     updated: "15 November 2026", isoDate: "2026-11-15",
     body: [
       "**Your Glastonbury ticket already includes camping: you bring a tent and pitch it anywhere in the festival's camping zones, from Wednesday night until Monday morning, with no early entry fee.** The zones run from fields right next to the Pyramid Stage to quieter areas on the edge of the site, and different fields have very different atmospheres. This guide covers how to choose a field, the two areas set aside for families and disabled festival-goers, and the festival's own tips for setting up camp.",
-      "Everything here is from the camping, accommodation and access sections of the [festival's information page](https://www.glastonburyfestivals.co.uk/info/), read in full on 15 November 2026. If you'd rather not carry a tent, the paid options are in [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/).",
+      "Everything here is from the camping, accommodation and access sections of the [festival's information page](https://www.glastonburyfestivals.co.uk/info/), read in full on 15 November 2026, with the paid campsites in the table rechecked on 20 November 2026. If you'd rather not carry a tent, the paid options are in [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/).",
       { h2: "Where you can sleep at a glance" },
       { table: {
         head: ["Where", "Who it's for", "What you need"],
@@ -2719,7 +2719,7 @@ export const GUIDES = [
           ["Family camping (Wicket Ground and Cockmill Meadow)", "Families with children", "Your tickets; no extra booking"],
           ["Accessible campsite (Spring Ground)", "Disabled festival-goers and their group", "An Access Application Form completed by {{fact:accessCampsiteDeadline}}"],
           ["Campervan fields", "General admission ticket holders with a live-in vehicle", "A separate campervan ticket"],
-          ["Worthy View, Sticklinch and the Tipi Village", "Anyone with a festival ticket booking", "A paid accommodation booking through See Tickets"],
+          ["Worthy View, Sticklinch, Pylon Field, Holt Farm and the Tipi Village", "Anyone with a festival ticket booking", "A paid accommodation booking through See Tickets"],
           ["The car parks", "Nobody", "The festival says no sleeping, camping or fires are allowed there"],
         ],
       } },
@@ -3203,6 +3203,7 @@ export const PAGES = [
     body: [
       { h2: "20 November 2026" },
       { ul: [
+        "**Updated:** [Where to camp at Glastonbury](/guides/where-to-camp-at-glastonbury/) and [Glastonbury VIP tickets](/guides/glastonbury-vip-tickets/) now name all four of the festival's campsites with tents already up, including the new Pylon Field and Holt Farm. The VIP guide also says when the accommodation sale started and that tipis are still to come.",
         "**New:** [how to split Glastonbury ticket costs](/guides/split-glastonbury-ticket-costs/): paying back the lead booker, paying the balances together or separately (and what each costs in postage), a worked example for six, and what happens to the money if someone drops out.",
         "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now says the accommodation sale at the festival's four official campsites has taken place, with the tent prices rechecked. Campervan and tipi dates are still to come.",
         "**Updated:** [Glastonbury Festival jobs](/guides/glastonbury-festival-jobs/) now lists the six jobs still advertised for 2027, with their closing dates.",
