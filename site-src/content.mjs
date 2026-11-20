@@ -51,7 +51,6 @@ const JOBS2027 = [
   ["Glastonbury Festival: Procurement Assistant 2027 job sheet (PDF)", "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/11/Procurement-Assistant-2027-Ready-for-Website.pdf"],
   ["Glastonbury Festival: Site Contract and Breathalysing Co-Ordinator 2027 job sheet (PDF)", "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/11/Site-Contract-and-Breathalysing-Co-Ordinator-2027-Ready-for-Website.pdf"],
   ["Glastonbury Festival: The Hatch 2027 job sheet (PDF)", "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/11/The-Hatch-2027-Ready-for-Website.pdf"],
-  ["Glastonbury Festival: Hospitality Sales Assistant 2027 job sheet (PDF)", "https://www.glastonburyfestivals.co.uk/wp-content/uploads/2026/10/Hospitality-Sales-Assistant-2027.pdf"],
 ];
 // News reports, used for things the festival doesn't publish itself, like how fast a sale sold out
 const NEWS = {
@@ -95,7 +94,7 @@ export const CALENDAR = [
   { id: "glastonbury-2027-local-sale", title: "Glastonbury 2027 local and Sunday ticket sale (local residents only)", start: "2026-11-01", end: "2026-11-02", allDay: true,
     description: "For local residents only, on glastonbury.seetickets.com: full weekend tickets went on sale for the inner zone at {{fact:localSaleInner}} and for the inner and outer zones at {{fact:localSaleOuter}}, and Sunday tickets for Mendip and Central Somerset residents at {{fact:sundaySale}}. Details: glastobolt.co.uk/guides/glastonbury-sunday-tickets/" },
   { id: "glastonbury-2027-accommodation-sale", title: "Glastonbury 2027 accommodation sale (official campsites with tents already up)", start: "2026-11-19", end: "2026-11-20", allDay: true,
-    description: "Accommodation at the festival's four official pre-erected campsites (Worthy View, Sticklinch, Pylon Field and Holt Farm) goes on sale at {{fact:accomSale}}, through See Tickets. You must already have a 2027 ticket booking. Details: glastobolt.co.uk/guides/glastonbury-2027-campervans-and-camping/" },
+    description: "Accommodation at the festival's four official pre-erected campsites (Worthy View, Sticklinch, Pylon Field and Holt Farm) went on sale at {{fact:accomSale}}, through See Tickets. You must already have a 2027 ticket booking. Details: glastobolt.co.uk/guides/glastonbury-2027-campervans-and-camping/" },
   { id: "glastonbury-2027-festival", title: "Glastonbury Festival 2027", start: "2027-06-23", end: "2027-06-28", allDay: true,
     description: "Glastonbury Festival runs from {{fact:festivalDates}}. Remember your ticket: it carries your own photo." },
 ];
@@ -144,7 +143,7 @@ export const GUIDES = [
           ["{{fact:localSaleInner}}", "Local full weekend tickets, inner zone residents only", "Took place"],
           ["{{fact:localSaleOuter}}", "Local full weekend tickets, inner and outer zone residents", "Took place"],
           ["{{fact:sundaySale}}", "Sunday tickets for Mendip and Central Somerset residents", "Took place"],
-          ["{{fact:accomSale}}", "Accommodation at the four official campsites with tents already up, for 2027 ticket holders: see [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/)", "Announced"],
+          ["{{fact:accomSale}}", "Accommodation at the four official campsites with tents already up, for 2027 ticket holders: see [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/)", "Took place"],
           ["Later in autumn 2026", "Registration reopens: see [when does Glastonbury registration reopen](/guides/how-glastonbury-registration-works/#when-does-glastonbury-registration-reopen)", "No date yet"],
           ["End of November 2026", "Access Application Form link available", "Announced"],
           ["{{fact:balanceWindowDays}}", "Balance payment window (9am on the 1st to 11.59pm on the 7th, UK time)", "Announced"],
@@ -2133,10 +2132,10 @@ export const GUIDES = [
     topic: "missed",
     title: "Glastonbury Festival jobs: paid work and how to apply",
     summary: "Paid jobs at Glastonbury Festival: when it recruits, the 2027 roles on its website, the pay, the right to work in the UK, the clear-up crew and trader jobs.",
-    updated: "18 November 2026", isoDate: "2026-11-18",
+    updated: "20 November 2026", isoDate: "2026-11-20",
     body: [
       "**Glastonbury Festival hires temporary staff every year, and recruiting for 2027 has started.** Its information page says most departments begin recruiting in the late autumn and into the early new year, for jobs starting in the spring, and that roles are advertised on the festival's own website first. You need the right to work in the UK. This guide covers the paid jobs the festival lists, what they pay, how to apply, and the other paid work around the festival.",
-      "Everything here is from the Jobs section of the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) and the job sheets it links to, read in full on 18 November 2026. Volunteering for a ticket is a different route, covered in [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/).",
+      "Everything here is from the Jobs section of the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) and the job sheets it links to, read in full on 20 November 2026. Volunteering for a ticket is a different route, covered in [volunteering at Glastonbury 2027](/guides/glastonbury-volunteering-2027/).",
       { h2: "Paid work or volunteering?" },
       { table: {
         head: ["", "A paid job", "Volunteering"],
@@ -2157,7 +2156,7 @@ export const GUIDES = [
         "In all, the festival sustained over **1,100 UK jobs**, 325 of them in Somerset.",
       ] },
       { h2: "The jobs advertised for 2027" },
-      "When we checked on 18 November 2026, the information page listed seven fixed-term jobs for the 2027 festival, each with its own job sheet. All are based at the festival's offices at Worthy Farm in Pilton, and all involve some weekend work around the festival.",
+      "When we checked on 20 November 2026, the information page listed six fixed-term jobs for the 2027 festival, each with its own job sheet. All are based at the festival's offices at Worthy Farm in Pilton, and all involve some weekend work around the festival.",
       { table: {
         head: ["Job", "What it involves", "Worth knowing"],
         rows: [
@@ -2167,10 +2166,9 @@ export const GUIDES = [
           ["Procurement Assistant", "Helping the purchasing manager with orders, suppliers and hired goods", "Office based"],
           ["Site Contract and Breathalysing Co-Ordinator", "Issuing passes for vehicles, crew and contractors, and checking breathalyser results every day", "Office based"],
           ["The Hatch", "The front desk for crew: keys for accommodation, vehicles and cabins, meal tickets and passes", "Suits customer service or reception experience"],
-          ["Hospitality Sales Assistant", "Answering enquiries, invoicing and taking payments for the festival's hospitality sales", "Starts at 32 hours a week"],
         ],
       } },
-      "Pay on these seven sheets is **{{fact:jobsPay}}**. The contracts fall between **{{fact:jobsContracts}}**, and the closing dates run from **{{fact:jobsApplyBy}}**. Each sheet gives its own dates and rate, so open the one you want before you apply. The festival says to keep an eye on its vacancies list for updates.",
+      "Pay on these six sheets is **{{fact:jobsPay}}**. The contracts fall between **{{fact:jobsContracts}}**, and the closing dates run from **{{fact:jobsApplyBy}}**. Each sheet gives its own dates and rate, so open the one you want before you apply. The festival says to keep an eye on its vacancies list for updates.",
       { h2: "How to apply" },
       { ol: [
         "**Open the job sheet** from the Jobs section of the festival's information page, and check the dates, hours and anything it requires, like a driving licence.",
@@ -2536,9 +2534,9 @@ export const GUIDES = [
     topic: "travel",
     title: "Glastonbury 2027 campervans, Worthy View and tipis",
     summary: "Worthy View, Sticklinch, the new Pylon Field and Holt Farm, campervans and tipis at Glastonbury 2027: tent prices, who can book, parking and sale dates.",
-    updated: "19 November 2026", isoDate: "2026-11-19",
+    updated: "20 November 2026", isoDate: "2026-11-20",
     body: [
-      "**Accommodation at the festival's official campsites, where your tent is already put up for you, goes on sale at {{fact:accomSale}}**, the festival's information page says (we checked it on the morning of 19 November 2026). There are four of these campsites for 2027: Worthy View and Sticklinch, which return, and two new ones, **Pylon Field** and **Holt Farm**. You can only book if you already have a valid ticket booking for Glastonbury 2027, and all bookings are taken by See Tickets.",
+      "**Accommodation at the festival's official campsites, where your tent is already put up for you, went on sale at {{fact:accomSale}}**. When we checked the festival's information page on the morning of 20 November 2026, it didn't say whether any of the campsites had sold out. There are four of these campsites for 2027: Worthy View and Sticklinch, which return, and two new ones, **Pylon Field** and **Holt Farm**. You can only book if you already have a valid ticket booking for Glastonbury 2027, and all bookings are taken by See Tickets.",
       "For campervan tickets and tipis, the same page still says bookings open \"later in the autumn\", and that \"the Campervan ticket sale date will be announced soon\".",
       "A Glastonbury ticket already includes camping in the general fields: you bring a tent and pitch it (see [where to camp at Glastonbury](/guides/where-to-camp-at-glastonbury/) for choosing a field). Everything on this page is an extra, bought separately, and **every option needs a festival ticket first**.",
       { h2: "The options at a glance" },
@@ -2553,7 +2551,7 @@ export const GUIDES = [
           ["Tipi", "The Tipi Village, on the southern slopes of the site", "£2,000, for up to six adults"],
         ],
       } },
-      "These are the prices on the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) on 19 November 2026. They are for the tent or pitch only: **festival tickets aren't included**, and neither is bedding. At Worthy View and Sticklinch you bring your own camping beds and bedding; at Pylon Field and Holt Farm the festival says you can add airbeds or bedding to your booking, or bring your own.",
+      "These are the prices on the [festival's information page](https://www.glastonburyfestivals.co.uk/info/) on 20 November 2026. They are for the tent or pitch only: **festival tickets aren't included**, and neither is bedding. At Worthy View and Sticklinch you bring your own camping beds and bedding; at Pylon Field and Holt Farm the festival says you can add airbeds or bedding to your booking, or bring your own.",
       { h2: "Booking any of the four campsites" },
       "The festival's 2027 booking terms for its official campsites say:",
       { ul: [
@@ -2592,7 +2590,7 @@ export const GUIDES = [
       { h2: "Tipis" },
       "For 2027 the festival's information page lists tipis at **£2,000 for five nights**, from Wednesday 23 to Sunday 27 June, for up to six adults. The price doesn't include festival tickets, so everyone staying in a tipi needs their own. The festival says tipi bookings will open later in the autumn.",
       { h2: "When accommodation goes on sale" },
-      "For 2027, the festival's own campsites go on sale at {{fact:accomSale}}, a little earlier than in recent years:",
+      "For 2027, the festival's own campsites went on sale at {{fact:accomSale}}, a little earlier than in recent years:",
       { table: {
         head: ["Festival", "Accommodation sale"],
         rows: [
@@ -3115,6 +3113,11 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "20 November 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now says the accommodation sale at the festival's four official campsites has taken place, with the tent prices rechecked. Campervan and tipi dates are still to come.",
+        "**Updated:** [Glastonbury Festival jobs](/guides/glastonbury-festival-jobs/) now lists the six jobs still advertised for 2027, with their closing dates.",
+      ] },
       { h2: "19 November 2026" },
       { ul: [
         "**Updated:** [Glastonbury 2027 campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/) now gives the accommodation sale date, the 2027 tent prices at Worthy View and Sticklinch, the two new campsites (Pylon Field and Holt Farm), the booking rules and parking at each.",
