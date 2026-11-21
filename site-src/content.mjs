@@ -2074,10 +2074,10 @@ export const GUIDES = [
     title: "Glastonbury 2027 Sunday tickets: who can buy them and how",
     seoTitle: "Glastonbury Sunday tickets 2027: {{fact:sundayPrice}}, who can buy and how",
     summary: "Only Mendip and Central Somerset residents could buy a Glastonbury 2027 Sunday ticket. When the sale was, the price with the bus, children, refunds and the day.",
-    updated: "9 November 2026", isoDate: "2026-11-09",
+    updated: "21 November 2026", isoDate: "2026-11-21",
     body: [
-      "Glastonbury's Sunday ticket is the only one day ticket on the festival's information page, and it isn't on general sale: it's only for people who live in the **Mendip and Central Somerset** area. For 2027, Sunday tickets went on sale at **{{fact:sundaySale}}** on glastonbury.seetickets.com. They cost **{{fact:sundayPrice}} per person**, plus {{fact:postage}} postage and packing per order, and the price includes a bus to the festival and back from one of eight local towns. The ticket is for Sunday 27 June 2027 only. When we checked the festival's information page on the morning of 5 November 2026, it still listed the sale times and hadn't said how the sale went or whether any tickets were left.",
-      "The sale is over, so this guide is for people who booked, and for readers thinking about next time: what a booking costs, the bus, children, refunds and the day itself. Everything comes from the festival's information page and its 2027 Sunday ticket terms, both read in full again on 5 November 2026. If you don't live in Mendip and Central Somerset, the Sunday ticket isn't a route for you: see [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) instead.",
+      "Glastonbury's Sunday ticket is the only one day ticket on the festival's information page, and it isn't on general sale: it's only for people who live in the **Mendip and Central Somerset** area. For 2027, Sunday tickets went on sale at **{{fact:sundaySale}}** on glastonbury.seetickets.com. They cost **{{fact:sundayPrice}} per person**, plus {{fact:postage}} postage and packing per order, and the price includes a bus to the festival and back from one of eight local towns. The ticket is for Sunday 27 June 2027 only. When we checked the festival's information page on the morning of 21 November 2026, it still listed the sale times and hadn't said how the sale went or whether any tickets were left.",
+      "The sale is over, so this guide is for people who booked, and for readers thinking about next time: what a booking costs, the bus, children, refunds and the day itself. Everything comes from the festival's information page and its 2027 Sunday ticket terms, both read in full again on 21 November 2026. If you don't live in Mendip and Central Somerset, the Sunday ticket isn't a route for you: see [other ways to get to Glastonbury](/guides/other-ways-to-get-to-glastonbury/) instead.",
       { h2: "The 2027 Sunday ticket in one table" },
       { table: {
         head: ["Question", "2027 answer"],
@@ -2156,7 +2156,7 @@ export const GUIDES = [
       { h2: "Next time" },
       "For a future Sunday sale, the 2027 sale shows what matters: everyone 13 or over needed their own registration, at an address in Mendip or Central Somerset, before registration closed. When the next sales are is in [the next Glastonbury ticket sale](/guides/next-glastonbury-ticket-sale/).",
       { h2: "What we couldn't confirm" },
-      "The festival doesn't say how many Sunday tickets were on sale, and when we checked on the morning of 5 November 2026 it hadn't said whether any were left. Its ticket dispatch section covers general admission and coach tickets and doesn't mention Sunday tickets separately, so we can't say when they'll be posted. The Sunday ticket section names example towns rather than listing every place in Mendip and Central Somerset. We'll update this guide if the festival publishes more.",
+      "The festival doesn't say how many Sunday tickets were on sale, and when we checked on the morning of 21 November 2026 it hadn't said whether any were left. Its ticket dispatch section covers general admission and coach tickets and doesn't mention Sunday tickets separately, so we can't say when they'll be posted. The Sunday ticket section names example towns rather than listing every place in Mendip and Central Somerset. We'll update this guide if the festival publishes more.",
       { cta: "Get your resale group ready" },
     ],
     related: ["other-ways-to-get-to-glastonbury", "next-glastonbury-ticket-sale", "glastonbury-ticket-refund"],
@@ -2495,7 +2495,7 @@ export const GUIDES = [
     summary: "Glastonbury 2027 accessibility: booking a ticket the normal way, the Access Pass, the personal assistant scheme, and the access form from the end of November.",
     updated: "16 November 2026", isoDate: "2026-11-16",
     body: [
-      "**The 2027 Access Application Form isn't open yet.** When we checked on 16 November 2026, the festival's information page said the online form will be available \"from the end of November\" (another part of the page says \"by December\"), and gave no exact date. You need a festival ticket first, then you ask the festival's Accessibility Team for the link, as Step 3 below explains. The final deadline for Access Applications is {{fact:accessDeadline}} 2027, but the festival recommends applying as early as you can, as some facilities may reach capacity before then.",
+      "**The 2027 Access Application Form isn't open yet.** When we checked on 21 November 2026, the festival's information page said the online form will be available \"from the end of November\" (another part of the page says \"by December\"), and gave no exact date. You need a festival ticket first, then you ask the festival's Accessibility Team for the link, as Step 3 below explains. The final deadline for Access Applications is {{fact:accessDeadline}} 2027, but the festival recommends applying as early as you can, as some facilities may reach capacity before then.",
       "Glastonbury has access facilities for disabled festival goers and people with long-term conditions, but the way you get them is different from many events. This guide explains the steps in order. The festival's Accessibility Team has the final word, so check with them about your own needs.",
       { h2: "Step 1: get a ticket the normal way" },
       "There are **no separate tickets for people with access requirements**. Everyone registers and books in the same sales as everyone else. That means you need a registration with an accepted photo, and you need to get through the queue, or have someone in your group book for you.",
@@ -3201,6 +3201,11 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "21 November 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 Sunday tickets](/guides/glastonbury-sunday-tickets/) rechecked against the festival's information page and the 2027 Sunday ticket terms: the price, bus times, children's bus tickets, refund rules and earliest entry are unchanged, and the festival still hasn't said how the sale went.",
+        "**Updated:** [going to Glastonbury with access requirements](/guides/glastonbury-access-requirements/): the 2027 Access Application Form still isn't open, and the festival still expects it from the end of November.",
+      ] },
       { h2: "20 November 2026" },
       { ul: [
         "**Updated:** [Where to camp at Glastonbury](/guides/where-to-camp-at-glastonbury/) and [Glastonbury VIP tickets](/guides/glastonbury-vip-tickets/) now name all four of the festival's campsites with tents already up, including the new Pylon Field and Holt Farm. The VIP guide also says when the accommodation sale started and that tipis are still to come.",
