@@ -36,12 +36,12 @@ export const FACTS = {
   localSaleDate: { value: "Sunday 1 November 2026", meaning: "Day of the 2027 local resident full weekend and Sunday ticket sale, on glastonbury.seetickets.com", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
   localSaleInner: { value: "9am on Sunday 1 November 2026", meaning: "Local full weekend tickets on sale to the inner zone only", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
   localSaleOuter: { value: "10am on Sunday 1 November 2026", meaning: "Local full weekend tickets on sale to the inner and outer zones", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
-  sundaySale: { value: "11am on Sunday 1 November 2026", meaning: "Sunday tickets on sale to Mendip and Central Somerset residents", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
-  sundayPrice: { value: "£145", meaning: "2027 Sunday ticket per person, including the bus to and from the site, plus postage and packing per order", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
-  sundayChildBus: { value: "£25", meaning: "2027 pre-booked Sunday bus ticket for a child aged 6 to 12 (the child is admitted free)", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
-  sundayProtection: { value: "£4.10", meaning: "Optional TicketPlan Booking Refund Protection per 2027 Sunday ticket", source: INFO, checked: "2026-11-05", recheckBy: "2027-05-07" },
-  sundayPickups: { value: "9am and 11am", meaning: "2027 Sunday ticket bus morning pick-up times from each town", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
-  sundayReturns: { value: "10pm and 12.30am", meaning: "2027 Sunday ticket return bus times from the festival (22:00 and 00:30)", source: INFO, checked: "2026-11-05", recheckBy: "2027-06-27" },
+  sundaySale: { value: "11am on Sunday 1 November 2026", meaning: "Sunday tickets on sale to Mendip and Central Somerset residents", source: INFO, checked: "2026-11-21", recheckBy: "2027-06-27" },
+  sundayPrice: { value: "£145", meaning: "2027 Sunday ticket per person, including the bus to and from the site, plus postage and packing per order", source: INFO, checked: "2026-11-21", recheckBy: "2027-06-27" },
+  sundayChildBus: { value: "£25", meaning: "2027 pre-booked Sunday bus ticket for a child aged 6 to 12 (the child is admitted free)", source: INFO, checked: "2026-11-21", recheckBy: "2027-06-27" },
+  sundayProtection: { value: "£4.10", meaning: "Optional TicketPlan Booking Refund Protection per 2027 Sunday ticket", source: INFO, checked: "2026-11-21", recheckBy: "2027-05-07" },
+  sundayPickups: { value: "9am and 11am", meaning: "2027 Sunday ticket bus morning pick-up times from each town", source: INFO, checked: "2026-11-21", recheckBy: "2027-06-27" },
+  sundayReturns: { value: "10pm and 12.30am", meaning: "2027 Sunday ticket return bus times from the festival (22:00 and 00:30)", source: INFO, checked: "2026-11-21", recheckBy: "2027-06-27" },
   ticketDispatch: { value: "late May to June 2027", meaning: "When UK general admission tickets for 2027 are sent out by Royal Mail, signed for", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
   ticketsArriveBy: { value: "Wednesday 16 June 2027", meaning: "7 days before the 2027 festival starts on 23 June: the festival expects tickets to have arrived by then, and to contact See Tickets if not", source: INFO, checked: "2026-11-04", recheckBy: "2027-06-27" },
   coachVoucher: { value: "mid-May 2027", meaning: "When 2027 ticket and coach travel vouchers are expected to be sent, as e-tickets", source: INFO, checked: "2026-11-04", recheckBy: "2027-05-31" },
@@ -60,7 +60,7 @@ export const FACTS = {
   jobsPay: { value: "£14.50 to £19 an hour", meaning: "Range of hourly pay on the six fixed-term 2027 job sheets linked from the Jobs section of the info page on 20 November 2026 (lowest: Accessibility Team Assistant and The Hatch; highest: Tent Lead)", source: INFO, checked: "2026-11-20", recheckBy: "2026-12-08" },
   jobsContracts: { value: "1 February and 16 July 2027", meaning: "Earliest start and latest end of the contracts on those six 2027 job sheets (Accessibility Team Assistant starts 1 February; Procurement Assistant and Tent Lead end 16 July)", source: INFO, checked: "2026-11-20", recheckBy: "2026-12-08" },
   jobsApplyBy: { value: "30 November to 8 December 2026", meaning: "Earliest and latest closing dates on those six 2027 job sheets (Catering Assistant, Procurement Assistant, Site Contract and Breathalysing Co-Ordinator and The Hatch 30 November, Accessibility Team Assistant 4 December, Tent Lead 8 December)", source: INFO, checked: "2026-11-20", recheckBy: "2026-11-30" },
-  sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-11-05", recheckBy: "2027-06-27" },
+  sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-11-21", recheckBy: "2027-06-27" },
 };
 
 // Ticket moments: when people search most and a wrong fact costs readers the most. From 14 days before
