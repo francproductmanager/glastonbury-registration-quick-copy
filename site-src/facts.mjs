@@ -60,6 +60,7 @@ export const FACTS = {
   jobsPay: { value: "£14.50 to £19 an hour", meaning: "Range of hourly pay on the six fixed-term 2027 job sheets linked from the Jobs section of the info page on 20 November 2026 (lowest: Accessibility Team Assistant and The Hatch; highest: Tent Lead)", source: INFO, checked: "2026-11-20", recheckBy: "2026-12-08" },
   jobsContracts: { value: "1 February and 16 July 2027", meaning: "Earliest start and latest end of the contracts on those six 2027 job sheets (Accessibility Team Assistant starts 1 February; Procurement Assistant and Tent Lead end 16 July)", source: INFO, checked: "2026-11-20", recheckBy: "2026-12-08" },
   jobsApplyBy: { value: "30 November to 8 December 2026", meaning: "Earliest and latest closing dates on those six 2027 job sheets (Catering Assistant, Procurement Assistant, Site Contract and Breathalysing Co-Ordinator and The Hatch 30 November, Accessibility Team Assistant 4 December, Tent Lead 8 December)", source: INFO, checked: "2026-11-20", recheckBy: "2026-11-30" },
+  mealDeal: { value: "£6 meal deal", meaning: "The meal deal the food section of the info page says 300 stallholders (over 75 percent of traders) offered \"this year\"; the page doesn't say which festival that was, so recheck when 2027 traders are confirmed", source: INFO, checked: "2026-11-21", recheckBy: "2027-03-01" },
   sundayEntry: { value: "8am on Sunday 27 June 2027", meaning: "Earliest entry on a 2027 Sunday ticket", source: SUNDAY_TERMS, checked: "2026-11-21", recheckBy: "2027-06-27" },
 };
 

@@ -3,6 +3,14 @@
  "items": [
   {
    "date": "2026-11-21",
+   "tag": "New",
+   "title": "Do you need cash at Glastonbury? Money on site explained",
+   "summary": "Cash or card at Glastonbury: which bars and food stalls take cards, the 24 hour cash machines, what food and drink cost, Challenge 21, and keeping money safe.",
+   "topic": "Coaches, access and families",
+   "href": "/guides/money-at-glastonbury/"
+  },
+  {
+   "date": "2026-11-21",
    "tag": "Updated",
    "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
    "summary": "Only Mendip and Central Somerset residents could buy a Glastonbury 2027 Sunday ticket. When the sale was, the price with the bus, children, refunds and the day.",
@@ -48,14 +56,6 @@
    "summary": "Paid jobs at Glastonbury Festival: when it recruits, the 2027 roles on its website, the pay, the right to work in the UK, the clear-up crew and trader jobs.",
    "topic": "Missed out?",
    "href": "/guides/glastonbury-festival-jobs/"
-  },
-  {
-   "date": "2026-11-19",
-   "tag": "Updated",
-   "title": "Glastonbury 2027: key dates, prices and what happens next",
-   "summary": "The key confirmed dates for Glastonbury 2027 in one place: past sales, the balance window, refunds, access applications, the resale and the festival.",
-   "topic": "Glastonbury 2027: where things stand",
-   "href": "/guides/glastonbury-2027-key-dates/"
   }
  ],
  "dates": [
