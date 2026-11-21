@@ -2541,7 +2541,7 @@ export const GUIDES = [
     title: "Taking children and teenagers to Glastonbury: tickets and registration",
     seoTitle: "How old do you have to be to go to Glastonbury? 2027 rules",
     summary: "13 or over on {{fact:festivalFirstDay}} needs a ticket; 12 and under go free. The rules for under 16s and teenagers, coach seats for children and booking a family group.",
-    updated: "3 November 2026", isoDate: "2026-11-03",
+    updated: "21 November 2026", isoDate: "2026-11-21",
     body: [
       "Children who are 12 or under on the day the gates open go free, with no ticket and no registration. Everyone 13 or over needs their own registration and ticket, and anyone under 16 must be with a responsible adult. Children are well catered for, with the Kidzfield area included in the ticket, but the age rules trip families up, especially with teenagers.",
       { h2: "How old do you have to be to go to Glastonbury?" },
@@ -2560,7 +2560,7 @@ export const GUIDES = [
       "For children who don't need a ticket, you can pick up a child wristband from the Kidzfield or the Info Points once you are inside. If a child aged 12 or under looks older than 12, the festival says you **must** bring ID to prove their age. And anyone on an adult ticket who looks under 16 is advised to bring ID that shows their age.",
       { h2: "The age rule for tickets" },
       "Anyone who will be **13 or over on the day the gates open** needs their own ticket and their own registration. Children who are **12 or under** on that day don't need a ticket and don't register.",
-      "For 2027 the gates open on Wednesday {{fact:festivalFirstDay}}, so anyone **born on or before {{fact:ticketAgeCutoff}}** needs a ticket. A child who is 12 on ticket day in October but turns 13 before 23 June needs one.",
+      "For 2027 the gates open on Wednesday {{fact:festivalFirstDay}}, so anyone **born on or before {{fact:ticketAgeCutoff}}** needs a ticket. A child who is 12 on ticket day in October but turns 13 on or before {{fact:festivalFirstDay}} needs one.",
       { h2: "Worked examples for 2027" },
       { table: {
         head: ["Date of birth", "Age on {{fact:festivalFirstDay}}", "Needs a ticket?"],
@@ -2575,7 +2575,7 @@ export const GUIDES = [
       "A teenager registers exactly like an adult, with their own photo, and needs an email address. Their photo is printed on their ticket and checked at the gate, so use a recent one. Teenagers change fast, so it's worth updating the photo every year before the sale.",
       "On ticket day they take one of the six places in a booking, with their own registration number and registered postcode. In a family, the registered postcode is usually the same for everyone, which makes it easy, but check it really is: a teenager who registered at another parent's address will have a different one.",
       { h2: "Children on coaches" },
-      "Children aged 12 and under don't need a festival ticket, but they **do need a coach seat** if you travel by ticket and coach package. For 2027 the festival says to book those seats while making the ticket and coach booking. If they aren't available then, you contact the See Tickets coach team after booking: extra seats are at standard fares and depend on availability. The [coach tickets guide](/guides/glastonbury-coach-tickets/) has the rest of the coach rules.",
+      "Children aged 12 and under don't need a festival ticket, but they **do need a coach seat** if you travel by ticket and coach package, and the festival says that includes babies in arms. For 2027 it says to book those seats while making the ticket and coach booking. If they aren't available then, you contact the See Tickets coach team after booking: extra seats are at standard fares and strictly subject to availability, so the festival says to contact the coach team as soon as possible if you didn't add them to your first booking. The [coach tickets guide](/guides/glastonbury-coach-tickets/) has the rest of the coach rules.",
       { h2: "Booking a family group" },
       { ul: [
         "Count only the people who need tickets: everyone 13 or over on the gate opening day.",
@@ -2593,12 +2593,13 @@ export const GUIDES = [
       "It depends on their age. A 13, 14 or 15 year old must be booked on the **TEEN** ticket option, which confirms they will come with a responsible adult who has a ticket, and TEEN ticket holders are not let in on their own. Whoever books for them confirms they are 18 or over and accepts responsibility for every under 16 in the group, and confirms a parent, carer or legal guardian has agreed to their details being used. A 16 or 17 year old can go without an adult, though the festival strongly advises it is with a parent or guardian's agreement.",
       "The [group booking guide](/guides/buying-tickets-for-a-group/) explains how bookings of up to six work, and [how registration works](/guides/how-glastonbury-registration-works/) covers getting their registration and photo in place before the sale.",
       { h3: "We have a baby or toddler. Do we need to do anything?" },
-      "Not for tickets: children 12 and under don't need one. You'll still want to look at the festival's family information nearer the time, and if you travel by coach, book them a seat.",
+      "Not for tickets: children 12 and under don't need one. You'll still want to look at the festival's family information nearer the time, and if you travel by coach, book them a seat: the festival says coach seats are needed for children 12 and under, including babies in arms.",
       { h2: "What's included for children" },
       "The festival lists free Kidzfield entertainment, rides and activities as part of what a ticket includes. Its information page also points families to the Green Kids area and the Theatre and Circus fields.",
       { h2: "Areas that aren't suitable for children", id: "on-site" },
       "The festival says some areas of the site, **particularly front of stage barriers and late night areas, are unsuitable for children**, and may include adult content and crowds. Children may be removed from, or refused entry to, those areas for their own safety. Pushchairs and trolleys that may affect crowd movement may not be allowed there, and some late night and screening areas have age limits, so bring ID as proof of age. For films classified 18, a Challenge 21 policy applies.",
       "It strongly advises families with children under 13 to **leave the busy late night areas, particularly the venues in the South East Corner, before 10pm**, and says these areas may not suit teenagers under 18 late at night either. There is no creche, so agree who in your group is supervising the children at all times, even in the Kidzfield.",
+      "Buggies and kinder wagons are hard to see and awkward to steer in busy areas, the festival says. Let crowds disperse before moving your children, and don't take young children into densely crowded areas.",
       { h2: "Family camping" },
       "There are two family camping fields: **Cockmill Meadow**, on the eastern side of the site above the Kidzfield, and **Wicket Ground**, on the north west side. Both are fenced. You don't need a special ticket to camp in them, but you can't reserve space in advance and they can fill up quickly.",
       { ul: [
@@ -2609,7 +2610,7 @@ export const GUIDES = [
       ] },
       "For the other camping fields and the festival's tips for setting up camp, see [where to camp at Glastonbury](/guides/where-to-camp-at-glastonbury/).",
       { h2: "If a child gets lost" },
-      "Contact a steward, any Info Point or a festival official. Found children are looked after at the Kidzfield until 7pm, and after that at Worthy Welfare. The Kidzfield, Green Kids and the Info Points have children's wristbands you can write your mobile number on, or you can write it on your child's clothing or arm.",
+      "Contact a steward, any Info Point or a festival official. Found children are looked after at the Kidzfield until 7pm, and after that at Worthy Welfare. The Kidzfield, Green Kids and the Info Points have children's wristbands you can write your mobile number on, or you can write it on your child's clothing or arm. Paper emergency contact wristbands are also at the two family camping fields. The festival also suggests dressing children in bright colours, or even a child's hi-vis vest, so they stand out in busy areas.",
       { cta: "Set up your family's page" },
     ],
     related: ["how-glastonbury-registration-works", "glastonbury-2027-cost", "glastonbury-coach-tickets"],
@@ -3278,6 +3279,7 @@ export const PAGES = [
     body: [
       { h2: "21 November 2026" },
       { ul: [
+        "**Updated:** [taking children and teenagers to Glastonbury](/guides/glastonbury-with-children/) rechecked against the festival's information page: the age rules are unchanged. It now adds that babies in arms need a coach seat on a ticket and coach package, the festival's advice on buggies in crowds, and where to get emergency contact wristbands.",
         "**New:** [do you need cash at Glastonbury?](/guides/money-at-glastonbury/): which bars and food stalls take cards, the 24 hour cash machines, what food and drink cost, the Challenge 21 rule for alcohol, keeping money safe and what to do if you lose your wallet.",
         "**Updated:** [Glastonbury 2027 Sunday tickets](/guides/glastonbury-sunday-tickets/) rechecked against the festival's information page and the 2027 Sunday ticket terms: the price, bus times, children's bus tickets, refund rules and earliest entry are unchanged, and the festival still hasn't said how the sale went.",
         "**Updated:** [going to Glastonbury with access requirements](/guides/glastonbury-access-requirements/): the 2027 Access Application Form still isn't open, and the festival still expects it from the end of November.",
