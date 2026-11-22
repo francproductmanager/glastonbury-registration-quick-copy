@@ -1,6 +1,22 @@
 {
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "items": [
+  {
+   "date": "2026-11-22",
+   "tag": "Updated",
+   "title": "Glastonbury 2027 balance payment and what to do before June",
+   "summary": "The 2027 balance window (1 to 7 April 2027), how paying it works, parking and protection, and a month by month list of what to do between booking and the festival.",
+   "topic": "After you've booked",
+   "href": "/guides/got-a-glastonbury-ticket-what-next/"
+  },
+  {
+   "date": "2026-11-22",
+   "tag": "Updated",
+   "title": "Lost your Glastonbury registration number? Find or change it",
+   "summary": "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, and how to change your photo, postcode or email.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-registration-number-lookup/"
+  },
   {
    "date": "2026-11-21",
    "tag": "Updated",
@@ -40,22 +56,6 @@
    "summary": "Where to pitch your tent at Glastonbury: the lively and quiet camping fields, family and accessible camping, the festival's camping tips and what to avoid.",
    "topic": "Coaches, access and families",
    "href": "/guides/where-to-camp-at-glastonbury/"
-  },
-  {
-   "date": "2026-11-20",
-   "tag": "New",
-   "title": "How to split Glastonbury ticket costs fairly in a group",
-   "summary": "Splitting Glastonbury 2027 ticket costs in a group: paying back the lead booker, balances together or separately, a worked example for six, and dropouts.",
-   "topic": "After you've booked",
-   "href": "/guides/split-glastonbury-ticket-costs/"
-  },
-  {
-   "date": "2026-11-20",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 campervans, Worthy View and tipis",
-   "summary": "Worthy View, Sticklinch, the new Pylon Field and Holt Farm, campervans and tipis at Glastonbury 2027: tent prices, who can book, parking and sale dates.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-2027-campervans-and-camping/"
   }
  ],
  "dates": [

@@ -477,7 +477,7 @@ export const GUIDES = [
     topic: "before",
     title: "Lost your Glastonbury registration number? Find or change it",
     summary: "How to get your Glastonbury registration number back with the official lookup, what to do if it finds nothing, and how to change your photo, postcode or email.",
-    updated: "30 October 2026", isoDate: "2026-10-30",
+    updated: "22 November 2026", isoDate: "2026-11-22",
     body: [
       "Your registration number is in the email See Tickets sent when your photo was accepted. If you can't find that email, you don't need to register again: the official **registration lookup** sends your number back to you. This page covers finding it, checking a friend's, and changing the details on your registration.",
       { h2: "How to check your Glastonbury registration" },
@@ -491,8 +491,10 @@ export const GUIDES = [
       "If nothing arrives within a few minutes, check your spam and promotions folders before trying again.",
       { h2: "If the lookup finds nothing" },
       { ul: [
-        "**Try every email address you might have used.** Many people registered for an earlier festival with a work, university or old personal address. A registration carries over between festivals, so the old one is still the one that counts.",
-        "**Check you were ever accepted.** If your photo was rejected and you didn't try again, there's no registration to find.",
+        "**Try every email address you might have used.** Many people registered for an earlier festival with a work, university or old personal address. The festival keeps registrations for future sales, so you don't need to register again each year, and the old one is still the one that counts.",
+        "**Lost access to that email address?** The festival says you need to submit a new registration, because you must have access to the email address you're registered to.",
+        "**Registered before 2020?** The festival says registrations from before 2020 had to be reviewed and confirmed in autumn 2023. If you registered before 2020, check whether you still have a valid registration, or submit a fresh one.",
+        "**Check you were ever accepted.** If your photo was rejected and you didn't try again, there's no registration to find. The festival says to submit a new registration if yours was rejected, or if no registration number arrives within a further 48 hours of the photo check.",
         "**Register again while registration is open.** For 2027, registration closed on 25 September 2026, and the festival says it will reopen later in the autumn. See [how to register](/guides/how-glastonbury-registration-works/).",
       ] },
       { h2: "Registered twice?" },
@@ -1371,7 +1373,7 @@ export const GUIDES = [
     topic: "after",
     title: "Glastonbury 2027 balance payment and what to do before June",
     summary: "The 2027 balance window ({{fact:balanceWindow}}), how paying it works, parking and protection, and a month by month list of what to do between booking and the festival.",
-    updated: "30 October 2026", isoDate: "2026-10-30",
+    updated: "22 November 2026", isoDate: "2026-11-22",
     body: [
       "Getting through the queue is the hard part, but a deposit isn't a ticket yet. The one deadline that matters is the **balance payment window: 9am on {{fact:balanceOpens}} to 11.59pm on {{fact:balanceCloses}}, UK time**. Any ticket whose balance isn't paid by then is cancelled. This guide covers that week first, then everything else between now and June.",
       { h2: "Paying the 2027 balance" },
@@ -1379,10 +1381,10 @@ export const GUIDES = [
         head: ["What", "2027"],
         rows: [
           ["When", "9am {{fact:balanceOpens}} to 11.59pm {{fact:balanceCloses}}, UK time"],
-          ["How much", "{{fact:balance}} per ticket, plus {{fact:postage}} postage and packing per order"],
+          ["How much", "{{fact:balance}} per ticket, plus {{fact:postage}} postage and packing per order. Each balance paid separately is its own order, with its own postage"],
           ["Where", "On glastonbury.seetickets.com, through the booking"],
           ["Extras you can add", "Car parking passes and cancellation protection"],
-          ["If it isn't paid", "The ticket is cancelled and goes into the spring resale"],
+          ["If it isn't paid", "The ticket is cancelled and goes into the spring resale. The deposit goes back to the card it was paid with, less a {{fact:refundFee}} charge (plus a {{fact:coachCancelFee}} on a ticket and coach booking)"],
         ],
       } },
       "Add the window to your calendar now. The file opens in your calendar app, with a reminder the day before:",
@@ -1390,9 +1392,9 @@ export const GUIDES = [
       "Paying on time is each ticket holder's responsibility, the festival says. If you've moved since booking, tell See Tickets: changing the address on your registration doesn't change where your tickets are sent. What else you can and can't change is in [changing your Glastonbury booking](/guides/change-glastonbury-ticket-details/). What happens to the deposit if a balance isn't paid, and what to do if someone can't go, is in [deposits and balance payments](/guides/deposits-and-balance-payments/).",
       { tip: "Ask each person to reply in the group chat with \"PAID\" once their balance is done. The lead booker can then see at a glance who still needs reminding before the 7th." },
       { h2: "Parking and protection" },
-      `For 2027, car park passes are sold during the balance window, for general admission ticket holders only. The [festival's information page](https://www.glastonburyfestivals.co.uk/info/) listed them at **{{fact:carParkPass}}** when we checked on ${CHECKED}, so check that page again before you pay. They can't be added to a ticket and coach booking. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none. More on passes, and on driving there, is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
-      "Campervan pitches, Worthy View and tipis are sold separately: see [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/).",
-      "Cancellation protection can also be added while you pay. Read what it covers before buying it: it refunds in certain circumstances, not for any change of plan. The refund deadline and charge are in [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
+      `For 2027, car park passes are sold during the balance window, for general admission ticket holders only, and you can't book one until the balance for at least one ticket on your booking is paid. The [festival's information page](https://www.glastonburyfestivals.co.uk/info/) listed them at **{{fact:carParkPass}}** when we checked on 22 November 2026, so check that page again before you pay. They can't be added to a ticket and coach booking. Decide as a group who's buying parking before the window opens, so you don't end up with two passes or none. More on passes, and on driving there, is in [Glastonbury car parking](/guides/glastonbury-car-parking/).`,
+      "Campervan pitches, tipis and the festival's campsites with tents already up are sold separately. The festival's four official pre-erected campsites, including Worthy View, went on sale at {{fact:accomSale}} for people who already have a 2027 ticket booking, and campervan pitches and tipis go on sale later in the autumn, the festival says. See [campervans, Worthy View and tipis](/guides/glastonbury-2027-campervans-and-camping/).",
+      "Cancellation protection (the festival calls it TicketPlan Refund Protection) can also be added while you pay. Read what it covers before buying it: it refunds in the circumstances set out in its terms, not for any change of plan, and the festival says it won't cover a lost ticket or anything that could be foreseen. The refund deadline and charge are in [Glastonbury ticket refunds](/guides/glastonbury-ticket-refund/).",
       { h2: "Straight after booking" },
       { ul: [
         "**Keep the confirmation.** Save the confirmation email and screenshot the order reference. Forward it to the group.",
@@ -1404,9 +1406,9 @@ export const GUIDES = [
       { h2: "Over the winter" },
       { ul: [
         "**Check the card you'll pay the balance with** won't expire before April.",
-        "**Start putting money aside.** The 2027 balance is {{fact:balance}} per ticket plus postage. From October to early April that's about six months, or roughly £51 a month. For the whole trip, see [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
+        "**Start putting money aside.** The 2027 balance is {{fact:balance}} per ticket plus postage. From late November to the start of April that's about four months, or roughly £77 a month. For the whole trip, see [what Glastonbury 2027 costs](/guides/glastonbury-2027-cost/).",
         "**Decide how you're getting there.** Coach places only come as ticket and coach packages in their own sale, not as add-ons to a general admission ticket. See [coach tickets](/guides/glastonbury-coach-tickets/).",
-        "**Keep your email address working.** Reminders and updates go to the email on your booking and registration.",
+        "**Keep your email address working.** The festival asks everyone to make sure the email address linked to their registration is still valid.",
       ] },
       { h2: "Your photo is now locked" },
       "Once a booking is linked to your registration, you can't change your photo. If your appearance changes a lot before June, it's worth contacting See Tickets for advice rather than assuming it'll be fine at the gate, because the ticket shows your registered photo.",
@@ -3277,6 +3279,11 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "22 November 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 balance payment and what to do before June](/guides/got-a-glastonbury-ticket-what-next/) rechecked against the festival's 2027 ticket news and information page: what happens to the deposit if a balance isn't paid, that a car park pass needs at least one balance paid first, that the official campsites are now on sale, and a monthly saving that starts from now.",
+        "**Updated:** [lost your Glastonbury registration number?](/guides/glastonbury-registration-number-lookup/) rechecked against the festival's information page. It now covers what to do if you can't get into your old email account, if you registered before 2020, or if no registration number ever arrived.",
+      ] },
       { h2: "21 November 2026" },
       { ul: [
         "**Updated:** [taking children and teenagers to Glastonbury](/guides/glastonbury-with-children/) rechecked against the festival's information page: the age rules are unchanged. It now adds that babies in arms need a coach seat on a ticket and coach package, the festival's advice on buggies in crowds, and where to get emergency contact wristbands.",
