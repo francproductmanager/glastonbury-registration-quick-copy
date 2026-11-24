@@ -1879,26 +1879,29 @@ export const GUIDES = [
     target: "glastonbury 2027 resale", // the search phrase this guide answers; no two guides share one
     topic: "missed",
     title: "Glastonbury 2027 resale: date, rules and how to get ready",
-    summary: "What's known about the Glastonbury 2027 resale: when it's likely to be, the registration deadline, tickets per booking, paying in full and getting ready.",
-    updated: "29 October 2026", isoDate: "2026-10-29",
+    summary: "The Glastonbury 2027 resale is confirmed for spring 2027. When it's likely to be, registration, tickets per booking, paying in full and how to get ready.",
+    updated: "24 November 2026", isoDate: "2026-11-24",
     body: [
+      "**Yes, there will be a Glastonbury 2027 resale.** When we checked on 24 November 2026, the festival's information page said 2027 tickets \"have now sold out\" and that \"there will be a resale of any cancelled / returned tickets in Spring 2027\". The date hasn't been announced. Resale tickets must be paid in full when you book, and they are sold at face value, only on See Tickets.",
       "If you missed out in October, it isn't necessarily over. Tickets that aren't paid for in the April balance window, and tickets that are returned, are sold again in the official spring resale. It's smaller and faster than the main sale, and it works a little differently, so it's worth preparing for on its own terms. We update this page as soon as the festival announces anything new.",
       { h2: "Where things stand for 2027" },
       { table: {
         head: ["", "2027 resale"],
         rows: [
+          ["Confirmed?", "Yes: the festival says there will be a resale of cancelled and returned tickets in spring 2027"],
           ["Date", "Not announced yet. It comes after the balance window closes on {{fact:balanceCloses}}"],
           ["Registration", "Closed since 25 September 2026. The festival says it will reopen later in the autumn"],
           ["Tickets per booking", "Not announced. In 2025 it was up to 4 general admission or 2 ticket and coach packages"],
-          ["Payment", "Expected in full at booking, as in previous resales"],
-          ["Where", "Only glastonbury.seetickets.com"],
+          ["Payment", "In full at booking: the festival says tickets bought in resales after 8 April 2027 \"must be paid for in full at the point of booking\""],
+          ["Price", "Face value. In the main sale a 2027 general admission ticket cost {{fact:ticketPrice}}, plus {{fact:postage}} postage and packing per order"],
+          ["Where", "Only glastonbury.seetickets.com. The festival says cancelled tickets are resold \"exclusively on Seetickets.com\""],
         ],
       } },
       "Until the festival publishes the 2027 details, the 2025 resale below is the best guide to how it will run. To have the date land in your calendar the moment we add it, [subscribe to the 2027 dates calendar](webcal://glastobolt.co.uk/calendar/glastonbury-2027.ics). It needs no sign-up and no email address.",
       { h2: "Where resale tickets come from" },
       "After the April balance payment window closes, any ticket whose balance wasn't paid is cancelled. Those tickets, plus tickets that were cancelled or returned since the main sale, go back on sale. The festival doesn't say in advance how many there will be, and demand is always far higher than supply.",
       { h2: "When it happens" },
-      "Usually in late April, a couple of weeks after the balance window. In recent years there have been two sessions: one for ticket and coach packages, and one for general admission. In 2025 they were:",
+      "In 2025 it was in late April, after the balance payment window, in two sessions: one for ticket and coach packages first, then one for general admission a few days later. In 2025 they were:",
       { table: {
         head: ["Session", "2025 date and time"],
         rows: [
@@ -1908,7 +1911,7 @@ export const GUIDES = [
           ["Registration deadline", "Wednesday 23 April, 5pm (the festival advised registering by the 18th)"],
         ],
       } },
-      "The 2027 resale date hasn't been announced yet. See [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
+      "In 2024, the ticket and coach resale was on 18 April and sold out in 18 minutes, and the general admission resale followed at 9am on 21 April and sold out in 22 minutes, according to Glasto Fest Feed. The 2027 resale date hasn't been announced yet. See [Glastonbury 2027 key dates](/guides/glastonbury-2027-key-dates/).",
       { h2: "How it differs from the main sale" },
       { table: {
         head: ["", "Main sale", "Resale (2025)"],
@@ -1932,8 +1935,10 @@ export const GUIDES = [
       "For paying in full on one card, see [the checkout guide](/guides/paying-for-glastonbury-tickets/#resale).",
       { h2: "Coach packages in the resale" },
       "Ticket and coach packages come back in their own resale session, usually a few days before general admission, limited to two per booking. The coach rules still apply: you must travel on your booked coach and can't switch to general admission. See [coach tickets](/guides/glastonbury-coach-tickets/).",
+      { h2: "If you need access facilities" },
+      "If you get a ticket in the resale and need access facilities or a PA ticket, ask the festival's Accessibility Team for the Access Application Form straight away. For 2027 the final deadline for Access Applications is {{fact:accessDeadline}}, and the information page warns that some facilities may reach capacity before then. In 2025, the resale FAQ told anyone who needed the accessible campervan field not to buy in the resale, because those spaces had already sold out. See [Glastonbury access requirements](/guides/glastonbury-access-requirements/).",
       { h2: "Avoid unofficial sellers" },
-      "Glastonbury tickets carry the holder's photo and are strictly non-transferable. The official resale through See Tickets is the only legitimate way to get a returned ticket. Anyone selling tickets elsewhere is either mistaken or a scam. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
+      "Glastonbury tickets carry the holder's photo and are strictly non-transferable. The festival says it doesn't supply tickets to auction or resale sites, and that cancelled tickets are resold at face value through its official resales on See Tickets: that is the only legitimate way to get a returned ticket. Anyone selling tickets elsewhere is either mistaken or a scam. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
       { tip: "Keep your registration photo up to date between sales, so you're ready if a resale comes round." },
       { cta: "Get your resale group ready" },
     ],
@@ -3279,6 +3284,10 @@ export const PAGES = [
     description: "A dated log of changes to Glasto Quick Copy's guides and tool: new guides, corrections and updates after each Glastonbury ticket sale.",
     lead: "What's changed on this site and when. We update the guides after every sale and official announcement.",
     body: [
+      { h2: "24 November 2026" },
+      { ul: [
+        "**Updated:** [Glastonbury 2027 resale](/guides/glastonbury-2027-resale/) rechecked against the festival's information page and 2025 resale FAQ: the festival has confirmed a resale of cancelled and returned tickets in spring 2027, resale tickets must be paid in full at booking and are sold at face value, the 2024 resale dates and sell out times, and what to do straight away if you need access facilities.",
+      ] },
       { h2: "22 November 2026" },
       { ul: [
         "**Updated:** [Glastonbury 2027 balance payment and what to do before June](/guides/got-a-glastonbury-ticket-what-next/) rechecked against the festival's 2027 ticket news and information page: what happens to the deposit if a balance isn't paid, that a car park pass needs at least one balance paid first, that the official campsites are now on sale, and a monthly saving that starts from now.",
