@@ -3,6 +3,14 @@
  "items": [
   {
    "date": "2026-11-24",
+   "tag": "Updated",
+   "title": "Volunteering at Glastonbury 2027: Oxfam, WaterAid and Greenpeace",
+   "summary": "How to volunteer at Glastonbury 2027 with Oxfam, WaterAid or Greenpeace: when applications open, shifts, deposits, what you get and how to get a place.",
+   "topic": "Missed out?",
+   "href": "/guides/glastonbury-volunteering-2027/"
+  },
+  {
+   "date": "2026-11-24",
    "tag": "New",
    "title": "Going to Glastonbury on your own: tickets, travel and help",
    "summary": "Going to Glastonbury alone: booking one ticket, why queueing solo doesn't hurt your chances, paying your own balance, travelling alone and finding help on site.",
@@ -48,14 +56,6 @@
    "summary": "Cash or card at Glastonbury: which bars and food stalls take cards, the 24 hour cash machines, what food and drink cost, Challenge 21, and keeping money safe.",
    "topic": "Coaches, access and families",
    "href": "/guides/money-at-glastonbury/"
-  },
-  {
-   "date": "2026-11-21",
-   "tag": "Updated",
-   "title": "Glastonbury 2027 Sunday tickets: who can buy them and how",
-   "summary": "Only Mendip and Central Somerset residents could buy a Glastonbury 2027 Sunday ticket. When the sale was, the price with the bus, children, refunds and the day.",
-   "topic": "Missed out?",
-   "href": "/guides/glastonbury-sunday-tickets/"
   }
  ],
  "dates": [
