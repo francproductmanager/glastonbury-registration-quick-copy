@@ -3,6 +3,14 @@
  "items": [
   {
    "date": "2026-11-24",
+   "tag": "New",
+   "title": "Going to Glastonbury on your own: tickets, travel and help",
+   "summary": "Going to Glastonbury alone: booking one ticket, why queueing solo doesn't hurt your chances, paying your own balance, travelling alone and finding help on site.",
+   "topic": "Before the sale",
+   "href": "/guides/glastonbury-on-your-own/"
+  },
+  {
+   "date": "2026-11-24",
    "tag": "Updated",
    "title": "Glastonbury 2027 resale: date, rules and how to get ready",
    "summary": "The Glastonbury 2027 resale is confirmed for spring 2027. When it's likely to be, registration, tickets per booking, paying in full and how to get ready.",
@@ -48,14 +56,6 @@
    "summary": "Only Mendip and Central Somerset residents could buy a Glastonbury 2027 Sunday ticket. When the sale was, the price with the bus, children, refunds and the day.",
    "topic": "Missed out?",
    "href": "/guides/glastonbury-sunday-tickets/"
-  },
-  {
-   "date": "2026-11-21",
-   "tag": "Updated",
-   "title": "Going to Glastonbury with access requirements",
-   "summary": "Glastonbury 2027 accessibility: booking a ticket the normal way, the Access Pass, the personal assistant scheme, and the access form from the end of November.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/glastonbury-access-requirements/"
   }
  ],
  "dates": [
