@@ -1936,7 +1936,13 @@ export const GUIDES = [
       { h2: "Coach packages in the resale" },
       "Ticket and coach packages come back in their own resale session, usually a few days before general admission, limited to two per booking. The coach rules still apply: you must travel on your booked coach and can't switch to general admission. See [coach tickets](/guides/glastonbury-coach-tickets/).",
       { h2: "If you need access facilities" },
-      "If you get a ticket in the resale and need access facilities or a PA ticket, ask the festival's Accessibility Team for the Access Application Form straight away. For 2027 the final deadline for Access Applications is {{fact:accessDeadline}}, and the information page warns that some facilities may reach capacity before then. In 2025, the resale FAQ told anyone who needed the accessible campervan field not to buy in the resale, because those spaces had already sold out. See [Glastonbury access requirements](/guides/glastonbury-access-requirements/).",
+      "If you get a ticket in the resale and need access facilities or a PA ticket, ask the festival's Accessibility Team for the Access Application Form straight away. The resale is usually in late April, and some access deadlines fall only days later:",
+      { ul: [
+        "**Spring Ground accessible campsite:** for 2027 the information page says only festival goers who have completed the Access Application Form by {{fact:accessCampsiteDeadline}} can stay there.",
+        "**Wheelchair access on a coach:** the ticket and coach booking terms on the information page say to email See Tickets and the festival's accessibility team no later than {{fact:coachAccessDeadline}} if you need wheelchair access or storage.",
+        "**Other facilities:** the final deadline for 2027 Access Applications is {{fact:accessDeadline}}, and the information page warns that some facilities may reach capacity before then.",
+      ] },
+      "In 2025, the resale FAQ said \"the deadline for all access applications is Wednesday 30th April\", three days after the general admission resale. It also told anyone who needed space in the accessible campervan field or the forward reserved area in East not to buy in the resale, because accessible campervan and caravan spaces had already sold out. See [Glastonbury access requirements](/guides/glastonbury-access-requirements/).",
       { h2: "Avoid unofficial sellers" },
       "Glastonbury tickets carry the holder's photo and are strictly non-transferable. The festival says it doesn't supply tickets to auction or resale sites, and that cancelled tickets are resold at face value through its official resales on See Tickets: that is the only legitimate way to get a returned ticket. Anyone selling tickets elsewhere is either mistaken or a scam. See [how to spot Glastonbury ticket scams](/guides/glastonbury-ticket-scams/).",
       { tip: "Keep your registration photo up to date between sales, so you're ready if a resale comes round." },
@@ -3286,7 +3292,7 @@ export const PAGES = [
     body: [
       { h2: "24 November 2026" },
       { ul: [
-        "**Updated:** [Glastonbury 2027 resale](/guides/glastonbury-2027-resale/) rechecked against the festival's information page and 2025 resale FAQ: the festival has confirmed a resale of cancelled and returned tickets in spring 2027, resale tickets must be paid in full at booking and are sold at face value, the 2024 resale dates and sell out times, and what to do straight away if you need access facilities.",
+        "**Updated:** [Glastonbury 2027 resale](/guides/glastonbury-2027-resale/) rechecked against the festival's information page and 2025 resale FAQ: the festival has confirmed a resale of cancelled and returned tickets in spring 2027, resale tickets must be paid in full at booking and are sold at face value, the 2024 resale dates and sell out times, and what to do straight away if you need access facilities, including the 30 April deadlines for the accessible campsite and coach wheelchair access.",
       ] },
       { h2: "22 November 2026" },
       { ul: [
