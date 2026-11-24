@@ -733,6 +733,12 @@ export const GUIDES = [
         "**Your phone.** Phone charging is free and included in your ticket, as are a programme and the festival's app.",
         "**Quiet time.** If the crowds get too much, Greenpeace's tips suggest heading back to your tent or to a quiet space in the far reaches of the Green Fields for a while.",
       ] },
+      { h2: "Staying safe on your own" },
+      "The festival's personal safety advice speaks directly to anyone going alone. It says to keep with friends or people you trust, because at any large gathering a small number of people attend to prey on others, and you are a far less vulnerable target as a group than you would be on your own. It also says:",
+      { ul: [
+        "**Avoid dark areas**, and use the extra lighting along the main thoroughfares and in the car parks.",
+        "**Don't go to a cash machine alone after dark.** The festival says to go with a friend.",
+      ] },
       { h2: "If you need help" },
       "Where to go for help on site. Worthy Welfare and the Samaritans are there 24 hours a day:",
       { table: {
@@ -751,7 +757,7 @@ export const GUIDES = [
       { h3: "If my friends get tickets and I don't, can I still go with them?" },
       "Only with a ticket of your own. Your next chance is the resale, which you can try on your own or with friends who also need tickets. See [the 2027 resale](/guides/glastonbury-2027-resale/).",
       { h2: "What we couldn't confirm" },
-      "The festival's information page has no section for people going on their own: we searched it for alone, solo, on your own and by yourself and found nothing beyond the advice above. It doesn't mention any meetups for people going alone, so we haven't suggested any.",
+      "The festival's information page doesn't mention any meetups for people going alone (we searched the whole page for meet, alone, solo and on your own), so we haven't suggested any.",
       { cta: "Keep your details ready to paste" },
     ],
     related: ["how-to-get-glastonbury-tickets", "how-many-glastonbury-tickets-can-you-buy", "glastonbury-coach-tickets"],
