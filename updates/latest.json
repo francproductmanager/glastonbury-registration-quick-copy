@@ -1,6 +1,14 @@
 {
- "updated": "2026-11-24",
+ "updated": "2026-11-25",
  "items": [
+  {
+   "date": "2026-11-25",
+   "tag": "Updated",
+   "title": "Glastonbury ticket day checklist",
+   "summary": "A printable checklist for the weeks, night and minutes before a Glastonbury sale or the spring 2027 resale, the ten mistakes to avoid, and day tickets.",
+   "topic": "On ticket day",
+   "href": "/guides/ticket-day-checklist/"
+  },
   {
    "date": "2026-11-24",
    "tag": "Updated",
@@ -48,14 +56,6 @@
    "summary": "13 or over on 23 June 2027 needs a ticket; 12 and under go free. The rules for under 16s and teenagers, coach seats for children and booking a family group.",
    "topic": "Coaches, access and families",
    "href": "/guides/glastonbury-with-children/"
-  },
-  {
-   "date": "2026-11-21",
-   "tag": "New",
-   "title": "Do you need cash at Glastonbury? Money on site explained",
-   "summary": "Cash or card at Glastonbury: which bars and food stalls take cards, the 24 hour cash machines, what food and drink cost, Challenge 21, and keeping money safe.",
-   "topic": "Coaches, access and families",
-   "href": "/guides/money-at-glastonbury/"
   }
  ],
  "dates": [
