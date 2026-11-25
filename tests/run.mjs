@@ -462,9 +462,13 @@ await test("Every live guide has a published date; neighbouring guides go live a
     assert(days >= NEIGHBOUR_GAP_DAYS, `${a} and ${b} are neighbours (similarity ${score.toFixed(2)}) published ${days} days apart: the later one waits until ${NEIGHBOUR_GAP_DAYS} days after the earlier`);
   }
 });
-await test("New guides go live only in their random slots: no more on a day than it has slots (20 a month)", async () => {
+await test("New guides go live only in their slots: no more on a day than it has slots, and one a week at most from the weekly start", async () => {
   const { GUIDES } = await import(join(ROOT, "site-src", "content.mjs"));
-  const { START, slotsOn } = await import(join(ROOT, "scripts", "new-guide-slots.mjs"));
+  const { START, WEEKLY_FROM, slotsOn, mondayOf } = await import(join(ROOT, "scripts", "new-guide-slots.mjs"));
+  const perWeek = new Map();
+  for (const g of GUIDES) if (!g.draft && g.published >= WEEKLY_FROM) perWeek.set(mondayOf(g.published), [...(perWeek.get(mondayOf(g.published)) || []), g.slug]);
+  for (const [monday, slugs] of perWeek) assert(slugs.length <= 1, `${slugs.join(", ")} all published in the week from ${monday}: the owner wants one new guide a week at most`);
+  eq([slotsOn("2026-11-30"), slotsOn("2026-12-01"), slotsOn("2026-12-02"), slotsOn("2026-12-06")], [1, 1, 0, 0], "weekly slots: Monday and Tuesday only");
   const perDay = new Map();
   for (const g of GUIDES) if (!g.draft && g.published >= START) perDay.set(g.published, [...(perDay.get(g.published) || []), g.slug]);
   for (const [date, slugs] of perDay) {

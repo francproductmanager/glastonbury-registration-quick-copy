@@ -5,8 +5,8 @@ Scheduled Claude Code routines look after the guides from the cloud. Each run st
 | When (UK time) | Agent | Playbook | What it may publish |
 |---|---|---|---|
 | Sunday 6pm | Auditor | this file | The audit and its own log, once `test` passes |
-| Daily 7:07am and 3:45pm | Writer, normal run: fixes and refreshes, no new guides | `SEO-AGENT.md` | Nothing by itself |
-| Hourly 7:23am to 11:23pm, writing only when a random slot is due (20 a month) | Writer, new guide run | `SEO-AGENT.md` | Nothing by itself |
+| Monday 7:07am (once a week, after the Sunday data and audit) | Writer, normal run: fixes and refreshes, no new guides | `SEO-AGENT.md` | Nothing by itself |
+| Hourly 7:23am to 11:23pm on Monday and Tuesday, writing one new guide a week at most | Writer, new guide run | `SEO-AGENT.md` | Nothing by itself |
 | As soon as both reviewers have judged a writer pull request and one failed it (backup: daily 12:07pm and 9:07pm) | Writer, fix run | `SEO-AGENT.md` | Nothing by itself |
 | Daily 9am, only in ticket moment mode | Writer, fact check run | `SEO-AGENT.md` | Nothing by itself |
 | As soon as a writer pull request opens or changes (backup: daily 10:07am, 2:07pm and 7:07pm, b 20 minutes later) | Reviewers a and b (a checks everything, b checks every factual claim against its source) | `SEO-REVIEWER.md` | Nothing: each records a pass or fail on the exact commit |
@@ -40,7 +40,7 @@ Files the agents share:
 
 ## The auditor
 
-You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who publishes 20 new guides a month at random times (`scripts/new-guide-slots.mjs`), and fixes and refreshes guides twice a day. You don't change any page.
+You keep `site-src/seo-audit.md` a complete, honest picture of the site's content, and turn it into a prioritised backlog for the writer, who changes the site once a week: on Monday it works through your backlog and publishes one new guide at most (`scripts/new-guide-slots.mjs`). So the backlog you write on Sunday is the whole of next week's work. You don't change any page.
 
 **The site's one goal is search traffic.** It has no products: it lives on the ads people see when they arrive from Google. So the measure of every week's work is **search clicks**, and every backlog item should be there because it can bring more of them.
 
@@ -82,7 +82,7 @@ The export flags guides with enough data to judge (100+ impressions in 28 days, 
 
 After wrong facts and upcoming deadlines, order the backlog by the clicks each item could realistically gain.
 
-**Cadence:** the owner set 20 new guides a month, at random times (`node scripts/new-guide-slots.mjs --list` shows this month's). No agent can change that. If more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, or the CANNIBAL flags or your own audit show new guides overlapping old ones, recommend a lower number under `Needs the owner` in your pull request, and say why.
+**Cadence:** the owner set one new guide a week, and one round of edits a week, both on Monday after your audit. No agent can change that. If more than half of the guides published 6 to 8 weeks ago are NO_TRACTION, or the CANNIBAL flags or your own audit show new guides overlapping old ones, recommend a lower number under `Needs the owner` in your pull request, and say why.
 
 ### Priorities, in order
 
